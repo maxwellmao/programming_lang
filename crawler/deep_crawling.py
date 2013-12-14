@@ -73,6 +73,7 @@ class Commit:
     __repr__=__str__
 
     def find_change_files(self, ext):
+        # finding the changing files (delete, adding) of current commit
         req=urllib2.urlopen(self.baseURL+self.href)
         result=req.read()
         soup=BeautifulSoup(result)
@@ -84,6 +85,7 @@ class Commit:
         return file_list
 
     def parse_parent_info(self):
+        # crawling the parent commit of current commit
         req=urllib2.urlopen(self.baseURL+self.href)
         result=req.read()
         soup=BeautifulSoup(result)

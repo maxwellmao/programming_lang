@@ -11,11 +11,13 @@ import stat_token_ratio
 
 def parse_file_str(self, lexer, codePath, n=1):
     try:
+        retlist=[]
+        if not os.path.isfile(codePath):
+            return retlist
         fp=open(codePath)
         code=''.join(fp.readlines())
         fp.close()
         tokenList=[]
-        retlist=[]
         allNum=0
         programNum=0
         for k,v in lexer.get_tokens(code):

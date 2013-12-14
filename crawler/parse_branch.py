@@ -56,7 +56,7 @@ class CommitTree:
     def expand_tree(self):
         root=filter(lambda x:self.commit_tree.in_degree(x)==0, self.commit_tree.nodes())
         print '\n'.join([self.id_commit_map[id] for id in root])
-        print 'In degree of inital import is', self.commit_tree.in_degree(self.commit_id_map['fbd0f95d62ac2c5e97e5a4df5a732e9342d60da1'])
+#        print 'In degree of inital import is', self.commit_tree.in_degree(self.commit_id_map['fbd0f95d62ac2c5e97e5a4df5a732e9342d60da1'])
         if len(root)!=1:
             print 'Error! Should be only one root!'
             return
