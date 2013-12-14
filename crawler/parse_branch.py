@@ -107,22 +107,28 @@ class BranchParser:
         fp=open(log_path)
         for line in fp.readlines():
             items=line.strip().split()
-            if last_branch!=items[0]:
-                last_sha=''
-            current_date=datetime.datetime.strptime(items[-1], '%m/%d/%Y')
-            if len(last_sha)==0:
-                self.commit_tree.add_commit(last_sha, items[1], items[0])
+#            current_date=datetime.datetime.strptime(items[2], '%m/%d/%Y')
+            if len(items)==4:
+                self.commit_tree.add_commit(items[-1], items[1], items[0])
             else:
-                if current_date < last_date:
-#                    print items[1], last_sha
-                    self.commit_tree.add_commit(items[1], last_sha, items[0])
-                else:
-                    self.commit_tree.add_commit(last_sha, items[1], items[0])
-                    
-#            print 'Adding %s -> %s' % (last_sha, items[1])
-            last_branch=items[0]
-            last_sha=items[1]
-            last_date=current_date
+                self.commit_tree.add_commit('', items[1], items[0])
+
+#            if last_branch!=items[0]:
+#                last_sha=''
+#            current_date=datetime.datetime.strptime(items[-1], '%m/%d/%Y')
+#            if len(last_sha)==0:
+#                self.commit_tree.add_commit(last_sha, items[1], items[0])
+#            else:
+#                if current_date < last_date:
+##                    print items[1], last_sha
+#                    self.commit_tree.add_commit(items[1], last_sha, items[0])
+#                else:
+#                    self.commit_tree.add_commit(last_sha, items[1], items[0])
+#                    
+##            print 'Adding %s -> %s' % (last_sha, items[1])
+#            last_branch=items[0]
+#            last_sha=items[1]
+#            last_date=current_date
         fp.close()
         print 'Commit Tree construction completed!'
         print 'Number of nodes is %s' % len(self.commit_tree.commit_tree.nodes())
