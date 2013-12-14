@@ -9,9 +9,11 @@ import random
 from crawling_github import Repository
 import logging
 import datetime
+import threadpool
 
 
-logging.basicConfig(filename='crawler.log', level = logging.DEBUG, filemode='w', format = '%(asctime)s - %(levelname)s: %(message)s')
+logging.basicConfig(filename='crawler-threadpool.log', level = logging.DEBUG, filemode='w', format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
+poolsize=20
 
 # whether it return 404 or not
 def page_has_response(url):
@@ -104,18 +106,27 @@ class DeepCrawler:
         self.saveDir=saveDir
         self.baseURL='https://github.com'
         self.visited_commit=set()
+        if not os.path.isdir(saveDir):
+            os.mkdir(saveDir)
+
         if not os.path.isdir(os.path.join(saveDir, self.target_repos.repos_name)):
             os.mkdir(os.path.join(saveDir, self.target_repos.repos_name))
 
-#        if not os.path.isdir(os.path.join(saveDir, self.target_repos.repos_name, 'latest')):
-#            os.mkdir(os.path.join(saveDir, self.target_repos.repos_name, 'latest'))
 
         if not os.path.isdir(os.path.join(saveDir, self.target_repos.repos_name, 'previous_commits')):
             os.mkdir(os.path.join(saveDir, self.target_repos.repos_name, 'previous_commits'))
         
+        if not os.path.isdir(os.path.join(saveDir, self.target_repos.repos_name, 'logs')):
+            os.mkdir(os.path.join(saveDir, self.target_repos.repos_name, 'logs'))
+        
+        if not os.path.isdir(os.path.join(saveDir, self.target_repos.repos_name, 'branches')):
+            os.mkdir(os.path.join(saveDir, self.target_repos.repos_name, 'branches'))
+        
         if os.path.isdir(os.path.join(self.saveDir, self.target_repos.repos_name, 'latest')):
             print 'Delete'
             os.system(' '.join(['rm', '-rf', os.path.join(self.saveDir, self.target_repos.repos_name, 'latest')]))
+        
+        os.mkdir(os.path.join(saveDir, self.target_repos.repos_name, 'latest'))
 
         os.system(' '.join(['git', 'clone', self.baseURL+self.target_repos.href, os.path.join(self.saveDir, self.target_repos.repos_name, 'latest')]))
         self.logger=logging.getLogger('Crawler_'+self.target_repos.repos_name)
@@ -125,8 +136,21 @@ class DeepCrawler:
         self.branch_commit_fp=open(os.path.join(self.saveDir, self.target_repos.repos_name, 'branch_commit.info'), 'w')
         self.parse_branch_name()
         print 'Number of branches:%s' % len(self.branches)
-        for branch in self.branches:
-            self.parse_commit(branch)
+
+        para=[((b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),), {}) for b in self.branches]
+
+        pool=threadpool.ThreadPool(poolsize)
+        requests=threadpool.makeRequests(crawling_branch, para)
+
+        for req in requests:
+            pool.putRequest(req)
+        pool.wait()
+        
+#        for branch in self.branches:
+#            self.parse_commit(branch)
+
+
+
         self.branch_commit_fp.close()
 
     def parse_branch_name(self):
@@ -186,8 +210,57 @@ class DeepCrawler:
         self.logger.info('Checkout %s' % commit.commit_sha)
         os.system(' '.join(['./retrieve_commit.sh', os.path.join(self.saveDir, self.target_repos.repos_name, 'latest'), commit.commit_sha]))
 
+def crawling_branch(branch, baseURL, local_repos_dir):
+    sys.stderr.write('%s %s %s' % (branch.branch_name, baseURL, local_repos_dir))
+    logger=logging.getLogger('-'.join(['Branch', branch.branch_name]))
+    if os.path.isdir(os.path.join(local_repos_dir, 'branches', branch.branch_name)):
+        os.system(' '.join(['rm', '-rf', os.path.join(local_repos_dir, 'branches', branch.branch_name)]))
+
+    os.mkdir(os.path.join(local_repos_dir, 'branches', branch.branch_name))
+    os.system(' '.join(['git', 'clone', '-b', branch.branch_name, baseURL+branch.repos.href, os.path.join(local_repos_dir, 'branches', branch.branch_name)]))
+
+    N=test_last_page(baseURL+branch.commit_url)
+    fp=open(os.path.join(local_repos_dir, 'logs', branch.branch_name), 'w')
+    logger.info('Total pages:%s' % N)
+    #for i in range(N, 0, -1):
+    #    try:
+    #        req=urllib2.urlopen(baseURL+branch.commit_url+'?page='+str(i))
+    #        result=req.read()
+    #        soup=BeautifulSoup(result)
+    #        commit_list=[]
+    #        for d in soup.div():
+    #            if d.attrs.has_key('class') and 'js-navigation-container' in d.attrs['class']:
+    #                h3_list=d.findAll('h3')
+    #                ol_list=d.findAll('ol')
+    #                if len(h3_list)==len(ol_list):
+    #                    for index in range(len(h3_list)):
+    #                        h3_date=datetime.datetime.strptime(h3_list[index].string, '%b %d, %Y').date()
+    #                        for li in ol_list[index].findAll('li'):
+    #                            commit=Commit(li.p.a['href'], h3_date)
+    #                            commit.parse_parent_info()
+    #                            sys.stderr.write('Parent info %s\n' % commit.parent_sha)
+    #                            commit_list.append(commit)
+    #                else:
+    #                    print 'Error! h3 and ol do not match!'
+    #        commit_list.reverse()
+    #        for commit in commit_list:
+    #            fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), commit.parent_sha))
+    #            logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, commit.parent_sha))
+#   #             if commit not in self.visited_commit:
+    #            if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
+    #                os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
+    #                clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
+    #    except urllib2.HTTPError, e:
+    #        print e
+    fp.close()
+
+def clone_commit(commit, branch_dir):
+    os.system(' '.join(['./retrieve_commit.sh', branch_dir, commit.commit_sha, '../']))
+
+
 if __name__=='__main__':
     repos=Repository('/voldemort/voldemort')
-    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version')
+    #deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version')
+    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/thread_pool')
     deepCrawler.start_crawling()
     print 'Total number of commits:%s' % len(deepCrawler.visited_commit)

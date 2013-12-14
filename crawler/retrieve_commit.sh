@@ -3,9 +3,10 @@
 # $2 is the sha of the commit
 cd $1
 git checkout $2
-if [ -d ../previous_commits/$2 ]
-then
-    rm -rf ../previous_commits/$2
-fi
-mkdir ../previous_commits/$2
-cp -r * ../previous_commits/$2
+cp -r * $3../previous_commits/$2
+#if [ ! -d $3../previous_commits/$2 ]
+#then
+#    mkdir ../previous_commits/$2
+#    cp -r * $3../previous_commits/$2
+#fi
+#rm -rf ../previous_commits/$2
