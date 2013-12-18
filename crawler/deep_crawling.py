@@ -13,11 +13,14 @@ import threadpool
 import multiprocessing
 from multiprocessing import Pool as ProcessPool
 
+# crawling all commits of a repository
 
 logging.basicConfig(filename='crawler-threadpool.log', level = logging.DEBUG, filemode='w', format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
-poolsize=5
+poolsize=20
 
 (_multi_thread, _multi_process)=range(2)
+
+
 
 # whether it return 404 or not
 def page_has_response(url):
@@ -59,13 +62,17 @@ class Branch:
     __repr__=__str__
 
 class Commit:
-    def __init__(self, href, date):
+    def __init__(self, href='', date=datetime.datetime(2001, 1, 1)):
         self.href=href
-        self.commit_sha=self.href.split('/')[-1]
-        self.repos=Repository('/'.join(self.href.split('/')[:3]))
+        if len(href)>0:
+            self.commit_sha=self.href.split('/')[-1]
+            self.repos=Repository('/'.join(self.href.split('/')[:3]))
+        else:
+            self.commit_sha=''
         self.commit_date=date
         self.baseURL='https://github.com'
         self.parent_sha=''
+        self.parent_sha_list=[]
 
     def __hash__(self):
         return self.commit_sha.__hash__()
@@ -81,13 +88,17 @@ class Commit:
     def find_change_files(self, ext):
         # finding the changing files (delete, adding) of current commit
         req=urllib2.urlopen(self.baseURL+self.href)
+#       print self.baseURL+self.href
         result=req.read()
         soup=BeautifulSoup(result)
         file_list=[]
-        for d in soup.div():
-            if d.has_attr('class') and d.has_attr('data-path') and d['class']=='meta':
-                if d['data-path'].endswith(ext):
-                    file_list.append(d['data-path'])
+#        for d in soup.div():
+#            print d.attrs().keys()
+#            if d.has_attr('class') and d.has_attr('data-path') and d['class']=='meta':
+        for d in soup.findAll('div', attrs={'class':'meta'}):
+                if d.has_attr('data-path'):
+                   if d['data-path'].endswith(ext):
+                       file_list.append(d['data-path'])
         return file_list
 
     def parse_parent_info(self):
@@ -98,8 +109,10 @@ class Commit:
         for d in soup.div():
             if d.has_attr('class') and 'commit-meta' in d['class'] and 'clearfix' in d['class']:
                 for s in d.findAll('span'):
-                    if s.a is not None and s.a.has_attr('data-hotkey') and s.a['data-hotkey']=='p':
-                        self.parent_sha=s.a['href'].strip().split('/')[-1]
+                    for a in s.findAll('a'):
+                        if a.has_attr('data-hotkey'):
+                            self.parent_sha_list.append(a['href'].strip().split('/')[-1])
+#                            self.parent_sha=a['href'].strip().split('/')[-1]
                 
                 
 
@@ -144,7 +157,7 @@ class DeepCrawler:
 
         ######################################################################################
         ##########
-        ##########      implmenting crawler with the third part package 'threadpool', which is not truly multi-thread
+        ##########      implementing crawler with the third part package 'threadpool', which is not truly multi-thread
         ##########
         if multi_way==_multi_thread:
             para=[((b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),), {}) for b in self.branches[:poolsize]]
@@ -158,11 +171,11 @@ class DeepCrawler:
 
         #######################################################################################
         ##########
-        ##########
+        ##########      truly multi-process implementation
         else:
             pool=ProcessPool(poolsize)
 #            para=[(b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),) for b in self.branches[:poolsize]]
-            for b in self.branches[:poolsize]:
+            for b in self.branches:
                 sys.stderr.write('Branch %s\n' % b.branch_name)
                 pool.apply_async(crawling_branch, (b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),))
             pool.close()
@@ -172,12 +185,8 @@ class DeepCrawler:
         ##########
         #######################################################################################
 
-
-
 #        for branch in self.branches:
 #            self.parse_commit(branch)
-
-
 
         self.branch_commit_fp.close()
 
@@ -218,14 +227,14 @@ class DeepCrawler:
                                 for li in ol_list[index].findAll('li'):
                                     commit=Commit(li.p.a['href'], h3_date)
                                     commit.parse_parent_info()
-                                    sys.stderr.write('Parent info %s\n' % commit.parent_sha)
+                                    sys.stderr.write('Parent info %s\n' % '\t'.join(commit.parent_sha_list))
                                     commit_list.append(commit)
                         else:
                             print 'Error! h3 and ol do not match!'
                 commit_list.reverse()
                 for commit in commit_list:
-                    self.branch_commit_fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), commit.parent_sha))
-                    self.logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, commit.parent_sha))
+                    self.branch_commit_fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), '\t'.join(commit.parent_sha_list)))
+                    self.logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, '\t'.join(commit.parent_sha_list)))
                     if commit not in self.visited_commit:
 #                        self.retrieve_commit(commit)
                         self.visited_commit.add(commit)
@@ -267,17 +276,14 @@ def crawling_branch(branch, baseURL, local_repos_dir):
                             for li in ol_list[index].findAll('li'):
                                 commit=Commit(li.p.a['href'], h3_date)
                                 commit.parse_parent_info()
-                                sys.stderr.write('Parent info %s\n' % commit.parent_sha)
+                                sys.stderr.write('Parent info %s\n' % '\t'.join(commit.parent_sha_list))
                                 commit_list.append(commit)
                     else:
                         print 'Error! h3 and ol do not match!'
             commit_list.reverse()
             for commit in commit_list:
-                fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), commit.parent_sha))
-                logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, commit.parent_sha))
-#                if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
-#                    os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
-#                    clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
+                fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), '\t'.join(commit.parent_sha_list)))
+                logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, '\t'.join(commit.parent_sha_list)))
         except urllib2.HTTPError, e:
             print e
     fp.close()

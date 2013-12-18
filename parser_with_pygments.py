@@ -34,7 +34,12 @@ class Token:
 #        print 'Init', self.tokenType, self.tokenValue
 
     def __str__(self):
-        return '\t'.join([str(self.tokenType), str(self.tokenValue.encode('utf-8'))]).strip().replace('\n', ' ')
+        token_str=str(self.tokenType)+'\t'
+        try:
+            token_str='\t'.join([str(self.tokenType), str(self.tokenValue.encode('utf-8'))]).strip().replace('\n', ' ')
+        except UnicodeDecodeError, e:
+            sys.stderr.write(str(e)+'\n')
+        return token_str
 
     __repr__=__str__
 
