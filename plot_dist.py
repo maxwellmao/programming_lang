@@ -118,8 +118,8 @@ def sub_plot(x, leg, index):
 if __name__=='__main__':
     if len(sys.argv)>2:
         x_list, leg=load_x(sys.argv[1:-1], sys.argv[-1])
-        plot_xlist_to_ccdf(x_list, leg)
-#        plot_xlist_to_pdf(x_list, leg)
+#        plot_xlist_to_ccdf(x_list, leg)
+        plot_xlist_to_pdf(x_list, leg)
 #        plt.figure(1)
 #        sub_plot(x_list[0], leg[0], 0)
 #        sub_plot(x_list[1], leg[1], 1)

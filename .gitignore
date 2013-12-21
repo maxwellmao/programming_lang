@@ -37,3 +37,7 @@ nosetests.xml
 
 # log of running
 *.log
+*.png
+
+crawler/Result
+crawler/tmp_commits

@@ -37,6 +37,36 @@ def read_freq(filePath=None):
         rfile.close()
     return freq
 
+def turn_to_cdf(filePath, savePath):
+    #the line of filePath (input file) is degree, freq
+    freq=read_freq(filePath)
+    if len(freq)==0:
+        print filePath
+        return
+    wfile=open(savePath, 'w')
+    cdf=[]
+    lastSum=0
+    lastIndex=-1
+    for f in freq:
+        if lastIndex!=-1:
+            for i in xrange(lastIndex, f[0]):
+                cdf.append(lastSum)
+        lastIndex=f[0]
+        lastSum+=f[1]
+	#print lastSum
+        cdf.append(lastSum)
+    for i in range(0, freq[0][0]-len(cdf)):
+        cdf.append(lastSum)
+    print len(cdf), freq[0][0]
+    index=1
+    #print ccdf
+    for c in cdf:
+	#print c
+        wfile.write('\t'.join([str(index), str(c)]))
+        wfile.write('\n')
+	index+=1
+    wfile.close()
+
 def turn_to_ccdf(filePath, savePath):
     #the line of filePath (input file) is degree, freq
     freq=read_freq(filePath)
@@ -71,7 +101,8 @@ def turn_to_ccdf(filePath, savePath):
     
 if __name__=='__main__':
     if len(sys.argv)>=3:
-        turn_to_ccdf(sys.argv[1], sys.argv[2])
+#        turn_to_ccdf(sys.argv[1], sys.argv[2])
+        turn_to_cdf(sys.argv[1], sys.argv[2])
     else:
 #        turn_to_cdf(sys.argv[1])
         turn_to_ccdf(None, sys.argv[1])
