@@ -53,7 +53,7 @@ def plot_together(fileList, savePath, sub=False, lang=''):
             plt.loglog(ax,ay,'.', color=colorList[int(i/2)])
         fp.close()
     #plt.title('Distribution of token\'s appearence')
-    plt.xlabel('Sizes of files(# of tokens)'+lang)
+    plt.xlabel('Sizes of files'+lang)
     #if savePath.split('/')[-1].find('file')!=-1:
     #    plt.xlabel('Token appearence(# of files)'+lang)
     #else:

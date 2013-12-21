@@ -1,4 +1,5 @@
 #!~/usr/bin/python
+from __future__ import division
 import os, sys
 sys.path.append('..')
 import random
@@ -69,42 +70,47 @@ class ProjectStat:
         self.current_all_tokens=0
         self.current_program_tokens=0
         self.commit_stat_dict=dict()
+        self.files_modified_time=dict()
         self.logger=logging.getLogger('_'.join(['ProjectStat', proj_dir.split('/')[-1]]))
+
+    def commit_stat(self, commit_sha):
+        for root, dir, files in os.walk(os.path.join(self.proj_dir, 'previous_commits', commit_sha)):
+            for file in files:
+                if file.endswith(self.ext):
+                    all_num, program_num=self.add_file(os.path.join(root, file))
+                    print '%s\t%s:%s\t%s' % (os.path.join(root, file), all_num, program_num, os.path.getsize(os.path.join(root, file)))
    
     def add_file(self, code_path):
+        all_num=0
+        program_num=0
         for token in parse_file_str(self.lexer, code_path):
             if token.startswith('Program:'):
-                self.program_corpus[token]=self.program_corpus.get(token, 0)+1
-            self.all_corpus[token]=self.all_corpus.get(token, 0)+1
+ #               self.program_corpus[token]=self.program_corpus.get(token, 0)+1
+                program_num+=1
+ #           self.all_corpus[token]=self.all_corpus.get(token, 0)+1
+            all_num+=1
+        self.files_modified_time[code_path]=self.files_modified_time.get(code_path, 0)+1
+        return program_num, all_num
 
     def del_file(self, code_path):
+        all_num=0
+        program_num=0
         for token in parse_file_str(self.lexer, code_path):
             if token.startswith('Program:'):
-#                current_num=self.program_corpus.get(token, 0)
-#                if current_num==0:
-#                    print code_path
-#                    print self.proj_dir
-                self.program_corpus[token]=self.program_corpus[token]-1
-                if self.program_corpus[token]==0:
-                    del self.program_corpus[token]
-            
-#            current_num=self.all_corpus.get(token, 0)
-#            if current_num==0:
-#                print code_path
-#                print self.proj_dir
-            self.all_corpus[token]=self.all_corpus[token]-1
-            if self.all_corpus[token]==0:
-                del self.all_corpus[token]
+#                self.program_corpus[token]=self.program_corpus[token]-1
+                program_num+=1
+#                if self.program_corpus[token]==0:
+#                    del self.program_corpus[token]
+#            self.all_corpus[token]=self.all_corpus[token]-1
+            all_num+=1
+#            if self.all_corpus[token]==0:
+#                del self.all_corpus[token]
+        return program_num, all_num
 
     def incremental_parse(self, last_commit, new_commit):
-#        file_list, allNum, programNum=new_commit.find_change_files()
-#        print new_commit
         self.logger.info('Parsing commit %s whose parent is %s' % (new_commit.commit_sha, last_commit.commit_sha))
         file_list=new_commit.find_change_files(self.ext)
         for code_path in file_list:
-#            if code_path.endswith('LoggingStore.java'):
-#                print 'Modify LogingStore.java', last_commit
-#                print 'Modify LogingStore.java', new_commit
             if len(last_commit.commit_sha)>0:
                 self.del_file(os.path.join(self.proj_dir, 'previous_commits', last_commit.commit_sha, code_path))
             self.add_file(os.path.join(self.proj_dir, 'previous_commits', new_commit.commit_sha, code_path))
@@ -113,3 +119,51 @@ class ProjectStat:
         self.commit_stat_dict[new_commit.commit_sha]=commit_stat
 #        print new_commit.commit_sha
         return commit_stat
+
+    def token_num_increment_parse(self, last_commit, new_commit):
+        '''
+            gauge the multiplicative factors of incremental of file sizes, here the file size means the number of tokens in files, including two kinds of sizes, all tokens and program-only token
+        '''
+        self.logger.info('Parsing commit %s whose parent is %s' % (new_commit.commit_sha, last_commit.commit_sha))
+        file_list=new_commit.find_change_files(self.ext)
+        old_all=0
+        old_program=0
+        new_all=0
+        new_program=0
+        for code_path in file_list:
+            if len(last_commit.commit_sha)>0:
+                old_program, old_all=self.del_file(os.path.join(self.proj_dir, 'previous_commits', last_commit.commit_sha, code_path))
+            new_program, new_all=self.add_file(os.path.join(self.proj_dir, 'previous_commits', new_commit.commit_sha, code_path))
+            factors=[]
+            if old_all!=0:
+                factors.append(new_all/old_all)
+            else:
+                factors.append(-1)
+    
+            if old_program!=0:
+                factors.append(new_program/old_program)
+            else:
+                factors.append(-1)
+            print '%s\t%s' % (code_path, '\t'.join([str(f) for f in factors]))
+
+    def file_size_increment_parse(self, last_commit, new_commit):
+        '''
+            gauge the multiplicative factors of incremental of file sizes, here the file size means the size of file in file system
+        '''
+        self.logger.info('Parsing commit %s whose parent is %s' % (new_commit.commit_sha, last_commit.commit_sha))
+        file_list=new_commit.find_change_files(self.ext)
+        old_size=0
+        new_size=0
+        for code_path in file_list:
+            if len(last_commit.commit_sha)>0:
+                old_file=os.path.join(self.proj_dir, 'previous_commits', last_commit.commit_sha, code_path)
+                if os.path.isfile(old_file):
+                    old_size=os.path.getsize(old_file)
+            new_file=os.path.join(self.proj_dir, 'previous_commits', new_commit.commit_sha, code_path)
+            if os.path.isfile(new_file):
+                new_size=os.path.getsize(new_file)
+#        print 'Old size:%s new size:%s' % (old_size, new_size)
+            if old_size==0:
+                print code_path, -1
+            else:
+                print code_path, new_size/old_size
