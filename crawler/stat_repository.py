@@ -73,8 +73,10 @@ class ProjectStat:
         self.files_modified_time=dict()
         self.logger=logging.getLogger('_'.join(['ProjectStat', proj_dir.split('/')[-1]]))
 
+
     def commit_stat(self, commit_sha):
-        for root, dir, files in os.walk(os.path.join(self.proj_dir, 'previous_commits', commit_sha)):
+#        for root, dir, files in os.walk(os.path.join(self.proj_dir, 'previous_commits', commit_sha)):
+        for root, dir, files in os.walk(os.path.join(self.proj_dir, commit_sha)):
             for file in files:
                 if file.endswith(self.ext):
                     all_num, program_num=self.add_file(os.path.join(root, file))
@@ -119,6 +121,22 @@ class ProjectStat:
         self.commit_stat_dict[new_commit.commit_sha]=commit_stat
 #        print new_commit.commit_sha
         return commit_stat
+
+    def token_word_freq_doc_freq_stat(self, commit_sha):
+        word_freq=dict()
+        doc_freq=dict()
+        for root, dir, files in os.walk(os.path.join(self.proj_dir, 'previous_commits', commit_sha)):
+            for file in files:
+                if file.endswith(self.ext) and os.path.isfile(os.path.join(root, file)):
+                    sys.stderr.write('Parsing: %s\n' % os.path.join(root, file))
+                    retlist=parse_file_str(self.lexer, os.path.join(root, file))
+                    token=set(retlist)
+                    for t in retlist:
+                        word_freq[t]=word_freq.get(t, 0)+1
+                    for t in token:
+                        doc_freq[t]=doc_freq.get(t, 0)+1
+        return word_freq, doc_freq
+
 
     def token_num_increment_parse(self, last_commit, new_commit):
         '''

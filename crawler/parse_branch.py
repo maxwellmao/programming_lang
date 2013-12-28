@@ -220,24 +220,41 @@ class BranchParser:
         specified_nodes=filter(lambda x:self.commit_tree.commit_tree.in_degree(x)==2, self.commit_tree.commit_tree.nodes())
         print '# of nodes with in-degree 2: %s' % len(specified_nodes)
         specified_nodes=filter(lambda x:self.commit_tree.commit_tree.in_degree(x)==0, self.commit_tree.commit_tree.nodes())
-        print '# of nodes with in-degree 0:%s' % len(specified_nodes)
+        print '# of nodes with in-degree 0:%s %s' % (len(specified_nodes), ' '.join([str(self.commit_tree.id_commit_map[node]) for node in specified_nodes]))
 
 if __name__=='__main__':
-    repos=Repository('/voldemort/voldemort')
+#    repos=Repository('/voldemort/voldemort')
+    repos=Repository('/nathanmarz/storm')
+#    repos=Repository('/elasticsearch/elasticsearch')
+#    repos=Repository('/facebook/presto')
     repos_save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
-#    proj_stat=ProjectStat(os.path.join(repos_save_dir, repos.repos_name), 'java', 'java')
-#    proj_stat.commit_stat('fbd0f95d62ac2c5e97e5a4df5a732e9342d60da1')
+    proj_stat=ProjectStat(os.path.join(repos_save_dir, repos.repos_name), 'java', 'java')
 #    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
+#    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
+#    proj_stat.commit_stat('8c5fccbdf8b6b552dc8a1a1eca8abde67ad273ed')
+#    proj_stat.commit_stat('d0eb103a660125a53660a7ba2c95e9b8a4d8feb6')
+#    proj_stat.commit_stat('5821f90b2c03b49c87aebbf278d6d012d486976f')
+#    proj_stat.commit_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
+    proj_stat.commit_stat('latest')
+#    word, doc=proj_stat.token_word_freq_doc_freq_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
+#    if len(word)==len(doc):
+#        for k in word.keys():
+#            if doc.has_key(k):
+#                print k, word[k], doc[k]
+#            else:
+#                print 'Key error'
+#    else:
+#         print 'Length does not match'
 #
-    branchParser=BranchParser(repos, repos_save_dir)
-#    branchParser.parsing_log()
-    if len(sys.argv)>1:
-        branchParser.parsing_log_from_stdin(sys.argv[1])
-    else:
-        branchParser.parsing_log_from_stdin()
-    branchParser.degree_info()
-#    branchParser.commit_tree.save_tree('./')
-#    branchParser.commit_tree.load_tree('./')
-#    print len(branchParser.commit_tree.find_leaves_in_repository())
-#    branchParser.commit_tree.expand_tree(_file_size)
-#    branchParser.show_heaps_law('result', 'heap_law')
+#    branchParser=BranchParser(repos, repos_save_dir)
+##    branchParser.parsing_log()
+#    if len(sys.argv)>1:
+#        branchParser.parsing_log_from_stdin(sys.argv[1])
+#    else:
+#        branchParser.parsing_log_from_stdin()
+#    branchParser.degree_info()
+###    branchParser.commit_tree.save_tree('./')
+###    branchParser.commit_tree.load_tree('./')
+###    print len(branchParser.commit_tree.find_leaves_in_repository())
+#    branchParser.commit_tree.expand_tree(_token_num)
+###    branchParser.show_heaps_law('result', 'heap_law')

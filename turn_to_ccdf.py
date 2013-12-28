@@ -101,8 +101,10 @@ def turn_to_ccdf(filePath, savePath):
     
 if __name__=='__main__':
     if len(sys.argv)>=3:
-#        turn_to_ccdf(sys.argv[1], sys.argv[2])
-        turn_to_cdf(sys.argv[1], sys.argv[2])
+        if sys.argv[-1].startswith('cdf'):
+            turn_to_cdf(sys.argv[1], sys.argv[2])
+        else:
+            turn_to_ccdf(sys.argv[1], sys.argv[2])
     else:
 #        turn_to_cdf(sys.argv[1])
         turn_to_ccdf(None, sys.argv[1])

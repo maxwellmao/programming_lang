@@ -302,16 +302,16 @@ def crawling_branch(branch, baseURL, local_repos_dir):
             for commit in commit_list:
                 fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), '\t'.join(commit.parent_sha_list)))
                 logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, '\t'.join(commit.parent_sha_list)))
-                if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
-                    os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
-                clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
-#                clone_commit(commit, os.path.join(local_repos_dir, 'latest'))
+#                if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
+#                    os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
+#                clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
         except urllib2.HTTPError, e:
             print e
     fp.close()
 
 def clone_commit(commit, branch_dir):
     os.system(' '.join(['./retrieve_commit.sh', branch_dir, commit.commit_sha, '../']))
+
 
 def crawling_specified_commit(repos_url, saveDir, commit_sha):
     '''
@@ -322,23 +322,25 @@ def crawling_specified_commit(repos_url, saveDir, commit_sha):
     if os.path.isdir(os.path.join(saveDir, commit_sha)):
         os.system(' '.join(['rm', '-rf', os.path.join(saveDir, commit_sha)]))
     os.mkdir(os.path.join(saveDir, commit_sha))
+    sys.stderr.write('Cloning %s\n' % commit_sha)
     os.system(' '.join(['git', 'clone', repos_url, os.path.join(saveDir, commit_sha)]))
     os.system(' '.join(['./retrieve_commit.sh', os.path.join(saveDir, commit_sha), commit_sha, 'null', 'null']))
 
-def crawling_commits_directly(all_commit_file):
+def crawling_commits_directly(repos, save_dir, all_commit_file):
     '''
         all_commit_file is the file storing all commits' sha in the first column
     '''
-    done_commit=set()
-    for line in sys.stdin:
-        done_commit.add(line.strip())
+#    done_commit=set()
+#    for line in sys.stdin:
+#        done_commit.add(line.strip())
     fp=open(all_commit_file)
     pool=ProcessPool(poolsize)
+#    print 'https://github.com'+repos.href
     for line in fp.readlines():
         items=line.strip().split()
 #        if len(items[0])>30 and items[0] not in done_commit:
 #            print items[0]
-        pool.apply_async(crawling_specified_commit, ('https://github.com/voldemort/voldemort', 'tmp_commits', items[0], ))
+        pool.apply_async(crawling_specified_commit, ('https://github.com'+repos.href, os.path.join(save_dir, 'previous_commits'), items[0], ))
 #            crawling_specified_commit('https://github.com/voldemort/voldemort', 'tmp_commits', items[0])
     pool.close()
     pool.join()
@@ -346,15 +348,21 @@ def crawling_commits_directly(all_commit_file):
     sys.stderr.write('All processes has been terminated\n')
 
 if __name__=='__main__':
-    repos=Repository('/voldemort/voldemort')
-    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version', 'crawler-parentinfo.log')
-    #deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/thread_pool')
-#    crawling_commits_directly(sys.argv[1])
+#    repos=Repository('/voldemort/voldemort')
+#    repos=Repository('/nathanmarz/storm')
+#    repos=Repository('/elasticsearch/elasticsearch')
+    repos=Repository('/facebook/presto')
+    save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
+#    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version', 'crawler-'+repos.repos_name+'.log')
 #    deepCrawler.start_crawling(_multi_process)
-    sha_list=[]
-    for line in sys.stdin:
-        if len(line.strip())>0:
-            sha_list.append(line.strip())
-    sys.stderr.write('Number of commits is %s\n' % len(sha_list))
-    deepCrawler.parse_specified_commits_parent(sha_list)
+#    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/thread_pool')
+    crawling_commits_directly(repos, os.path.join(save_dir, repos.repos_name), os.path.join(save_dir, repos.repos_name, 'all_commits'))
+
+#    sha_list=[]
+#    for line in sys.stdin:
+#        if len(line.strip())>0:
+#            sha_list.append(line.strip())
+#    sys.stderr.write('Number of commits is %s\n' % len(sha_list))
+#    drepos=Repository('/voldemort/voldemort')eepCrawler.parse_specified_commits_parent(sha_list)
+
 #    print 'Total number of commits:%s' % len(deepCrawler.visited_commit)

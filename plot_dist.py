@@ -76,7 +76,7 @@ def plot_xlist_to_pdf(x_list, leg_list):
             cum+=item[1]
             ccdf.append([item[0], item[1]])
 #        print ccdf
-        plt.loglog([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
+        plt.semilogx([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
         print 'The mean of %s is %s, variance is %s in total %s' % (leg_list[index], mean/cum, mean_2/cum-mean*mean/(cum*cum), cum)
     plt.legend(leg_list)
     plt.xlabel('Multiplicative factors')
