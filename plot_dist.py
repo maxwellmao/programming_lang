@@ -51,7 +51,7 @@ def load_size_files(file_list, save_path):
     return x_list, leg
 #    plot_dist_together(x_list, leg, save_path)
 
-def load_x(file_list, save_path):
+def load_x(file_list):
     x_list=[]
     print len(file_list)
     leg=[]
@@ -70,15 +70,14 @@ def plot_xlist_to_pdf(x_list, leg_list):
     for index in range(len(x_list)):
         cum=0
         ccdf=[]
-        mean=0.0
-        mean_2=0.0
         for item in sorted(x_list[index].items(), key=lambda x:x[0], reverse=True):
             cum+=item[1]
             ccdf.append([item[0], item[1]])
 #        print ccdf
-        plt.semilogx([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
-        print 'The mean of %s is %s, variance is %s in total %s' % (leg_list[index], mean/cum, mean_2/cum-mean*mean/(cum*cum), cum)
-    plt.legend(leg_list)
+        plt.loglog([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
+#        plt.semilogx([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
+    lg=plt.legend(leg_list, loc=3)
+    lg.get_frame().set_alpha(0)
     plt.xlabel('Multiplicative factors')
     plt.ylabel('PDF')
 
@@ -98,8 +97,10 @@ def plot_xlist_to_ccdf(x_list, leg_list):
             ccdf.append([item[0], cum])
 #        print ccdf
         plt.loglog([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
-        print 'The mean of %s is %s, variance is %s in total %s' % (leg_list[index], mean/cum, mean_2/cum-mean*mean/(cum*cum), cum)
-    plt.legend(leg_list)
+        leg_list[index]+=('-mean:%.4f var:%.4f' % (mean/cum, mean_2/cum-mean*mean/(cum*cum)))
+        print 'CCDF: The mean of %s is %s, variance is %s in total %s' % (leg_list[index], mean/cum, mean_2/cum-mean*mean/(cum*cum), cum)
+    lg=plt.legend(leg_list, loc=3)
+    lg.get_frame().set_alpha(0)
     plt.xlabel('Multiplicative factors')
     plt.ylabel('CCDF')
         
@@ -110,16 +111,19 @@ def sub_plot(x, leg, index):
     hist, bins = np.histogram(x, bins=500)
     center = (bins[:-1] + bins[1:]) / 2
     plt.plot(center, hist/sum(hist), '.')
-    plt.legend([leg])
+    lg=plt.legend([leg])
+    lg.get_frame().set_alpha(0)
     plt.xlabel('Ratio of program tokens in a file')
     plt.ylabel('Probability')
     
 
 if __name__=='__main__':
     if len(sys.argv)>2:
-        x_list, leg=load_x(sys.argv[1:-1], sys.argv[-1])
-#        plot_xlist_to_ccdf(x_list, leg)
-        plot_xlist_to_pdf(x_list, leg)
+        x_list, leg=load_x(sys.argv[1:-1])
+        if sys.argv[-1].endswith('ccdf'):
+            plot_xlist_to_ccdf(x_list, leg)
+        elif sys.argv[-1].endswith('pdf'):
+            plot_xlist_to_pdf(x_list, leg)
 #        plt.figure(1)
 #        sub_plot(x_list[0], leg[0], 0)
 #        sub_plot(x_list[1], leg[1], 1)

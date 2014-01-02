@@ -1,9 +1,16 @@
 #!/bin/bash
 
-awk '{if(NF==2)print $1}' $1/FileSize_with_path | sort | uniq -c | awk '{print $1}' | sort -n | uniq -c | awk '{print $2, $1}' > $1/ModifiedTimes_pdf
-python ../turn_to_ccdf.py $1/ModifiedTimes_pdf $1/ModifiedTimes_cdf cdf
-python ../turn_to_ccdf.py $1/ModifiedTimes_pdf $1/ModifiedTimes_ccdf
+save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
 
-python ../plot_ccdf.py $1/ModifiedTimes_ccdf ccdf $1/ModifiedTimes_ccdf
+for repos in 'voldemort' 'storm' 'elasticsearch' 'presto'
+do
+    repos_path=${save_dir}/${repos}
+    awk '{if(NF==2 && $2!~/^[a-z]/)print $1}' ${repos_path}/FileSize_with_path | sort | uniq -c | awk '{print $1}' | sort -n | uniq -c | awk '{print $2, $1}' > ${repos_path}/ModifiedTimes_pdf
+    python ../turn_to_ccdf.py ${repos_path}/ModifiedTimes_pdf ${repos_path}/ModifiedTimes_cdf cdf
+    python ../turn_to_ccdf.py ${repos_path}/ModifiedTimes_pdf ${repos_path}/ModifiedTimes_ccdf
 
-cat $1/ModifiedTimes_pdf | python turn_dist_to_data.py > $1/ModifiedTimes_data
+    python ../plot_ccdf.py ${repos_path}/ModifiedTimes_ccdf ccdf ${repos_path}/ModifiedTimes_ccdf
+    python ../plot_ccdf.py ${repos_path}/ModifiedTimes_cdf cdf ${repos_path}/ModifiedTimes_cdf
+
+    cat ${repos_path}/ModifiedTimes_pdf | python turn_dist_to_data.py > ${repos_path}/ModifiedTimes_data
+done

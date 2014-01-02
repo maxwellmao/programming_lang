@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from stat_repository import ProjectStat
 from deep_crawling import Commit
 
-(_heap_law, _token_num, _file_size)=range(3)
+(_heap_law, _token_num, _file_size, _proj_size, _all_change_files)=range(5)
 
 class CommitTree:
     def __init__(self, repos, saveDir):
@@ -75,45 +75,74 @@ class CommitTree:
             proj_stat.all_corpus=dict(all_corpus)
             proj_stat.program_corpus=dict(program_corpus)
             commit=self.id_commit_map[child]
-            commit_stat=proj_stat.incremental_parse(self.id_commit_map[node], commit)
+            commit_stat=proj_stat.heap_law_incremental_parse(self.id_commit_map[node], commit)
             print commit_stat
             self.expand_dfs(child, proj_stat.all_corpus, proj_stat.program_corpus)
 
 
 # use loop to dfs instead of recursion, since Python has contraints on # the maximun of recursions
-    def expand_dfs_loop(self, node, all_corpus, program_corpus, stat_type=_heap_law):
+    def expand_dfs_loop(self, node, all_corpus, program_corpus, change_files_dict=None, stat_type=_heap_law):
         root_proj_stat=ProjectStat(os.path.join(self.saveDir, self.repository.repos_name), 'java', 'java')
         null_commit=Commit()
         # the element of expand_stack is tuple
-        # which in format of [ProjectStat, node id, last commit]
+        # which in format of [ProjectStat, node id (new commit), last commit]
         expand_stack=[[root_proj_stat, node, null_commit]]
-        
+        expanded_commit=set()
         while len(expand_stack)>0:
             item=expand_stack.pop()
+#            print len(expand_stack)
             if stat_type==_heap_law:
-                commit_stat=item[0].incremental_parse(item[-1], self.id_commit_map[item[1]])
-                print commit_stat
+#                commit_stat=item[0].heap_law_incremental_parse(item[-1], self.id_commit_map[item[1]])
+                item[0].heap_law_parse(self.id_commit_map[item[1]])
             elif stat_type==_token_num:
                 item[0].token_num_increment_parse(item[-1], self.id_commit_map[item[1]])
             elif stat_type==_file_size:
                 item[0].file_size_increment_parse(item[-1], self.id_commit_map[item[1]])
+            elif stat_type==_proj_size:
+                item[0].project_size_parse(item[-1], self.id_commit_map[item[1]])
+            elif stat_type==_all_change_files:
+#                sys.stderr.write('%s\n'%self.id_commit_map[item[1]].commit_sha)
+                for file_path in self.id_commit_map[item[1]].find_change_files('java'):
+                    change_files_dict[file_path]=change_files_dict.get(file_path, [])+[self.id_commit_map[item[1]].commit_sha]
+
+            expanded_commit.add(self.id_commit_map[item[1]].commit_sha)
+
             for child in self.commit_tree[item[1]]:
+                if self.id_commit_map[child].commit_sha in expanded_commit:
+                    continue
                 self.total_commit+=1
                 proj_stat=ProjectStat(os.path.join(self.saveDir, self.repository.repos_name), 'java', 'java')
                 proj_stat.all_corpus=dict(item[0].all_corpus)
                 proj_stat.program_corpus=dict(item[0].program_corpus)
                 proj_stat.files_modified_time=dict(item[0].files_modified_time)
                 expand_stack.append([proj_stat, child, self.id_commit_map[item[1]]])
-        
+
+        return change_files_dict
 
     def expand_tree(self, stat_type=_heap_law):
         root=filter(lambda x:self.commit_tree.in_degree(x)==0, self.commit_tree.nodes())
+        change_files_dict=None
+        if stat_type==_heap_law:
+            print 'heap law'
+        elif stat_type==_token_num:
+            print 'token num'
+        elif stat_type==_file_size:
+            print 'file size'
+        elif stat_type==_proj_size:
+            print 'proj size'
+        elif stat_type==_all_change_files:
+            print 'all change files'
+            change_files_dict=dict()
         self.total_commit+=len(root)
         for r in root:
             commit=self.id_commit_map[r]
             null_commit=Commit()
             proj_stat=ProjectStat(os.path.join(self.saveDir, self.repository.repos_name), 'java', 'java')
-            self.expand_dfs_loop(r, proj_stat.all_corpus, proj_stat.program_corpus, stat_type)
+            change_files_dict=self.expand_dfs_loop(r, proj_stat.all_corpus, proj_stat.program_corpus, change_files_dict, stat_type)
+        if change_files_dict is not None:
+            for k, v in change_files_dict.items():
+                print '\t'.join([k, '\t'.join([sha for sha in v])])
+
         print 'Expanding commit number: %s' % self.total_commit
         
     def save_tree(self, saveDir):
@@ -190,7 +219,7 @@ class BranchParser:
                 if len(items)==3:
                     self.commit_tree.add_commit(items[0], items[2], '', '', True)
         print 'Commit Tree construction completed'
-        print 'Number of nodes if %s' % len(self.commit_tree.commit_tree.nodes())
+        print 'Number of nodes is %s' % len(self.commit_tree.commit_tree.nodes())
         print 'Number of edges is %s' % len(self.commit_tree.commit_tree.edges())
 
     def show_heaps_law(self, result_path, save_path):
@@ -216,26 +245,26 @@ class BranchParser:
         plt.savefig(save_path+'.png', dpi=500)
 
     def degree_info(self):
-        print set(self.commit_tree.commit_tree.in_degree().values())
-        specified_nodes=filter(lambda x:self.commit_tree.commit_tree.in_degree(x)==2, self.commit_tree.commit_tree.nodes())
-        print '# of nodes with in-degree 2: %s' % len(specified_nodes)
-        specified_nodes=filter(lambda x:self.commit_tree.commit_tree.in_degree(x)==0, self.commit_tree.commit_tree.nodes())
-        print '# of nodes with in-degree 0:%s %s' % (len(specified_nodes), ' '.join([str(self.commit_tree.id_commit_map[node]) for node in specified_nodes]))
+        for deg in set(self.commit_tree.commit_tree.in_degree().values()):
+            specified_nodes=filter(lambda x:self.commit_tree.commit_tree.in_degree(x)==deg, self.commit_tree.commit_tree.nodes())
+            print '# of nodes with in-degree %s: %s' % (deg, len(specified_nodes))
 
 if __name__=='__main__':
 #    repos=Repository('/voldemort/voldemort')
-    repos=Repository('/nathanmarz/storm')
+#    repos=Repository('/nathanmarz/storm')
 #    repos=Repository('/elasticsearch/elasticsearch')
 #    repos=Repository('/facebook/presto')
+    repos_url=sys.argv[1]
+    repos=Repository(repos_url)
     repos_save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
-    proj_stat=ProjectStat(os.path.join(repos_save_dir, repos.repos_name), 'java', 'java')
-#    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
-#    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
-#    proj_stat.commit_stat('8c5fccbdf8b6b552dc8a1a1eca8abde67ad273ed')
-#    proj_stat.commit_stat('d0eb103a660125a53660a7ba2c95e9b8a4d8feb6')
-#    proj_stat.commit_stat('5821f90b2c03b49c87aebbf278d6d012d486976f')
-#    proj_stat.commit_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
-    proj_stat.commit_stat('latest')
+#    proj_stat=ProjectStat(os.path.join(repos_save_dir, repos.repos_name), 'java', 'java')
+##    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
+##    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
+##    proj_stat.commit_stat('8c5fccbdf8b6b552dc8a1a1eca8abde67ad273ed')
+##    proj_stat.commit_stat('d0eb103a660125a53660a7ba2c95e9b8a4d8feb6')
+##    proj_stat.commit_stat('5821f90b2c03b49c87aebbf278d6d012d486976f')
+##    proj_stat.commit_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
+#    proj_stat.commit_stat('latest')
 #    word, doc=proj_stat.token_word_freq_doc_freq_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
 #    if len(word)==len(doc):
 #        for k in word.keys():
@@ -246,15 +275,29 @@ if __name__=='__main__':
 #    else:
 #         print 'Length does not match'
 #
-#    branchParser=BranchParser(repos, repos_save_dir)
 ##    branchParser.parsing_log()
-#    if len(sys.argv)>1:
-#        branchParser.parsing_log_from_stdin(sys.argv[1])
-#    else:
-#        branchParser.parsing_log_from_stdin()
-#    branchParser.degree_info()
-###    branchParser.commit_tree.save_tree('./')
-###    branchParser.commit_tree.load_tree('./')
-###    print len(branchParser.commit_tree.find_leaves_in_repository())
-#    branchParser.commit_tree.expand_tree(_token_num)
-###    branchParser.show_heaps_law('result', 'heap_law')
+##    if len(sys.argv)>1:
+####################################################################################################
+#    ##
+#    ##  usage:
+#    ##
+#    ##  cat XXX/logs/* | python parse_branch.py [additional parent infomation, optional] > save_path
+#    ##
+#    #####################################################################################################
+##        branchParser.parsing_log_from_stdin(sys.argv[1])
+##    else:
+
+
+##############################################################################################
+    branchParser=BranchParser(repos, repos_save_dir)
+    branchParser.parsing_log_from_stdin()
+    branchParser.degree_info()
+    branchParser.commit_tree.expand_tree(int(sys.argv[2]))
+##############################################################################################
+
+
+####    branchParser.commit_tree.save_tree('./')
+####    branchParser.commit_tree.load_tree('./')
+####    print len(branchParser.commit_tree.find_leaves_in_repository())
+##    branchParser.commit_tree.expand_tree(_proj_size)
+####    branchParser.show_heaps_law('result', 'heap_law')

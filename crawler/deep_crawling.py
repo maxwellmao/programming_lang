@@ -278,6 +278,7 @@ def crawling_branch(branch, baseURL, local_repos_dir):
     N=test_last_page(baseURL+branch.commit_url)
     fp=open(os.path.join(local_repos_dir, 'logs', branch.branch_name), 'w')
     logger.info('Total pages:%s' % N)
+    visit_commit_set=set()
     for i in range(N, 0, -1):
         try:
             req=urllib2.urlopen(baseURL+branch.commit_url+'?page='+str(i))
@@ -293,21 +294,38 @@ def crawling_branch(branch, baseURL, local_repos_dir):
                             h3_date=datetime.datetime.strptime(h3_list[index].string, '%b %d, %Y').date()
                             for li in ol_list[index].findAll('li'):
                                 commit=Commit(li.p.a['href'], h3_date)
-                                commit.parse_parent_info()
-                                sys.stderr.write('Parent info %s\n' % '\t'.join(commit.parent_sha_list))
-                                commit_list.append(commit)
+                                if commit.commit_sha not in visit_commit_set:
+#                                    sys.stderr.write('Parent info %s\n' % '\t'.join(commit.parent_sha_list))
+                                    commit_list.append(commit)
+                                    visit_commit_set.add(commit.commit_sha)
+                                    
+#                                    if i==N:
+#                                       tracing_parent=[commit]
+#                                       while len(tracing_parent)>0:
+#                                           com=tracing_parent.pop()
+#                                           com.parse_parent_info()
+#                                           for parent_sha in com.parent_sha_list:
+##                                               print 'Deep parent %s' % parent_sha
+#                                               if parent_sha not in visit_commit_set:
+#                                                   parent_commit=Commit(os.path.join(branch.repos.href, 'commit', parent_sha), datetime.datetime(2000, 1, 1))
+##                                                   parent_commit.parse_parent_info()
+#                                                   commit_list.append(parent_commit)
+#                                                   visit_commit_set.add(parent_sha)
+#                                                   tracing_parent.append(parent_commit)
                     else:
                         print 'Error! h3 and ol do not match!'
             commit_list.reverse()
             for commit in commit_list:
+                commit.parse_parent_info()
                 fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), '\t'.join(commit.parent_sha_list)))
                 logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, '\t'.join(commit.parent_sha_list)))
 #                if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
 #                    os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
-#                clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
+#                    clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
         except urllib2.HTTPError, e:
             print e
     fp.close()
+    print 'No. of commits is %s' % len(visit_commit_set)
 
 def clone_commit(commit, branch_dir):
     os.system(' '.join(['./retrieve_commit.sh', branch_dir, commit.commit_sha, '../']))
@@ -348,15 +366,33 @@ def crawling_commits_directly(repos, save_dir, all_commit_file):
     sys.stderr.write('All processes has been terminated\n')
 
 if __name__=='__main__':
+#    com_list=[]
+#    commit=Commit('/elasticsearch/elasticsearch/commit/1b7d3293073810bbbdf6579a2513313973030b06')
+#    com_list.append(commit)
+#    index=0
+#    visited=set()
+#    while len(com_list)>0:
+#        commit=com_list.pop()
+#        commit.parse_parent_info()
+#        visited.add(commit.commit_sha)
+#        for sha in commit.parent_sha_list:
+#            if sha not in visited:
+#                com=Commit('/elasticsearch/elasticsearch/commit/'+sha)
+#                com_list.append(com)
+#            else:
+#                print sha
+#            index+=1
+#    print index
+#    exit()
 #    repos=Repository('/voldemort/voldemort')
 #    repos=Repository('/nathanmarz/storm')
-#    repos=Repository('/elasticsearch/elasticsearch')
-    repos=Repository('/facebook/presto')
+    repos=Repository('/elasticsearch/elasticsearch')
+#    repos=Repository('/facebook/presto')
     save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
-#    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version', 'crawler-'+repos.repos_name+'.log')
-#    deepCrawler.start_crawling(_multi_process)
+    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version', 'crawler-'+repos.repos_name+'.log')
+    deepCrawler.start_crawling(_multi_process)
 #    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/thread_pool')
-    crawling_commits_directly(repos, os.path.join(save_dir, repos.repos_name), os.path.join(save_dir, repos.repos_name, 'all_commits'))
+#    crawling_commits_directly(repos, os.path.join(save_dir, repos.repos_name), os.path.join(save_dir, repos.repos_name, 'all_commits'))
 
 #    sha_list=[]
 #    for line in sys.stdin:

@@ -7,7 +7,6 @@ from HTMLParser import HTMLParser
 import json
 import Queue
 import random
-import time
 import logging
 
 headers = { 'User-Agent' : 'Mozilla/5.0' }
@@ -60,7 +59,7 @@ def deal_with_line(line, tagList):
             
 
 class GitHubCrawler:
-    def __init__(self, saveDir, logname='info'):
+    def __init__(self, saveDir):
         self.visited_repository=set()
         self.visited_user=set() 
         self.success_num=0
@@ -72,7 +71,7 @@ class GitHubCrawler:
         self.userQueue=Queue.Queue()
         if not os.path.isdir(saveDir):
             os.mkdir(saveDir)
-        logging.basicConfig(filename=os.path.join(saveDir, ('crawling-%s.log' % logname)), level = logging.DEBUG, filemode='w', format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
+        logging.basicConfig(filename=os.path.join(saveDir, 'crawling-info.log'), level = logging.DEBUG, filemode='w', format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
         self.logger=logging.getLogger('Crawler-BFS')
 
     def loading_visited_user(self):
@@ -149,53 +148,21 @@ class GitHubCrawler:
                     user=User(d.a['href'])
                         #self.crawler_user(user)
                     self.userQueue.put(user)
-                    self.logger.info('Repository:%s Lang:%s %s:%s' % (repos.href, repos.lang, item.split('/')[1], user.user))
+                    self.logger.info('Repository:%s %s:%s' % (repos.href, item.split('/')[1], user.user))
         except urllib2.URLError as e:
             print e
     
     def crawling_repos_contributors(self, repos, item):
         try:
+#            contributors=[]
             print self.baseURL+repos.href+item
             req=urllib2.urlopen(self.baseURL+repos.href+item)
-            result=req.read()
-#            print result
-            soup=BeautifulSoup(result)
-#            for li in soup.find_all('li'):
-#                if li.attrs.has_key('class') and li.attrs['class']=='capped-card':
-#                   print li.h3.a
-            for d in soup.div():
-                if d.attrs.has_key('id') and d.attrs['id']=='contributors':
-                    print d
-#                    user=User(d.a['href'])
-                        #self.crawler_user(user)
-#                    self.userQueue.put(user)
-#                    self.logger.info('Repository:%s %s:%s' % (repos.href, item.split('/')[1], user.user))
-        except urllib2.URLError as e:
-            print e
-
-    def crawling_repos_contributors_API(self, repos, item):
-        '''
-            API
-        '''
-        try:
-            running=True
-            while running:
-                try:
-                    print self.baseURL+repos.href+item
-                    req=urllib2.urlopen(self.baseURL+repos.href+item)
-                    data=json.load(req)
-                    for info in data:
-                        user=User('/%s' % info['author']['login'])
-                        self.userQueue.put(user)
-                        self.logger.info('Repository:%s Lang:%s Contributor:%s Total:%s' % (repos.href, repos.lang, user.user, info['total']))
-                    print 'Got it!'
-                    running=False
-                except ValueError as e:
-                    print e
-                    time.sleep(1)
-                    running=True
-
-
+            data=json.load(req)
+            for info in data:
+#                contributors.append([info['author']['login'], info['total']])
+                user=User('/%s' % info['author']['login'])
+                self.userQueue.put(user)
+                self.logger.info('Repository:%s Contributor:%s Total:%s' % (repos.href, user.user, info['total']))
         except urllib2.URLError as e:
             print e
 
@@ -210,14 +177,13 @@ class GitHubCrawler:
                     os.mkdir(os.path.join(self.saveDir, repos.user, repos.lang))
                 os.system(' '.join(['git', 'clone', self.baseURL+repos.href, os.path.join(self.saveDir, repos.user, repos.lang, repos.repos_name)]))
             self.visited_repository.add(repos.href)
-#            self.crawling_repos_contributors_API(repos, '/graphs/contributors-data')
             self.crawling_repos_followers(repos, '/watchers')
             self.crawling_repos_followers(repos, '/stargazers')
-#            self.crawling_repos_contributors(repos, '/graphs/contributors')
-
+            self.crawling_repos_contributors(repos, '/graphs/contributors')
 #            self.crawling_repos_followers(repos, '/collaborators')
 
     def bfs_crawling(self):
+        import time
         while not self.userQueue.empty():
 #            time.sleep(random.randrange(2, 20)/10)
             self.crawling_user(self.userQueue.get())
@@ -320,22 +286,6 @@ class GitHubCrawler_API(GitHubCrawler):
             print self.apiURL+'/users'+repos.href+item+'?page='+str(p)
             print e.reason
 
-    def crawling_repos_contributors(self, repos, item):
-        '''
-            API
-        '''
-        try:
-            print self.baseURL+repos.href+item
-            req=urllib2.urlopen(self.baseURL+repos.href+item)
-            data=json.load(req)
-            for info in data:
-                user=User('/%s' % info['author']['login'])
-                self.userQueue.put(user)
-                print user
-                self.logger.info('Repository:%s Lang:%s Contributor:%s Total:%s' % (repos.href, repos.lang, user.user, info['total']))
-        except urllib2.URLError as e:
-            print e
-
     def crawling_repository(self, repos):
         if repos.href not in self.visited_repository:
             if self.verbose:
@@ -362,15 +312,9 @@ class GitHubCrawler_API(GitHubCrawler):
 if __name__=='__main__':
     repoDir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/github-network-info'
     
-    gitCrawler=GitHubCrawler(repoDir, 'watchers')
-#    gitCrawler=GitHubCrawler_API(repoDir)
+    gitCrawler=GitHubCrawler(repoDir)
     gitCrawler.truelyClone=False
 #    gitCrawler.loading_visited_user()
-#    repos=Repository('/voldemort/voldemort')
-#    repos=Repository('/facebook/presto')
-#    for i in range(100):
-#        print i
-#        gitCrawler.crawling_repos_contributors(repos, '/graphs/contributors-data')
     gitCrawler.crawler_trending('l=python&since=monthly')
     gitCrawler.bfs_crawling()
 

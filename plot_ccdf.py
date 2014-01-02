@@ -13,6 +13,7 @@ def plot_together(fileList, savePath, sub=False, lang=''):
     fitting=False
     for i in range(0, len(fileList), 2):
         fp=open(fileList[i])
+        print fileList[i]
 #        leg.append(fileList[i].split('/')[-1])
         x=[]
         y=[]
@@ -23,8 +24,8 @@ def plot_together(fileList, savePath, sub=False, lang=''):
             for line in lines:
                 item=line.strip().split()
                 if len(item)==2:
-                    x.append(int(item[0]))
-                    y.append(int(item[1]))
+                    x.append(float(item[0]))
+                    y.append(float(item[1]))
         ax=np.array(x)
         ay=np.array(y)/max(y)
         #plt.rc('text', usetex=True)
@@ -53,12 +54,16 @@ def plot_together(fileList, savePath, sub=False, lang=''):
             plt.loglog(ax,ay,'.', color=colorList[int(i/2)])
         fp.close()
     #plt.title('Distribution of token\'s appearence')
-    plt.xlabel('Sizes of files'+lang)
+#    plt.xlabel('Modified times'+lang)
+    plt.xlabel('# of Token/Size in bytes')
     #if savePath.split('/')[-1].find('file')!=-1:
     #    plt.xlabel('Token appearence(# of files)'+lang)
     #else:
     #    plt.xlabel('Token appearence(among corpus)'+lang)
-    plt.ylabel('P(X<=x)-CCDF')
+    if leg[0].startswith('cdf'):
+        plt.ylabel('P(X<=x)-CDF')
+    else:
+        plt.ylabel('P(X>=x)-CCDF')
     print leg
     lg=plt.legend(leg)
     lg.get_frame().set_alpha(0)

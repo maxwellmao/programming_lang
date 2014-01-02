@@ -1,5 +1,5 @@
-function data_fitting()
-    data=sort(load('~/wxmao/umass/research/software/repository/diff_version/presto/ModifiedTimes_data'));
+function data_fitting_cdf()
+    data=sort(load('~/wxmao/umass/research/software/repository/diff_version/elasticsearch/ModifiedTimes_data'));
     n=size(data, 1)
     fit_data=data(1:size(data, 1));
     
@@ -21,18 +21,18 @@ function data_fitting()
     hold on
     plot(xgrid, poisscdf(xgrid, lambdahat), 'g--')
     hold on
-    plot(xgrid, logncdf(xgrid,mu,sigma), 'y--')
+    plot(xgrid, logncdf(xgrid,mu,sigma), 'c--')
     hold on
 
     paramEsts = gpfit(fit_data);
     kHat = paramEsts(1)   % Tail index parameter
     sigmaHat = paramEsts(2)   % Scale parameter
-    plot(xgrid,gpcdf(xgrid, kHat, sigmaHat),'c-');
+    plot(xgrid,gpcdf(xgrid, kHat, sigmaHat),'m--');
     hold on
     P=0.0005
 %    plot(xgrid, geocdf(xgrid, P), 'm--')%
     xlabel('x');
     ylabel('Cumulative probability (p)');
     legend({'Data','Exp LS Fit','Exp ML Fit', 'Poisson Fit', 'Lognormal Fit', 'Pareto'}, 'location', 'southeast');
-    saveas(h, '~/wxmao/umass/research/software/repository/diff_version/presto/fit.png','png');
+    saveas(h, '~/wxmao/umass/research/software/repository/diff_version/elasticsearch/fit.png','png');
 end

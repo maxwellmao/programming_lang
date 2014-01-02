@@ -12,6 +12,7 @@ import stat_token_ratio
 import token_parser
 import parser_with_pygments
 import logging
+import subprocess
 
 logging.basicConfig(filename='parse_branch.log', level=logging.DEBUG, filemode='w', format='%(asctime)s - %(name)s - %(levelname)s: %(message)s')
 
@@ -75,41 +76,95 @@ class ProjectStat:
 
 
     def commit_stat(self, commit_sha):
+        '''
+            Statistics on specified commit
+        '''
 #        for root, dir, files in os.walk(os.path.join(self.proj_dir, 'previous_commits', commit_sha)):
         for root, dir, files in os.walk(os.path.join(self.proj_dir, commit_sha)):
             for file in files:
                 if file.endswith(self.ext):
-                    all_num, program_num=self.add_file(os.path.join(root, file))
+                    all_num, program_num=self.add_file_only_num(os.path.join(root, file))
                     print '%s\t%s:%s\t%s' % (os.path.join(root, file), all_num, program_num, os.path.getsize(os.path.join(root, file)))
    
+
     def add_file(self, code_path):
+        '''
+            Statistics on new adding files of new commits
+        '''
         all_num=0
         program_num=0
         for token in parse_file_str(self.lexer, code_path):
             if token.startswith('Program:'):
- #               self.program_corpus[token]=self.program_corpus.get(token, 0)+1
+                self.program_corpus[token]=self.program_corpus.get(token, 0)+1
                 program_num+=1
- #           self.all_corpus[token]=self.all_corpus.get(token, 0)+1
+            self.all_corpus[token]=self.all_corpus.get(token, 0)+1
             all_num+=1
         self.files_modified_time[code_path]=self.files_modified_time.get(code_path, 0)+1
         return program_num, all_num
 
-    def del_file(self, code_path):
+    def add_file_only_num(self, code_path):
+        '''
+            Similar to the function 'add_file', only statistic on number however
+        '''
         all_num=0
         program_num=0
         for token in parse_file_str(self.lexer, code_path):
             if token.startswith('Program:'):
-#                self.program_corpus[token]=self.program_corpus[token]-1
                 program_num+=1
-#                if self.program_corpus[token]==0:
-#                    del self.program_corpus[token]
-#            self.all_corpus[token]=self.all_corpus[token]-1
             all_num+=1
-#            if self.all_corpus[token]==0:
-#                del self.all_corpus[token]
         return program_num, all_num
 
-    def incremental_parse(self, last_commit, new_commit):
+    def del_file(self, code_path):
+        '''
+            Statistics on modifying files of previous commits
+        '''
+        all_num=0
+        program_num=0
+        for token in parse_file_str(self.lexer, code_path):
+            try:
+                if token.startswith('Program:'):
+                    self.program_corpus[token]=self.program_corpus[token]-1
+                    program_num+=1
+                    if self.program_corpus[token]==0:
+                        del self.program_corpus[token]
+                self.all_corpus[token]=self.all_corpus[token]-1
+                all_num+=1
+                if self.all_corpus[token]==0:
+                    del self.all_corpus[token]
+            except KeyError, e:
+                print e
+                print code_path
+        return program_num, all_num
+
+    def del_file_only_num(self, code_path):
+        '''
+            Similar to the function 'del_file', only statistic on number however
+        '''
+        all_num=0
+        program_num=0
+        for token in parse_file_str(self.lexer, code_path):
+            if token.startswith('Program:'):
+                program_num+=1
+            all_num+=1
+        return program_num, all_num
+
+    def heap_law_parse(self, commit):
+        self.all_corpus=dict()
+        self.program_corpus=dict()
+        for root, dir, files in os.walk(os.path.join(self.proj_dir, 'previous_commits', commit.commit_sha)):
+            for file in files:
+                if file.endswith(self.ext):
+                    code_path=os.path.join(root, file)
+                    for token in parse_file_str(self.lexer, code_path):
+                        if token.startswith('Program:'):
+                            self.program_corpus[token]=self.program_corpus.get(token, 0)+1
+                        self.all_corpus[token]=self.all_corpus.get(token, 0)+1
+                    self.files_modified_time[code_path]=self.files_modified_time.get(code_path, 0)+1
+        commit_stat=CommitStat(sum(self.all_corpus.values()), sum(self.program_corpus.values()), len(self.all_corpus), len(self.program_corpus))
+#        self.commit_stat_dict[commit.commit_sha]=commit_stat
+        print commit_stat
+
+    def heap_law_incremental_parse(self, last_commit, new_commit):
         self.logger.info('Parsing commit %s whose parent is %s' % (new_commit.commit_sha, last_commit.commit_sha))
         file_list=new_commit.find_change_files(self.ext)
         for code_path in file_list:
@@ -150,8 +205,8 @@ class ProjectStat:
         new_program=0
         for code_path in file_list:
             if len(last_commit.commit_sha)>0:
-                old_program, old_all=self.del_file(os.path.join(self.proj_dir, 'previous_commits', last_commit.commit_sha, code_path))
-            new_program, new_all=self.add_file(os.path.join(self.proj_dir, 'previous_commits', new_commit.commit_sha, code_path))
+                old_program, old_all=self.del_file_only_num(os.path.join(self.proj_dir, 'previous_commits', last_commit.commit_sha, code_path))
+            new_program, new_all=self.add_file_only_num(os.path.join(self.proj_dir, 'previous_commits', new_commit.commit_sha, code_path))
             factors=[]
             if old_all!=0:
                 factors.append(new_all/old_all)
@@ -185,3 +240,17 @@ class ProjectStat:
                 print code_path, -1
             else:
                 print code_path, new_size/old_size
+
+    def project_size_parse(self, last_commit, new_commit):
+        '''
+            gauge the multiplicative factors of incremental of file sizes of whole project, here the file size means the size of file in file system
+        '''
+        if len(last_commit.commit_sha)>0:
+            p = subprocess.Popen(['du', '-bs', os.path.join(self.proj_dir, 'previous_commits', last_commit.commit_sha)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            last_proj_size=int(out.split()[0])
+            p = subprocess.Popen(['du', '-bs', os.path.join(self.proj_dir, 'previous_commits', new_commit.commit_sha)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            new_proj_size=int(out.split()[0])
+#        sys.stderr.write('Commit:%s\n' % last_commit.commit_sha)
+            print '%s\t%s\tLast:%s\tNew:%s\tFactor:%.6f' % (last_commit.commit_sha, new_commit.commit_sha, last_proj_size, new_proj_size, new_proj_size/last_proj_size)

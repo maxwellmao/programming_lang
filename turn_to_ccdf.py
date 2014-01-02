@@ -33,7 +33,7 @@ def read_freq(filePath=None):
                 line=line.strip()
                 items=line.split(' ')
                 if len(items)==2:
-                    freq.append([int(items[0]), int(items[1])])
+                    freq.append([float(items[0]), int(items[1])])
         rfile.close()
     return freq
 
@@ -65,6 +65,49 @@ def turn_to_cdf(filePath, savePath):
         wfile.write('\t'.join([str(index), str(c)]))
         wfile.write('\n')
 	index+=1
+    wfile.close()
+
+def turn_to_cdf_not_continuous(filePath, savePath):
+    freq=read_freq(filePath)
+    if len(freq)==0:
+        print filePath
+        return
+    wfile=open(savePath, 'w')
+    cdf=[]
+    lastSum=0
+    lastIndex=-1
+    for f in freq:
+        lastIndex=f[0]
+        lastSum+=f[1]
+        cdf.append([f[0], lastSum])
+    print len(cdf), freq[0][0]
+    #print ccdf
+    for c in cdf:
+	#print c
+        wfile.write('\t'.join([str(c[0]), str(c[1])]))
+        wfile.write('\n')
+    wfile.close()
+
+def turn_to_ccdf_not_continuous(filePath, savePath):
+    freq=read_freq(filePath)
+    if len(freq)==0:
+        print filePath
+        return
+    wfile=open(savePath, 'w')
+    cdf=[]
+    lastSum=0
+    lastIndex=-1
+    freq.reverse()
+    for f in freq:
+        lastIndex=f[0]
+        lastSum+=f[1]
+        cdf.append([f[0], lastSum])
+    print len(cdf), freq[0][0]
+    #print ccdf
+    for c in cdf:
+	#print c
+        wfile.write('\t'.join([str(c[0]), str(c[1])]))
+        wfile.write('\n')
     wfile.close()
 
 def turn_to_ccdf(filePath, savePath):
@@ -102,9 +145,11 @@ def turn_to_ccdf(filePath, savePath):
 if __name__=='__main__':
     if len(sys.argv)>=3:
         if sys.argv[-1].startswith('cdf'):
-            turn_to_cdf(sys.argv[1], sys.argv[2])
+#            turn_to_cdf(sys.argv[1], sys.argv[2])
+            turn_to_cdf_not_continuous(sys.argv[1], sys.argv[2])
         else:
-            turn_to_ccdf(sys.argv[1], sys.argv[2])
+#            turn_to_ccdf(sys.argv[1], sys.argv[2])
+            turn_to_ccdf_not_continuous(sys.argv[1], sys.argv[2])
     else:
 #        turn_to_cdf(sys.argv[1])
         turn_to_ccdf(None, sys.argv[1])
