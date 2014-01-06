@@ -12,6 +12,7 @@ import logging
 
 headers = { 'User-Agent' : 'Mozilla/5.0' }
 N=1000000
+MAX_TRY_TIME=100
 
 class Repository:
     def __init__(self, href):
@@ -179,6 +180,7 @@ class GitHubCrawler:
         '''
         try:
             running=True
+            try_times=0
             while running:
                 try:
                     print self.baseURL+repos.href+item
@@ -192,10 +194,19 @@ class GitHubCrawler:
                     running=False
                 except ValueError as e:
                     print e
-                    time.sleep(1)
-                    running=True
-
-
+                    req=urllib2.urlopen(self.baseURL+repos.href+item)
+                    result=req.read()
+                    if result.find('<!DOCTYPE html>')>0:
+                        running=False
+                    else:
+                        try_times+=1
+                        time.sleep(1)
+                        running=True
+                    if try_times>MAX_TRY_TIME:
+                        self.logger.warning('Repository:%s Lang:%s Exceeds MAX_TRY_TIME:%s' % (repos.href, repos.lang, MAX_TRY_TIME))
+                        print 'After %s times, we still cannot fetch the result!' % try_times
+                        running=False
+                        break
         except urllib2.URLError as e:
             print e
 
@@ -210,9 +221,9 @@ class GitHubCrawler:
                     os.mkdir(os.path.join(self.saveDir, repos.user, repos.lang))
                 os.system(' '.join(['git', 'clone', self.baseURL+repos.href, os.path.join(self.saveDir, repos.user, repos.lang, repos.repos_name)]))
             self.visited_repository.add(repos.href)
-#            self.crawling_repos_contributors_API(repos, '/graphs/contributors-data')
-            self.crawling_repos_followers(repos, '/watchers')
-            self.crawling_repos_followers(repos, '/stargazers')
+            self.crawling_repos_contributors_API(repos, '/graphs/contributors-data')
+#            self.crawling_repos_followers(repos, '/watchers')
+#            self.crawling_repos_followers(repos, '/stargazers')
 #            self.crawling_repos_contributors(repos, '/graphs/contributors')
 
 #            self.crawling_repos_followers(repos, '/collaborators')
@@ -362,7 +373,7 @@ class GitHubCrawler_API(GitHubCrawler):
 if __name__=='__main__':
     repoDir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/github-network-info'
     
-    gitCrawler=GitHubCrawler(repoDir, 'watchers')
+    gitCrawler=GitHubCrawler(repoDir, 'contributors')
 #    gitCrawler=GitHubCrawler_API(repoDir)
     gitCrawler.truelyClone=False
 #    gitCrawler.loading_visited_user()
