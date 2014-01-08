@@ -60,7 +60,11 @@ def load_x(file_list):
         leg.append(file_list[f+1])
         x=dict()
         for line in fp.readlines():
-            x[float(line.strip())]=x.get(float(line.strip()), 0)+1
+            if len(line.strip().split())==1:
+                x[float(line.strip())]=x.get(float(line.strip()), 0)+1
+            else:
+                items=line.strip().split()
+                x[float(items[0])]=x.get(float(items[0]), 0)+int(items[1])
         fp.close()
         x_list.append(x)
     return x_list, leg
@@ -69,16 +73,17 @@ def plot_xlist_to_pdf(x_list, leg_list):
     color_list=['b', 'r', 'g', 'k', 'c', 'm']
     for index in range(len(x_list)):
         cum=0
-        ccdf=[]
+        pdf=[]
         for item in sorted(x_list[index].items(), key=lambda x:x[0], reverse=True):
             cum+=item[1]
-            ccdf.append([item[0], item[1]])
+            pdf.append([item[0], item[1]])
 #        print ccdf
-        plt.loglog([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
+        plt.plot([item[0] for item in pdf], [item[1]/cum for item in pdf], '.', color=color_list[index])
 #        plt.semilogx([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
     lg=plt.legend(leg_list, loc=3)
     lg.get_frame().set_alpha(0)
-    plt.xlabel('Multiplicative factors')
+#    plt.xlabel('Multiplicative factors')
+    plt.xlabel('File Size')
     plt.ylabel('PDF')
 
 def plot_xlist_to_ccdf(x_list, leg_list):
@@ -96,7 +101,7 @@ def plot_xlist_to_ccdf(x_list, leg_list):
             cum+=item[1]
             ccdf.append([item[0], cum])
 #        print ccdf
-        plt.loglog([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
+        plt.plot([item[0] for item in ccdf], [item[1]/cum for item in ccdf], '.', color=color_list[index])
         leg_list[index]+=('-mean:%.4f var:%.4f' % (mean/cum, mean_2/cum-mean*mean/(cum*cum)))
         print 'CCDF: The mean of %s is %s, variance is %s in total %s' % (leg_list[index], mean/cum, mean_2/cum-mean*mean/(cum*cum), cum)
     lg=plt.legend(leg_list, loc=3)

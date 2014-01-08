@@ -239,7 +239,7 @@ class ProjectStat:
             if old_size==0:
                 print code_path, -1
             else:
-                print code_path, new_size/old_size
+                print code_path, new_size/old_size, new_size, old_size
 
     def project_size_parse(self, last_commit, new_commit):
         '''

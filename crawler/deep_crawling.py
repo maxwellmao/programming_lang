@@ -96,7 +96,8 @@ class Commit:
 #            if d.has_attr('class') and d.has_attr('data-path') and d['class']=='meta':
         for d in soup.findAll('div', attrs={'class':'meta'}):
                 if d.has_attr('data-path'):
-                   if d['data-path'].endswith(ext):
+                    
+                    if len(ext)==0 or d['data-path'].endswith(ext):
                        file_list.append(d['data-path'])
         return file_list
 

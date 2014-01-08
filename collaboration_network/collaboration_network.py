@@ -4,6 +4,16 @@ import os, sys
 sys.path.append('../crawler')
 from crawling_github import Repository, User
 import networkx as nx
+import scipy
+import scipy.io
+
+def read_from_mat(file_path, table_name):
+    mat=scipy.io.loadmat(file_path)
+    matrix=mat[table_name]
+    print type(matrix), matrix.getnnz()
+#    for entry in matrix.indices:
+#        print type(entry), entry
+#    print matrix
 
 class CollaborationNet:
     def __init__(self):
@@ -67,9 +77,35 @@ class CollaborationNet:
         fp.close()
     
     def load_net(self, load_dir):
-        pass
+        fp=open('_'.join([save_dir, 'ReposInfo']))
+        for line in fp.readlines():
+            items=line.strip().split()
+            repos=ReposInfo(items[0])
+            if len(items)==3:
+                repos.lang=items[1]
+            self.repository_id_map[repos]=int(items[-1])
+            self.id_repository_map[int(items[-1])]=repos
+        fp.close()
+
+        fp=open('_'.join([save_dir, 'UserInfo']))
+        for line in fp.readlines():
+            items=line.strip().split()
+            user=User('/'+items[0])
+            self.user_id_map[user]=int(items[-1])
+            self.id_user_map[int(items[-1])]=user
+        fp.close()
+
+        fp=open('_'.join([save_dir, 'Net.nx']))
+        for line in fp.readlines():
+            items=line.strip().split()
+            if len(items)==3:
+                self.net.add_edge(items[0], items[1], weight=int(items[-1]))
+        fp.close()
 
 if __name__=='__main__':
-    net=CollaborationNet()
-    net.parse_from_log(sys.argv[1])
-    net.save_net(sys.argv[-1])
+    if len(sys.argv)>3:
+        net=CollaborationNet()
+        net.parse_from_log(sys.argv[1])
+        net.save_net(sys.argv[-1])
+    elif len(sys.argv)==3:
+        read_from_mat(sys.argv[1], sys.argv[2])

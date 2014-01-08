@@ -257,14 +257,14 @@ if __name__=='__main__':
     repos_url=sys.argv[1]
     repos=Repository(repos_url)
     repos_save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
-#    proj_stat=ProjectStat(os.path.join(repos_save_dir, repos.repos_name), 'java', 'java')
+    proj_stat=ProjectStat(os.path.join(repos_save_dir, repos.repos_name), 'java', 'java')
 ##    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
 ##    proj_stat.commit_stat('de9ad35b66c1d7b1538d10876e2dae6bbe074a60')
 ##    proj_stat.commit_stat('8c5fccbdf8b6b552dc8a1a1eca8abde67ad273ed')
 ##    proj_stat.commit_stat('d0eb103a660125a53660a7ba2c95e9b8a4d8feb6')
 ##    proj_stat.commit_stat('5821f90b2c03b49c87aebbf278d6d012d486976f')
 ##    proj_stat.commit_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
-#    proj_stat.commit_stat('latest')
+#    proj_stat.commit_stat('initial')
 #    word, doc=proj_stat.token_word_freq_doc_freq_stat('cdb116e942666973bc4eaa0df098d5bab82739e7')
 #    if len(word)==len(doc):
 #        for k in word.keys():
