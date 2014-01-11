@@ -86,20 +86,25 @@ class Commit:
 
     def find_change_files(self, ext):
         # finding the changing files (delete, adding) of current commit
-        req=urllib2.urlopen(self.baseURL+self.href)
+        failure=True
+        while failure:
+            try:
+                req=urllib2.urlopen(self.baseURL+self.href)
 #       print self.baseURL+self.href
-        result=req.read()
-        soup=BeautifulSoup(result)
-        file_list=[]
+                result=req.read()
+                soup=BeautifulSoup(result)
+                file_list=[]
 #        for d in soup.div():
 #            print d.attrs().keys()
 #            if d.has_attr('class') and d.has_attr('data-path') and d['class']=='meta':
-        for d in soup.findAll('div', attrs={'class':'meta'}):
-                if d.has_attr('data-path'):
-                    
-                    if len(ext)==0 or d['data-path'].endswith(ext):
-                       file_list.append(d['data-path'])
-        return file_list
+                for d in soup.findAll('div', attrs={'class':'meta'}):
+                        if d.has_attr('data-path'):
+                        
+                            if len(ext)==0 or d['data-path'].endswith(ext):
+                               file_list.append(d['data-path'])
+                return file_list
+            except urllib2.HTTPError, e:
+                sys.stderr.write('%s when crawling %s\n' % (e, self.href))
 
     def parse_parent_info(self):
         # crawling the parent commit of current commit

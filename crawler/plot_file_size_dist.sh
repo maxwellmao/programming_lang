@@ -45,12 +45,12 @@ do
 #    awk '{if(NF==3)print $2}' ${repos_path}/TokenNum_with_path > ${repos_path}/TokenNum_all
 #    awk '{if(NF==3)print $3}' ${repos_path}/TokenNum_with_path > ${repos_path}/TokenNum_program
 #
-#    awk '{if(NF==2 && $2!~/^[a-z]/ && $2>0)print $2}' ${repos_path}/FileSize_with_path > ${repos_path}/FileSize_all
+    awk '{if(NF==4 && $2!~/^[a-z]/ && $2>0)print $2}' ${repos_path}/FileSize_with_path > ${repos_path}/FileSize_all
 #
 #    awk '{if(NF==5){split($5, a, ":");if(length(a[2])>0)print a[2]}}' ${repos_path}/Proj_Size > ${repos_path}/Proj_Size_factors
 #    
-#    sort -n ${repos_path}/FileSize_all | uniq -c | awk '{print $2, $1}' > ${repos_path}/Multi_factors_pdf
-#    python ../plot_dist.py  ${repos_path}/TokenNum_all token_all ${repos_path}/TokenNum_program token_program ${repos_path}/FileSize_all file_size ${repos_path}/Proj_Size_factors proj_size ${repos_path}/Multi_factors_pdf
+    sort -n ${repos_path}/FileSize_all | uniq -c | awk '{print $2, $1}' > ${repos_path}/Multi_factors_pdf
+    python ../plot_dist.py  ${repos_path}/TokenNum_all token_all ${repos_path}/TokenNum_program token_program ${repos_path}/FileSize_all file_size ${repos_path}/Proj_Size_factors proj_size ${repos_path}/Multi_factors_pdf
 #    
 #    python ../plot_dist.py ${repos_path}/TokenNum_all token_all ${repos_path}/TokenNum_program token_program ${repos_path}/FileSize_all file_size ${repos_path}/Proj_Size_factors proj_size ${repos_path}/Multi_factors_ccdf
 

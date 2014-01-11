@@ -140,39 +140,45 @@ class GitHubCrawler:
             print e
 
     def crawling_repos_followers(self, repos, item):
-        try:
-            print self.baseURL+repos.href+item
-            req=urllib2.urlopen(self.baseURL+repos.href+item)
-            result=req.read()
-            soup=BeautifulSoup(result)
-            for d in soup.div():
-                if d.attrs.has_key('class') and 'follow-list-container' in d.attrs['class']:
-                    user=User(d.a['href'])
-                        #self.crawler_user(user)
-                    self.userQueue.put(user)
-                    self.logger.info('Repository:%s Lang:%s %s:%s' % (repos.href, repos.lang, item.split('/')[1], user.user))
-        except urllib2.URLError as e:
-            print e
+        failure=True
+        while failure:
+            try:
+                print self.baseURL+repos.href+item
+                req=urllib2.urlopen(self.baseURL+repos.href+item)
+                result=req.read()
+                soup=BeautifulSoup(result)
+                for d in soup.div():
+                    if d.attrs.has_key('class') and 'follow-list-container' in d.attrs['class']:
+                        user=User(d.a['href'])
+                            #self.crawler_user(user)
+                        self.userQueue.put(user)
+                        self.logger.info('Repository:%s Lang:%s %s:%s' % (repos.href, repos.lang, item.split('/')[1], user.user))
+                failure=False
+            except urllib2.URLError as e:
+                sys.stderr.write('%s when crawling %s' % (e, repos.href+item))
     
     def crawling_repos_contributors(self, repos, item):
-        try:
-            print self.baseURL+repos.href+item
-            req=urllib2.urlopen(self.baseURL+repos.href+item)
-            result=req.read()
-#            print result
-            soup=BeautifulSoup(result)
-#            for li in soup.find_all('li'):
-#                if li.attrs.has_key('class') and li.attrs['class']=='capped-card':
-#                   print li.h3.a
-            for d in soup.div():
-                if d.attrs.has_key('id') and d.attrs['id']=='contributors':
-                    print d
-#                    user=User(d.a['href'])
-                        #self.crawler_user(user)
-#                    self.userQueue.put(user)
-#                    self.logger.info('Repository:%s %s:%s' % (repos.href, item.split('/')[1], user.user))
-        except urllib2.URLError as e:
-            print e
+        failure=True
+        while failure:
+            try:
+                print self.baseURL+repos.href+item
+                req=urllib2.urlopen(self.baseURL+repos.href+item)
+                result=req.read()
+    #            print result
+                soup=BeautifulSoup(result)
+    #            for li in soup.find_all('li'):
+    #                if li.attrs.has_key('class') and li.attrs['class']=='capped-card':
+    #                   print li.h3.a
+                for d in soup.div():
+                    if d.attrs.has_key('id') and d.attrs['id']=='contributors':
+                        print d
+    #                    user=User(d.a['href'])
+                            #self.crawler_user(user)
+    #                    self.userQueue.put(user)
+    #                    self.logger.info('Repository:%s %s:%s' % (repos.href, item.split('/')[1], user.user))
+                failure=False
+            except urllib2.URLError as e:
+                sys.stderr.write('%s when crawling %s' % (e, repos.href+item))
 
     def crawling_repos_contributors_API(self, repos, item):
         '''

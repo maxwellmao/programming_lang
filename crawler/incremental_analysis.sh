@@ -1,7 +1,8 @@
 #!/bin/bash
 
 save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
-for url in  '/nathanmarz/storm' '/elasticsearch/elasticsearch' '/facebook/presto' '/voldemort/voldemort'
+for url in '/elasticsearch/elasticsearch' '/facebook/presto' 
+#'/nathanmarz/storm' '/voldemort/voldemort'
 do
     repos=${url##*/}
 #    cat ${save_dir}/${repos}/logs/* | python parse_branch.py $url 0 > ${save_dir}/${repos}/Heap_law &

@@ -1,0 +1,10 @@
+--------
+/nfs/pantanal/scratch1/wxmao/umass/research/software/code/programming_lang_analysis/programming_lang/collaboration_network/collaborative_network.Err
+Fri Jan 10 17:42:13 2014
+Execution stopped: !IsNode(NId) [Reason:'NodeId 0 already exists'], file ../tools/Snap-2.1/snap-core/graph.cpp, line 12
+--------
+--------
+/nfs/pantanal/scratch1/wxmao/umass/research/software/code/programming_lang_analysis/programming_lang/collaboration_network/collaborative_network.Err
+Fri Jan 10 18:05:08 2014
+Execution stopped: !IsNode(NId) [Reason:'NodeId 0 already exists'], file ../tools/Snap-2.1/snap-core/graph.cpp, line 12
+--------

@@ -9,13 +9,16 @@ import matplotlib.pyplot as plt
 def convert_to_signal(read_path, save_path):
     fp=open(read_path)
     log_value=[]
+    value=[]
     for line in fp.readlines():
         item=line.strip().split()
         if len(item)==2:
             for i in range(int(item[-1])):
                 log_value.append(math.log10(float(item[0])))
+                value.append(float(item[0]))
     fp.close()
-    print 'Mean:%s' % sum(log_value)
+    print 'Mean:%s' % (np.mean(log_value))
+    print 'Mean:%s' % (np.mean(value))
     abs_max=max(log_value)
     if (-min(log_value) > max(log_value)):
         abs_max=-min(log_value)
