@@ -7,6 +7,7 @@ import json
 import Queue
 import random
 from crawling_github import Repository
+from crawling_github import User
 import logging
 import datetime
 import threadpool
@@ -46,7 +47,7 @@ def test_last_page(prefix_url):
 class Branch:
     def __init__(self, href):
         self.href=href
-        self.branch_name=self.href.split('/')[-1]
+        self.branch_name='/'.join(self.href.split('/')[4:])
         self.repos=Repository('/'.join(self.href.split('/')[:3]))
         self.commit_url='/'.join([self.repos.href, 'commits', self.branch_name])
     def __hash__(self):
@@ -84,6 +85,31 @@ class Commit:
 
     __repr__=__str__
 
+    def find_change_files_and_who(self, ext):
+        failure=True
+        while failure:
+            try:
+                req=urllib2.urlopen(self.baseURL+self.href)
+                result=req.read()
+                soup=BeautifulSoup(result)
+                file_list=[]
+                user_name=''
+                for s in soup.findAll('span', attrs={'class':'author-name'}):
+                    if s.a is None:
+                        user_name=s.span.contents[0]
+                    else:
+                        user_name=s.a.contents[0]
+
+                for d in soup.findAll('div', attrs={'class':'meta'}):
+                    if d.has_attr('data-path'):
+                        if len(ext)==0 or d['data-path'].endswith(ext):
+                            file_list.append(d['data-path'])
+                failure=False
+            except urllib2.HTTPError, e:
+                sys.stderr.write('%s when crawling %s\n' % (e, self.href))
+        return file_list, user_name
+
+
     def find_change_files(self, ext):
         # finding the changing files (delete, adding) of current commit
         failure=True
@@ -108,17 +134,23 @@ class Commit:
 
     def parse_parent_info(self):
         # crawling the parent commit of current commit
-        req=urllib2.urlopen(self.baseURL+self.href)
-        result=req.read()
-        soup=BeautifulSoup(result)
-        for d in soup.div():
-            if d.has_attr('class') and 'commit-meta' in d['class'] and 'clearfix' in d['class']:
-                for s in d.findAll('span'):
-                    for a in s.findAll('a'):
-                        if a.has_attr('data-hotkey'):
-                            self.parent_sha_list.append(a['href'].strip().split('/')[-1])
+        self.parent_sha_list=[]
+        failure=True
+        while failure:
+            try:
+                req=urllib2.urlopen(self.baseURL+self.href)
+                result=req.read()
+                soup=BeautifulSoup(result)
+                for d in soup.div():
+                    if d.has_attr('class') and 'commit-meta' in d['class'] and 'clearfix' in d['class']:
+                        for s in d.findAll('span'):
+                            for a in s.findAll('a'):
+                                if a.has_attr('data-hotkey'):
+                                    self.parent_sha_list.append(a['href'].strip().split('/')[-1])
 #                            self.parent_sha=a['href'].strip().split('/')[-1]
-                
+                failure=False
+            except urllib2.HTTPError, e:
+                sys.stderr.write('%s when crawling %s\n' % (e, self.href))
                 
 
 class DeepCrawler:
@@ -272,64 +304,67 @@ def parsing_parent_info(commit):
 
 def crawling_branch(branch, baseURL, local_repos_dir):
     sys.stderr.write('%s %s %s\n' % (branch.branch_name, baseURL, local_repos_dir))
-    logging.basicConfig(filename='crawler-threadpool.log', level = logging.DEBUG, format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
+#    logging.basicConfig(filename='crawler-threadpool.log', level = logging.DEBUG, format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
     logger=logging.getLogger('-'.join(['Branch', branch.branch_name]))
 
-    if os.path.isdir(os.path.join(local_repos_dir, 'branches', branch.branch_name)):
-        os.system(' '.join(['rm', '-rf', os.path.join(local_repos_dir, 'branches', branch.branch_name)]))
-
-    os.mkdir(os.path.join(local_repos_dir, 'branches', branch.branch_name))
-    os.system(' '.join(['git', 'clone', '-b', branch.branch_name, baseURL+branch.repos.href, os.path.join(local_repos_dir, 'branches', branch.branch_name)]))
-
+    if os.path.isdir(os.path.join(local_repos_dir, 'branches', branch.branch_name.replace('/', '~'))):
+        os.system(' '.join(['rm', '-rf', os.path.join(local_repos_dir, 'branches', branch.branch_name.replace('/', '~'))]))
+    sys.stderr.write('Start parsing %s\n' % branch.branch_name)
+    os.mkdir(os.path.join(local_repos_dir, 'branches', branch.branch_name.replace('/', '~')))
+    os.system(' '.join(['git', 'clone', '-b', branch.branch_name, baseURL+branch.repos.href, os.path.join(local_repos_dir, 'branches', branch.branch_name.replace('/', '~'))]))
     N=test_last_page(baseURL+branch.commit_url)
-    fp=open(os.path.join(local_repos_dir, 'logs', branch.branch_name), 'w')
+    fp=open(os.path.join(local_repos_dir, 'logs', branch.branch_name.replace('/', '~')), 'w')
     logger.info('Total pages:%s' % N)
     visit_commit_set=set()
     for i in range(N, 0, -1):
-        try:
-            req=urllib2.urlopen(baseURL+branch.commit_url+'?page='+str(i))
-            result=req.read()
-            soup=BeautifulSoup(result)
-            commit_list=[]
-            for d in soup.div():
-                if d.has_attr('class') and 'js-navigation-container' in d.attrs['class']:
-                    h3_list=d.findAll('h3')
-                    ol_list=d.findAll('ol')
-                    if len(h3_list)==len(ol_list):
-                        for index in range(len(h3_list)):
-                            h3_date=datetime.datetime.strptime(h3_list[index].string, '%b %d, %Y').date()
-                            for li in ol_list[index].findAll('li'):
-                                commit=Commit(li.p.a['href'], h3_date)
-                                if commit.commit_sha not in visit_commit_set:
-#                                    sys.stderr.write('Parent info %s\n' % '\t'.join(commit.parent_sha_list))
-                                    commit_list.append(commit)
-                                    visit_commit_set.add(commit.commit_sha)
-                                    
-#                                    if i==N:
-#                                       tracing_parent=[commit]
-#                                       while len(tracing_parent)>0:
-#                                           com=tracing_parent.pop()
-#                                           com.parse_parent_info()
-#                                           for parent_sha in com.parent_sha_list:
-##                                               print 'Deep parent %s' % parent_sha
-#                                               if parent_sha not in visit_commit_set:
-#                                                   parent_commit=Commit(os.path.join(branch.repos.href, 'commit', parent_sha), datetime.datetime(2000, 1, 1))
-##                                                   parent_commit.parse_parent_info()
-#                                                   commit_list.append(parent_commit)
-#                                                   visit_commit_set.add(parent_sha)
-#                                                   tracing_parent.append(parent_commit)
-                    else:
-                        print 'Error! h3 and ol do not match!'
-            commit_list.reverse()
-            for commit in commit_list:
-                commit.parse_parent_info()
-                fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), '\t'.join(commit.parent_sha_list)))
-                logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, '\t'.join(commit.parent_sha_list)))
-#                if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
-#                    os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
-#                    clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name))
-        except urllib2.HTTPError, e:
-            print e
+        sys.stderr.write('Branch:%s\tPage:%s\n' % (branch, i))
+        failure=True
+        while failure:
+            try:
+                req=urllib2.urlopen(baseURL+branch.commit_url+'?page='+str(i))
+                result=req.read()
+                soup=BeautifulSoup(result)
+                commit_list=[]
+                for d in soup.div():
+                    if d.has_attr('class') and 'js-navigation-container' in d.attrs['class']:
+                        h3_list=d.findAll('h3')
+                        ol_list=d.findAll('ol')
+                        if len(h3_list)==len(ol_list):
+                            for index in range(len(h3_list)):
+                                h3_date=datetime.datetime.strptime(h3_list[index].string, '%b %d, %Y').date()
+                                for li in ol_list[index].findAll('li'):
+                                    for c_a in li.p.findAll('a', {'class':'message'}):
+                                        commit=Commit(c_a['href'], h3_date)
+                                        if commit.commit_sha not in visit_commit_set:
+#                                        sys.stderr.write('Parent info %s\n' % '\t'.join(commit.parent_sha_list))
+                                            commit_list.append(commit)
+                                            visit_commit_set.add(commit.commit_sha)
+#                                        if i==N:
+#   #                                       tracing_parent=[commit]
+#    #                                       while len(tracing_parent)>0:
+#    #                                           com=tracing_parent.pop()
+#    #                                           com.parse_parent_info()
+#    #                                           for parent_sha in com.parent_sha_list:
+#    ##                                               print 'Deep parent %s' % parent_sha
+#    #                                               if parent_sha not in visit_commit_set:
+#    #                                                   parent_commit=Commit(os.path.join(branch.repos.href, 'commit', parent_sha), datetime.datetime(2000, 1, 1))
+#    ##                                                   parent_commit.parse_parent_info()
+#    #                                                   commit_list.append(parent_commit)
+#    #                                                   visit_commit_set.add(parent_sha)
+#    #                                                   tracing_parent.append(parent_commit)
+                        else:
+                            print 'Error! h3 and ol do not match!'
+                commit_list.reverse()
+                for commit in commit_list:
+                    commit.parse_parent_info()
+                    fp.write('%s %s %s %s\n' % (branch.branch_name, commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), '\t'.join(commit.parent_sha_list)))
+                    logger.info('Commit:%s (%s) in Branch:%s Parent:%s' % (commit.commit_sha, commit.commit_date.strftime('%m/%d/%Y'), branch.branch_name, '\t'.join(commit.parent_sha_list)))
+    #                if not os.path.isdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha)):
+    #                    os.mkdir(os.path.join(local_repos_dir, 'previous_commits', commit.commit_sha))
+    #                    clone_commit(commit, os.path.join(local_repos_dir, 'branches', branch.branch_name.replace('/', '~')))
+                failure=False
+            except urllib2.HTTPError, e:
+                print e, baseURL+branch.commit_url+'?page='+str(i)
     fp.close()
     print 'No. of commits is %s' % len(visit_commit_set)
 
@@ -397,6 +432,8 @@ if __name__=='__main__':
     save_dir='/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version'
     deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version', 'crawler-'+repos.repos_name+'.log')
     deepCrawler.start_crawling(_multi_process)
+#    b=Branch('/elasticsearch/elasticsearch/tree/master')
+#    crawling_branch(b, 'https://github.com', '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/diff_version/elasticsearch')
 #    deepCrawler=DeepCrawler(repos, '/nfs/neww/users6/maxwellmao/wxmao/umass/research/software/repository/thread_pool')
 #    crawling_commits_directly(repos, os.path.join(save_dir, repos.repos_name), os.path.join(save_dir, repos.repos_name, 'all_commits'))
 
@@ -405,6 +442,7 @@ if __name__=='__main__':
 #        if len(line.strip())>0:
 #            sha_list.append(line.strip())
 #    sys.stderr.write('Number of commits is %s\n' % len(sha_list))
-#    drepos=Repository('/voldemort/voldemort')eepCrawler.parse_specified_commits_parent(sha_list)
+#        repos=Repository('/voldemort/voldemort')
+#    deepCrawler.parse_specified_commits_parent(sha_list)
 
 #    print 'Total number of commits:%s' % len(deepCrawler.visited_commit)

@@ -13,6 +13,7 @@ import token_parser
 import parser_with_pygments
 import logging
 import subprocess
+from deep_crawling import Commit
 
 logging.basicConfig(filename='parse_branch.log', level=logging.DEBUG, filemode='w', format='%(asctime)s - %(name)s - %(levelname)s: %(message)s')
 
@@ -254,3 +255,18 @@ class ProjectStat:
             new_proj_size=int(out.split()[0])
 #        sys.stderr.write('Commit:%s\n' % last_commit.commit_sha)
             print '%s\t%s\tLast:%s\tNew:%s\tFactor:%.6f' % (last_commit.commit_sha, new_commit.commit_sha, last_proj_size, new_proj_size, new_proj_size/last_proj_size)
+
+def user_commit_statistic(commit):
+    '''
+        Statistics on who commits files at each time
+    '''
+    (file_list, user)=commit.find_change_files_and_who('')
+    for code_path in file_list:
+        print '%s\t\'%s\'\t\'%s\'' % (commit.commit_sha, code_path, user)
+
+if __name__=='__main__':
+    if len(sys.argv)==2:
+        repos=Repository(sys.argv[1])
+        for line in sys.stdin:
+            commit=Commit(os.path.join(repos.href, 'commit', line.strip()))
+            user_commit_statistic(commit)

@@ -16,7 +16,7 @@ class DBLPCollaborationNet(CollaborationNet):
         self.paper_id_map=dict()
         self.term_id_map=dict()
 
-    def load_paper_author(self, file_path, table_name='Mda'):
+    def load_paper_author_from_mat(self, file_path, table_name='Mda'):
         mat=scipy.io.loadmat(file_path)
         matrix=mat[table_name]
         value = matrix.data
@@ -51,7 +51,7 @@ class DBLPCollaborationNet(CollaborationNet):
 #        fp.write('\n'.join([s for s in term]))
 #        fp.close()
 
-    def load_name(self, file_path, table_name='name'):
+    def load_name_from_mat(self, file_path, table_name='name'):
         mat=scipy.io.loadmat(file_path)
         matrix=mat[table_name]
         author=[]
@@ -74,7 +74,8 @@ class DBLPCollaborationNet(CollaborationNet):
 
 if __name__=='__main__':
     dblp=DBLPCollaborationNet()
-    dblp.load_paper_author(sys.argv[1])
-    dblp.load_name(sys.argv[1])
-    dblp.construct_collabrative_net('Paper')
-    dblp.save_info(sys.argv[2])
+    dblp.load_paper_author_from_mat(sys.argv[1])
+    dblp.load_name_from_mat(sys.argv[1])
+    #dblp.construct_collabrative_net('Paper')
+#    dblp.save_info(sys.argv[2])
+    dblp.bipartite_net_degree_dist(sys.argv[-1])
