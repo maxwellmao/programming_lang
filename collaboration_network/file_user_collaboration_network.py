@@ -3,10 +3,10 @@ from __future__ import division
 import os, sys
 import matplotlib.pyplot as plt
 import networkx as nx
-from github_collaboration_network import CollaborationNet
+from collaboration_network import CollaborationNet
 import numpy as np
 import re
-from github_collaboration_network import _pdf, _cdf, _ccdf
+from collaboration_network import _pdf, _cdf, _ccdf
 
 class File_User_CollaborationNet(CollaborationNet):
     def __init__(self):

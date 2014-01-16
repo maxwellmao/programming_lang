@@ -5,7 +5,7 @@ import networkx as nx
 import scipy
 import scipy.io
 import codecs
-from github_collaboration_network import CollaborationNet
+from collaboration_network import CollaborationNet
 
 
 class DBLPCollaborationNet(CollaborationNet):
