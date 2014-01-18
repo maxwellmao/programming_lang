@@ -8,6 +8,7 @@ import Queue
 import random
 from crawling_github import Repository
 from crawling_github import User
+from crawling_github import baseURL
 import logging
 import datetime
 import threadpool
@@ -19,7 +20,6 @@ from multiprocessing import Pool as ProcessPool
 poolsize=40
 
 (_multi_thread, _multi_process)=range(2)
-
 
 
 # whether it return 404 or not
@@ -70,7 +70,6 @@ class Commit:
         else:
             self.commit_sha=''
         self.commit_date=date
-        self.baseURL='https://github.com'
         self.parent_sha=''
         self.parent_sha_list=[]
 
@@ -89,7 +88,7 @@ class Commit:
         failure=True
         while failure:
             try:
-                req=urllib2.urlopen(self.baseURL+self.href)
+                req=urllib2.urlopen(baseURL+self.href)
                 result=req.read()
                 soup=BeautifulSoup(result)
                 file_list=[]
@@ -115,8 +114,8 @@ class Commit:
         failure=True
         while failure:
             try:
-                req=urllib2.urlopen(self.baseURL+self.href)
-#       print self.baseURL+self.href
+                req=urllib2.urlopen(baseURL+self.href)
+#       print baseURL+self.href
                 result=req.read()
                 soup=BeautifulSoup(result)
                 file_list=[]
@@ -138,7 +137,7 @@ class Commit:
         failure=True
         while failure:
             try:
-                req=urllib2.urlopen(self.baseURL+self.href)
+                req=urllib2.urlopen(baseURL+self.href)
                 result=req.read()
                 soup=BeautifulSoup(result)
                 for d in soup.div():
@@ -158,7 +157,6 @@ class DeepCrawler:
     def __init__(self, repos, saveDir, log_name=''):
         self.target_repos=repos
         self.saveDir=saveDir
-        self.baseURL='https://github.com'
         self.visited_commit=set()
         if not os.path.isdir(saveDir):
             os.mkdir(saveDir)
@@ -182,7 +180,7 @@ class DeepCrawler:
         
         os.mkdir(os.path.join(saveDir, self.target_repos.repos_name, 'latest'))
 
-        os.system(' '.join(['git', 'clone', self.baseURL+self.target_repos.href, os.path.join(self.saveDir, self.target_repos.repos_name, 'latest')]))
+        os.system(' '.join(['git', 'clone', baseURL+self.target_repos.href, os.path.join(self.saveDir, self.target_repos.repos_name, 'latest')]))
         if len(log_name)>0:
             logging.basicConfig(filename=os.path.join(saveDir, self.target_repos.repos_name, log_name), level = logging.DEBUG, filemode='w', format = '%(asctime)s - %(name)s - %(levelname)s: %(message)s')
             self.logger=logging.getLogger('Crawler_'+self.target_repos.repos_name)
@@ -199,7 +197,7 @@ class DeepCrawler:
         ##########      implementing crawler with the third part package 'threadpool', which is not truly multi-thread
         ##########
         if multi_way==_multi_thread:
-            para=[((b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),), {}) for b in self.branches[:poolsize]]
+            para=[((b, baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),), {}) for b in self.branches[:poolsize]]
             pool=threadpool.ThreadPool(poolsize)
             requests=threadpool.makeRequests(crawling_branch, para)
 
@@ -213,10 +211,10 @@ class DeepCrawler:
         ##########      truly multi-process implementation
         else:
             pool=ProcessPool(poolsize)
-#            para=[(b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),) for b in self.branches[:poolsize]]
+#            para=[(b, baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),) for b in self.branches[:poolsize]]
             for b in self.branches:
                 sys.stderr.write('Branch %s\n' % b.branch_name)
-                pool.apply_async(crawling_branch, (b, self.baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),))
+                pool.apply_async(crawling_branch, (b, baseURL, os.path.join(self.saveDir, self.target_repos.repos_name),))
             pool.close()
             pool.join()
             sys.stderr.write('All processes has been terminated\n')
@@ -232,8 +230,8 @@ class DeepCrawler:
     def parse_branch_name(self):
         self.branches=[]
         try:
-#            print self.baseURL+self.target_repos.href
-            req=urllib2.urlopen(self.baseURL+self.target_repos.href)
+#            print baseURL+self.target_repos.href
+            req=urllib2.urlopen(baseURL+self.target_repos.href)
             result=req.read()
             soup=BeautifulSoup(result)
             for d in soup.div():
@@ -256,12 +254,12 @@ class DeepCrawler:
         sys.stderr.write('All processes has been terminated\n')
 
     def parse_commit(self, branch):
-        N=test_last_page(self.baseURL+branch.commit_url)
+        N=test_last_page(baseURL+branch.commit_url)
         print 'Branch: %s' % branch.branch_name
         print 'Total pages:%s' % N
         for i in range(N, 0, -1):
             try:
-                req=urllib2.urlopen(self.baseURL+branch.commit_url+'?page='+str(i))
+                req=urllib2.urlopen(baseURL+branch.commit_url+'?page='+str(i))
                 result=req.read()
                 soup=BeautifulSoup(result)
                 commit_list=[]

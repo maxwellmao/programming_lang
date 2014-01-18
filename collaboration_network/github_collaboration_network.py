@@ -106,7 +106,7 @@ class GitHub_CollaborationNet(CollaborationNet):
 
 if __name__=='__main__':
     net=GitHub_CollaborationNet()
-    net.parse_from_log(sys.argv[1])
+    net.parse_from_log(sys.argv[1], sys.argv[2])
     print 'Finished parsing!'
 #    net.construct_collabrative_net('Repos', sys.argv[-1])
     print 'Finished multiplication'
@@ -114,6 +114,9 @@ if __name__=='__main__':
 #    net.load_net(sys.argv[-1])
 #    net.load_repos_user(sys.argv[-1])
     net.bipartite_net_degree_dist(sys.argv[-1])
+    net.bipartite_net_degree_dist(sys.argv[-1], _cdf)
+    net.bipartite_net_degree_dist(sys.argv[-1], _ccdf)
+
     net.connected_components(sys.argv[-1])
     net.kl_divergence(sys.argv[-1])
 #    net.kl_divergence(sys.argv[-1])

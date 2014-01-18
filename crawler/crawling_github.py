@@ -13,9 +13,18 @@ from multiprocessing import Pool as ProcessPool
 
 poolsize=40
 
-headers = { 'User-Agent' : 'Mozilla/5.0' }
+#HEADERS = { 'User-Agent' : 'Mozilla/5.0' }
+HEADERS = 'Mozilla/5.0'
 N=1000000
-MAX_TRY_TIME=100
+MAX_TRY_TIME=20
+
+COOKIE=''
+if os.path.isfile('cookie.log'):
+    cookie_fp=open('cookie.log')
+    COOKIE=cookie_fp.read().strip()
+    cookie_fp.close()
+
+baseURL='https://github.com'
 
 def has_content(contents, num_name):
     for c in contents:
@@ -25,20 +34,25 @@ def has_content(contents, num_name):
 
 def get_num(root_tag, num_name, attr_dict={}):
     num=0
-    for li in root_tag.findAll('li', attr_dict):
+    for li in root_tag.findAll('li'):
         if li.a['href'].find(num_name)>-1 or has_content(li.a.contents, num_name):
             for c in li.a.span.contents:
                 for line in str(c).strip().split('\n'):
-                    if line is not None and line.strip().isdigit():
-                        num=int(line)
+                    if line is not None and line.strip().replace(',', '').replace('+', '').isdigit():
+                        num=line.replace(',', '')
+#    if (num==0 or len(num)==0) and (num_name=='commits' or num_name=='contributors'):
+#        print num, root_tag.findAll('li')
     return num
 
 class Repository:
     def __init__(self, href):
         self.href=href
-        info=self.href.split('/')[1:]
-        self.user=info[0]
-        self.repos_name=info[1]
+        self.user=''
+        self.repos_name=''
+        if len(href)>0:
+            info=self.href.split('/')[1:]
+            self.user=info[0]
+            self.repos_name=info[1]
         self.commits=0
         self.releases=0
         self.contributors=0
@@ -48,7 +62,23 @@ class Repository:
         self.watchers=0
         self.stargazers=0
         self.forks=0
-        self.baseURL='https://github.com'
+        self.description=''
+
+    def get_contributors(self):
+        failure=True
+        try_time=0
+        while failure and try_time<MAX_TRY_TIME:
+            try:
+                req=urllib2.urlopen(baseURL+self.href+'/graphs/contributors-data')
+                data=json.load(req)
+                self.contributors=len(data)
+                failure=False
+            except Exception as e:
+                try_time+=1
+                print self.href, e
+
+    def is_empty_info(self):
+        return self.commits==0 and self.branches==0 and self.releases==0 and self.contributors==0 and self.watchers==0 and self.stargazers==0 and self.forks==0 and len(self.description)==0
 
     def __str__(self):
         return self.href
@@ -56,7 +86,21 @@ class Repository:
     __repr__=__str__
 
     def all_info_str(self):
-        return 'href:%s, lang:%s, commits:%s, branches: %s, releases:%s, contributors:%s, watchers:%s, stargazers:%s, forks:%s\nLang:\n%s' % (self.href, self.lang, self.commits, self.branches, self.releases, self.contributors, self.watchers, self.stargazers, self.forks, '\n'.join([('%s\t%s' % k,v) for k, v in self.lang_percent.items()]))
+        return 'href:%s, lang:%s, commits:%s, branches: %s, releases:%s, contributors:%s, watchers:%s, stargazers:%s, forks:%s\nLang:%s' % (self.href, self.lang, self.commits, self.branches, self.releases, self.contributors, self.watchers, self.stargazers, self.forks, ';'.join([('%s:%s' % (k,v)) for k, v in self.lang_percent.items()]))
+
+    def get_from_db(self, record):
+        self.href=record[0]
+        if len(record[1])>0:
+            for item in record[1].split(';'):
+                self.lang_percent[item.split(':')[0]]=float(item.split(':')[1])
+        self.commits=record[2]
+        self.branches=record[3]
+        self.releases=record[4]
+        self.contributors=record[5]
+        self.watchers=record[6]
+        self.stargazers=record[7]
+        self.forks=record[8]
+        self.description=record[9]
 
     def __hash__(self):
         return self.__str__().__hash__()
@@ -83,13 +127,17 @@ class Repository:
         self.description=des
 
     def crawling_details(self):
+        print 'Crawling: %s' % self.href
         repos=Repository(self.href)
         failure=True
         try_time=0
         description=''
         while failure and try_time<MAX_TRY_TIME:
             try:
-                req=urllib2.urlopen(self.baseURL+self.href)
+                opener=urllib2.build_opener()
+                if len(COOKIE)>0:
+                    opener.addheaders.append(('Cookie', COOKIE))
+                req=opener.open(baseURL+self.href)
                 soup=BeautifulSoup(req.read())
                 for readme in soup.findAll('div', {'id':'readme'}):
                     description=unicode(readme)
@@ -97,21 +145,34 @@ class Repository:
                 num_summary=soup.findAll('ul', {'class':'numbers-summary'})
                 if len(num_summary)>0:
                     num_summary=num_summary[0]
-                    self.commits=get_num(num_summary, 'commits', {'class':'commits'})
+                    self.commits=get_num(num_summary, 'commits')
                     self.branches=get_num(num_summary, 'branch')
                     self.contributors=get_num(num_summary, 'contributor')
                     self.releases=get_num(num_summary, 'releases')
-
+#                if self.commits==0 or self.contributors==0:
+#                    print num_summary.findAll('li')
+                    
                 for counter in soup.findAll('a'):
                     if counter.has_attr('class') and 'social-count' in set(counter.attrs['class']):
                         if counter['href'].find('stargazers')>-1:
-                            self.stargazers=int(counter.contents[0])
+                            self.stargazers=counter.contents[0].strip().replace(',', '')
                         elif counter['href'].find('watchers')>-1:
-                            self.watchers=int(counter.contents[0])
+                            self.watchers=counter.contents[0].strip().replace(',', '')
                         elif counter['href'].find('network')>-1:
-                            self.forks=int(counter.contents[0])
-                for color in soup.findAll('span', {'class':'language-color'}):
-                    self.lang_percent[color.contents[0].strip()]=float(color['style'].split(';')[0].split(':')[1])
+                            self.forks=counter.contents[0].strip().replace(',', '')
+#                for color in soup.findAll('span', {'class':'language-color'}):
+#                for div in soup.findAll('div', {'class':'repository-lang-stats'}):
+                for ol in soup.findAll('ol', {'class':'repository-lang-stats-numbers'}):
+                    for li in ol.findAll('li'):
+                        lang=''
+                        percent=0
+                        for span in li.findAll('span'):
+                            if span.has_attr('class') and 'lang' in set(span.attrs['class']):
+                                lang=span.contents[0].strip()
+                            elif span.has_attr('class') and 'percent' in set(span.attrs['class']):
+                                percent=float(span.contents[0].strip().split('%')[0])/100
+                        self.lang_percent[lang]=percent
+                self.description=description
                 failure=False
             except urllib2.URLError as e:
                 time.sleep(1)
@@ -143,14 +204,12 @@ def deal_with_line(line, tagList):
     for index in range(len(line)):
         if line[index]=='<' and line[index+1]!='-' and line[index+1]!='!':
             pass
-            
 
 class GitHubCrawler:
     def __init__(self, saveDir, logname='info'):
         self.visited_repository=set()
         self.visited_user=set() 
         self.success_num=0
-        self.baseURL='https://github.com'
         self.saveDir=saveDir
         self.verbose=True
         # whether to clone the repository or not
@@ -182,8 +241,8 @@ class GitHubCrawler:
     def crawler_user(self, user):
         try:
             if user.href not in self.visited_user:
-                print self.baseURL+user.href+'?tab=repositories'
-                req=urllib2.urlopen(self.baseURL+user.href+'?tab=repositories')
+                print baseURL+user.href+'?tab=repositories'
+                req=urllib2.urlopen(baseURL+user.href+'?tab=repositories')
                 soup=BeautifulSoup(req.read())
                 for li in soup.findAll('li', {'class':'public source'}):
                     lang=''
@@ -205,6 +264,9 @@ class GitHubCrawler:
             print e
 
     def crawling_user_old(self, user):
+        '''
+            deprecated
+        '''
         try:
             if self.verbose:
                 print 'Crawling user:', user.user
@@ -212,8 +274,8 @@ class GitHubCrawler:
                 recording=False
                 recordingH3=False
                 recording_fork=False
-                print self.baseURL+user.href+'?tab=repositories'
-                req=urllib2.urlopen(self.baseURL+user.href+'?tab=repositories')
+                print baseURL+user.href+'?tab=repositories'
+                req=urllib2.urlopen(baseURL+user.href+'?tab=repositories')
                 result=req.read()
                 lines=result.split('\n')
                 h3=''
@@ -248,15 +310,15 @@ class GitHubCrawler:
                         recording=True
                 self.visited_user.add(user.href)
         except urllib2.URLError as e:
-            print self.baseURL+user.href+'?tab=repositories'
+            print baseURL+user.href+'?tab=repositories'
             print e
 
     def crawling_repos_followers(self, repos, item):
         failure=True
         while failure:
             try:
-                print self.baseURL+repos.href+item
-                req=urllib2.urlopen(self.baseURL+repos.href+item)
+                print baseURL+repos.href+item
+                req=urllib2.urlopen(baseURL+repos.href+item)
                 result=req.read()
                 soup=BeautifulSoup(result)
                 for d in soup.div():
@@ -273,36 +335,28 @@ class GitHubCrawler:
         failure=True
         while failure:
             try:
-                print self.baseURL+repos.href+item
-                req=urllib2.urlopen(self.baseURL+repos.href+item)
+                print baseURL+repos.href+item
+                req=urllib2.urlopen(baseURL+repos.href+item)
                 result=req.read()
-    #            print result
                 soup=BeautifulSoup(result)
-    #            for li in soup.find_all('li'):
-    #                if li.attrs.has_key('class') and li.attrs['class']=='capped-card':
-    #                   print li.h3.a
                 for d in soup.div():
                     if d.attrs.has_key('id') and d.attrs['id']=='contributors':
                         print d
-    #                    user=User(d.a['href'])
-                            #self.crawler_user(user)
-    #                    self.userQueue.put(user)
-    #                    self.logger.info('Repository:%s %s:%s' % (repos.href, item.split('/')[1], user.user))
                 failure=False
             except urllib2.URLError as e:
                 sys.stderr.write('%s when crawling %s' % (e, repos.href+item))
 
     def crawling_repos_contributors_API(self, repos, item):
         '''
-            API
+            crawling via API
         '''
         try:
             running=True
             try_times=0
             while running:
                 try:
-                    print self.baseURL+repos.href+item
-                    req=urllib2.urlopen(self.baseURL+repos.href+item)
+                    print baseURL+repos.href+item
+                    req=urllib2.urlopen(baseURL+repos.href+item)
                     data=json.load(req)
                     for info in data:
                         user=User('/%s' % info['author']['login'])
@@ -312,7 +366,7 @@ class GitHubCrawler:
                     running=False
                 except ValueError as e:
                     print e
-                    req=urllib2.urlopen(self.baseURL+repos.href+item)
+                    req=urllib2.urlopen(baseURL+repos.href+item)
                     result=req.read()
                     if result.find('<!DOCTYPE html>')>0:
                         running=False
@@ -330,7 +384,7 @@ class GitHubCrawler:
 
     def crawling_repository_fork_info(self, repos):
         try:
-            req=urllib2.urlopen(self.baseURL+repos.href)
+            req=urllib2.urlopen(baseURL+repos.href)
             soup=BeautifulSoup(req.read())
             for fork in soup.findAll('span', {'class':'fork-flag'}):
                 self.logger.info('Repository:%s ForkFrom:%s' % (repos.href, fork.span.a['href']))
@@ -346,7 +400,7 @@ class GitHubCrawler:
                     os.mkdir(os.path.join(self.saveDir, repos.user))
                 if not os.path.isdir(os.path.join(self.saveDir, repos.user, repos.lang)):
                     os.mkdir(os.path.join(self.saveDir, repos.user, repos.lang))
-                os.system(' '.join(['git', 'clone', self.baseURL+repos.href, os.path.join(self.saveDir, repos.user, repos.lang, repos.repos_name)]))
+                os.system(' '.join(['git', 'clone', baseURL+repos.href, os.path.join(self.saveDir, repos.user, repos.lang, repos.repos_name)]))
             self.visited_repository.add(repos.href)
             self.crawling_repos_contributors_API(repos, '/graphs/contributors-data')
 #            self.crawling_repos_followers(repos, '/watchers')
@@ -367,7 +421,7 @@ class GitHubCrawler:
                 self.logger.info('Unfinished user:%s', user.user)
 
     def crawler_trending(self, href):
-        t=''.join([self.baseURL, '/trending?', href])
+        t=''.join([baseURL, '/trending?', href])
         print t
         try:
             req=urllib2.urlopen(t)
@@ -379,7 +433,6 @@ class GitHubCrawler:
                     self.userQueue.put(User('/'+repos.user))
         except urllib2.URLError as e:
             print e.reason
-               # print dir
 
 class GitHubCrawler_API(GitHubCrawler):
     def __init__(self, saveDir):
@@ -439,7 +492,9 @@ class GitHubCrawler_API(GitHubCrawler):
             print e.reason
 
     def crawling_repos_followers(self, repos, item):
-        # crawling the users who watch or collaborate this repository
+        '''
+            crawling the users who watch or collaborate this repository
+        '''
         p=1
         users=[]
         try:
@@ -463,8 +518,8 @@ class GitHubCrawler_API(GitHubCrawler):
             API
         '''
         try:
-            print self.baseURL+repos.href+item
-            req=urllib2.urlopen(self.baseURL+repos.href+item)
+            print baseURL+repos.href+item
+            req=urllib2.urlopen(baseURL+repos.href+item)
             data=json.load(req)
             for info in data:
                 user=User('/%s' % info['author']['login'])
@@ -483,7 +538,7 @@ class GitHubCrawler_API(GitHubCrawler):
                     os.mkdir(os.path.join(self.saveDir, repos.user))
                 if not os.path.isdir(os.path.join(self.saveDir, repos.user, repos.lang)):
                     os.mkdir(os.path.join(self.saveDir, repos.user, repos.lang))
-                os.system(' '.join(['git', 'clone', self.baseURL+repos.href, os.path.join(self.saveDir, repos.user, repos.lang, repos.repos_name)]))
+                os.system(' '.join(['git', 'clone', baseURL+repos.href, os.path.join(self.saveDir, repos.user, repos.lang, repos.repos_name)]))
             self.visited_repository.add(repos.href)
             self.crawling_repos_followers(repos, '/watchers')
             self.crawling_repos_followers(repos, '/stargazers')
@@ -491,6 +546,9 @@ class GitHubCrawler_API(GitHubCrawler):
 
 
 def crawling_repository_fork_info(repos):
+    '''
+        crawling where is the repository forked from, to deal with the problem of alias
+    '''
     try:
         sys.stderr.write('%s\n' % repos.href)
         logger=logging.getLogger('Crawler-ForkInfo-%s' % repos.href)
