@@ -6,6 +6,7 @@ import scipy
 import scipy.io
 import codecs
 from collaboration_network import CollaborationNet
+from collaboration_network import _pdf, _cdf, _ccdf
 
 
 class DBLPCollaborationNet(CollaborationNet):
@@ -79,3 +80,6 @@ if __name__=='__main__':
     #dblp.construct_collabrative_net('Paper')
 #    dblp.save_info(sys.argv[2])
     dblp.bipartite_net_degree_dist(sys.argv[-1])
+    dblp.bipartite_net_degree_dist(sys.argv[-1], _cdf)
+    dblp.bipartite_net_degree_dist(sys.argv[-1], _ccdf)
+    dblp.kl_divergence(sys.argv[-1])

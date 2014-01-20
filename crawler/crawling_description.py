@@ -84,11 +84,11 @@ class DB_sqlite:
         tables = map(lambda t: t[0], self.cursor.fetchall())
         print tables
 
-        self.cursor.execute('SELECT COUNT(*) from %s' % self.repository_info_table_name)
+        self.cursor.execute('SELECT COUNT(*) from %s where contributors=0' % self.repository_info_table_name)
         result=self.cursor.fetchone()
-        print 'Repository table:%s' % result[0]
+        print '0-contributor Repository table:%s' % result[0]
 
-        self.cursor.execute('SELECT COUNT(*) from %s' % self.user_info_table_name)
+        self.cursor.execute('SELECT COUNT(*) from %s ' % self.user_info_table_name)
         result=self.cursor.fetchone()
         print 'User table:%s' % result[0]
 #        result=self.cursor.execute('SELECT * from %s' % self.repository_info_table_name)
@@ -166,7 +166,7 @@ if __name__=='__main__':
     if len(sys.argv)==2:
         db=DB_sqlite(sys.argv[1])
         db.query_repository_info()
-        db.update_contributors_in_repository_info()
+#        db.update_contributors_in_repository_info()
     elif len(sys.argv)==2:
         repos=Repository(sys.argv[1])
         repos.crawling_details()

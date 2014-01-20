@@ -22,7 +22,7 @@ class CollaborationNet:
         self.collabrative_net=nx.Graph()
         self.self_weight=dict()
 
-    def plot_dist(self, data_dict, data_range=None, N=1000, c='b', scale=_normal, type=_pdf):
+    def plot_dist(self, data_dict, data_range=None, N=1000, c='b', scale=_loglog, type=_pdf):
         '''
             the format of data_dict is {statistic, frequency}
         '''
@@ -72,13 +72,13 @@ class CollaborationNet:
         fp.write('\n'.join([('%s\t%s\t%s' % (e[0], e[1], e[2]['weight'])) for e in self.bipartite_net.edges(data=True)]))
         fp.close()
 
-#        fp=open('_'.join([save_dir, 'Collaboration_Net.nx']), 'w')
-#        fp.write('\n'.join([('%s\t%s\t%s' % (e[0], e[1], e[2]['weight'])) for e in self.collabrative_net.edges(data=True)]))
-#        fp.close()
-#
-#        fp=open('_'.join([save_dir, 'Collaboration_Self_weight']), 'w')
-#        fp.write('\n'.join([('%s\t%s' % (k, v)) for k, v in self.self_weight.items()]))
-#        fp.close()
+        fp=open('_'.join([save_dir, 'Collaboration_Net.nx']), 'w')
+        fp.write('\n'.join([('%s\t%s\t%s' % (e[0], e[1], e[2]['weight'])) for e in self.collabrative_net.edges(data=True)]))
+        fp.close()
+
+        fp=open('_'.join([save_dir, 'Collaboration_Self_weight']), 'w')
+        fp.write('\n'.join([('%s\t%s' % (k, v)) for k, v in self.self_weight.items()]))
+        fp.close()
 
     def kl_divergence(self, save_dir):
         plt.clf()
@@ -230,13 +230,11 @@ class CollaborationNet:
             else:
                 print 'Error in matching index!'
                 return
-            if col_id==10792 or col_id==2068 or col_id==20246:
-                print edge
             col.append(col_id)
             row.append(row_id)
             data.append(1)
-        people_type_mat=csr_matrix((data, (col, row)))
-        type_people_mat=csr_matrix((data, (row, col)))
+        people_type_mat=csr_matrix((data, (row, col)))
+        type_people_mat=csr_matrix((data, (col, row)))
         comat=people_type_mat*type_people_mat
         
         value = comat.data
@@ -265,4 +263,30 @@ class CollaborationNet:
             fp_self_weight.close()
 
         print len(self.collabrative_net.edges()), len(self.collabrative_net.nodes())
-        
+
+def collabrative_weight(save_path):
+    weight_dict=dict()
+    for line in sys.stdin:
+        item=line.strip().split()
+        weight_dict[int(item[-1])]=weight_dict.get(int(item[-1]), 0)+1
+    net=CollaborationNet()
+    plt.clf()
+    net.plot_dist(weight_dict, data_range=(0, max(weight_dict.keys())), type=_pdf)
+    plt.xlabel('Collaboration')
+    plt.ylabel('Probability')
+    plt.savefig(save_path+'.png', dpi=500)
+
+    plt.clf()
+    net.plot_dist(weight_dict, data_range=(0, max(weight_dict.keys())), type=_ccdf)
+    plt.xlabel('Collaboration')
+    plt.ylabel('Probability')
+    plt.savefig(save_path+'_CCDF.png', dpi=500)
+
+    plt.clf()
+    net.plot_dist(weight_dict, data_range=(0, max(weight_dict.keys())), type=_cdf)
+    plt.xlabel('Collaboration')
+    plt.ylabel('Probability')
+    plt.savefig(save_path+'_CDF.png', dpi=500)
+
+if __name__=='__main__':
+    collabrative_weight(sys.argv[1])
