@@ -108,6 +108,37 @@ class Commit:
                 sys.stderr.write('%s when crawling %s\n' % (e, self.href))
         return file_list, user_name
 
+    def find_change_files_from_two(self, ext):
+        failure=True
+        hide=False
+        try_time=0
+        MAX_TRY_TIME=50
+        while failure and try_time<MAX_TRY_TIME:
+            try:
+                req=urllib2.urlopen(baseURL+self.href)
+                result=req.read()
+                soup=BeautifulSoup(result)
+                file_list=[]
+#                for d in soup.findAll('div', attrs={'class':'meta'}):
+#                        if d.has_attr('data-path'):
+#                            if len(ext)==0 or d['data-path'].endswith(ext):
+#                               file_list.append(d['data-path'])
+                for a in soup.findAll('a'):
+                    if not a.has_attr('class') and a.has_attr('href') and a['href'].find('diff')>0:
+                        file_list.append(a.contents[0])
+                if len(soup.findAll('div', attrs={'class':'diff-cutoff'}))>0:
+                    hide=True
+                return file_list, hide
+            except urllib2.HTTPError, e:
+                try_time+=1
+                sys.stderr.write('%s when crawling %s\n' % (e, self.href))
+            except urllib2.URLError, e:
+                try_time+=1
+                sys.stderr.write('%s when crawling %s\n' % (e, self.href))
+            except:
+                sys.stderr.write('%s when crawling %s\n' % (sys.exc_info()[0], self.href))
+                try_time+=1
+        return [], False
 
     def find_change_files(self, ext):
         # finding the changing files (delete, adding) of current commit
@@ -124,9 +155,22 @@ class Commit:
 #            if d.has_attr('class') and d.has_attr('data-path') and d['class']=='meta':
                 for d in soup.findAll('div', attrs={'class':'meta'}):
                         if d.has_attr('data-path'):
-                        
                             if len(ext)==0 or d['data-path'].endswith(ext):
                                file_list.append(d['data-path'])
+#                for li in soup.findAll('li'):
+                for a in soup.findAll('a'):
+                    if not a.has_attr('class') and a.has_attr('href') and a['href'].find('diff')>0:
+                        file_list.append(a.contents[0])
+
+#                for ol in soup.findAll('ol'):
+#                    if ol.has_attr('class'):
+#                        items=set(ol.attrs['class'])
+#                        if 'content' in items and 'collapse' in items and 'js-transitionable' in items:
+#                            print len(soup.findAll('li'))
+#                            for li in ol.findAll('li'):
+#                                for a in li.findAll('a'):
+#                                    if not a.has_attr('class') and a.has_attr('href') and li.a['href'].find('diff')>0:
+#                                        file_list.append(a.contents[0])
                 return file_list
             except urllib2.HTTPError, e:
                 sys.stderr.write('%s when crawling %s\n' % (e, self.href))
