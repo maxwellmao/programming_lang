@@ -7,7 +7,7 @@ from pymongo import Connection
 import codecs
 import numpy as np
 import matplotlib.pyplot as plt
-
+import re
 
 changing_file_ext_dict={}
 changing_file_dict={}
@@ -186,16 +186,36 @@ def parse_pull_request_commits(commit_type=''):
     fp=open('CommitStats%s' % commit_type, 'w')
     fp.write('\n'.join(['%s\t%s' % (str(k), v) for k, v in commit_stat_dict.items()]))
     fp.close()
-    
+
+def match_fixing_information(comment):
+     if len(re.findall('\#\d+', comment))>0:
+        return True
+     else:
+        return False
+
+def identifying_bug_fixing_commits():
+    fp=codecs.open('BugFixingCommitComments', 'w', 'utf-8')
+    for result in db.commits.find():
+        if result.has_key('commit') and result['commit'].has_key('message'):
+            comment=result['commit']['message']
+            if match_fixing_information(comment.lower()):
+                print result['sha']
+                try:
+                    fp.write('%s\n' % comment.encode('utf-8').replace('\n', ' '))
+                except:
+                    sys.stderr.write('%s\n' % sys.exc_info()[0])
+    fp.close()
+
 
 if __name__=='__main__':
     con=Connection()
     db=con.msr14
     db.authenticate('msr14', 'msr14')
-    if len(sys.argv)>1:
-        parse_pull_request_commits(sys.argv[1])
-    else:
-        parse_pull_request_commits()
+    identifying_bug_fixing_commits()
+#    if len(sys.argv)>1:
+#        parse_pull_request_commits(sys.argv[1])
+#    else:
+#        parse_pull_request_commits()
 #    if len(sys.argv)>1:
 #        query_commits_of_project(sys.argv[1])
 #    else:
