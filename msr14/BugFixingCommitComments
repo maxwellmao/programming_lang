@@ -1,0 +1,559 @@
+7e5a9a426668b14b4fd22b227b54446185667649	Merge pull request #8 from cortex/master  Shared sql connection functionality
+bcf66b6bd7e32f4f853e1762893307c4674eab29	Merge pull request #10 from cortex/mysql-utf8  Use UTF-8 for mysql connections
+54619cf45e30da038a767949b7b0549ed2d791bb	Merge pull request #2 from mathbruyen/patch-1  Good catch on the balls and urns table, and thanks for sending along a fix.
+257e121a392cdaf8dee0f5fa884b612576fd3fbd	Merge pull request #27 from speps/master  Fix for "Could not load default.cfg" during build
+df0216d9ebdf50c23db26a87efff6de94a110941	Merge pull request #7 from cortex/master  Fix "Argument port must be an integer value" when using port number for mysql driver
+279d6c6f8df8baa9da872e0a6f1cd579c2e1dfc7	Merge pull request #31 from xoddark/Werror_conversion-null  Fix conversion-null warning
+d5f751654da8729ca0f30287fad102a597858d77	Merge pull request #32 from xoddark/Werror_parentheses  Fix parentheses warning
+232432d352fe277896f2ca4a0b8b2f6d772c888c	Merge pull request #30 from xoddark/Werror_pointer-arith  Fix pointer-arith warning
+483f8e5c93f41486ea0f0ea33e15c9131fe8469a	Merge pull request #6 from matteoredaelli/master  Oracle support using ROracle library
+2fb684dbde7f284fb19b495a118ac8a29f546d95	Merge pull request #28 from xoddark/Werror_write-strings  Fix write-strings warning
+33b293f0aa474e142b4eb7253f18397481347b4d	Merge pull request #226 from crtahlin/patch-2  Fixed typo.
+f5e730bc118ca4201944f10541f1359f75da956b	Merge pull request #339 from jrnold/bugfix-typos  Fix minor documentation typo
+e2509eddb219ef784c9690c9349a4a7adc71d414	Merge pull request #225 from crtahlin/patch-1  Fixed typo.
+c839bb2db37c36a73faf6d37661adf8dba2f9e67	Merge pull request #224 from yihui/patch-1  websockets has been changed to httpuv
+11003ff37caaeb6a55a1e0737cc808883068fe27	Merge pull request #329 from kornl/master  Four small fixes for function install_version
+bc72b8fd1c62b15d155d364a02d06e936d16b49a	Merge pull request #214 from hadley/doc-tweaks  Doc tweaks
+e0a14e4f065c0e624a3527d9d52d3f9e27c7d149	Merge pull request #5 from johnmcdonnell/master  Added support for specifying port and socket of a MySQL database
+dd1d4439a939f4ccfcad0540186a52cb10553c67	Merge pull request #218 from wch/fix-log  Cleanups to reactive logging code for R CMD check
+4a1156b37323286f3f198316cf22ee2329e15e56	Don't force local = TRUE. Fixes #328
+c304889e6115ea23d6010ba0c61a5e367b0d13c7	Merge pull request #208 from trestletech/master  Add reactive timing logging, if the necessary variables are available.
+8c45dcde88273b091e48d56048d3d6e397e7db3d	Merge pull request #205 from hadley/master  Class output of reactive.
+f67fdb35f9373a68ece6176c7ac29889c6539444	Merge pull request #318 from hadley/hooks  Implement load hooks
+6c155b04b2202fc3c71b86f94d02bd7be273b1f2	Merge pull request #197 from wch/fix-style  Add compatibility wrapper for getComputedStyle in IE8
+1fc4ebb302cc50ba0f5f9cad73f1437a510e8e1d	Allow arbitrary build arguments. Fixes #317
+1ebdc0fb0ebbad423c16bec99ec784f4a1173c68	Merge pull request #319 from vitoshka/master  keep source in load_all
+c87745e35dbd61ccb974bf10e23a4dc279833c08	Implement load hooks. Closes #316
+a8eafbef37688db4bd87ee1864ba2d23c66d0732	Add extra args to install_git. Fixes #306
+269154071100332c201fc619b658b07d9fdd6cd6	Getting ready for 1.9.2.  Issue #11452: https://github.com/ariya/phantomjs/issues/11452
+5b13c44ef98b03d39b127480e16014186513fcfa	Fix isolate return value bug (issue #200)
+0a4250f3b4c9fead1aa5891e4516a06879e8d67f	Merge pull request #193 from jcheng5/reactlog  React log
+8114d44a28134b765ab26b7e13ce31594fa81253	fixed compile errors for no-JIT configuration  Issue #11475 https://github.com/ariya/phantomjs/issues/11475
+4989445e714bb97fe49ef8c00ccbce8b6cfbfbb0	Fix harfbuzz assertions using patch from Chromium.  Exotic text (e.g. attempting to render a binary file such as .zip or .exe as a webpage) can trigger an assertion failure in the Harfbuzz code. Chromium developers also noticed this issue and committed a patch to fix it:  http://lists.freedesktop.org/archives/harfbuzz/2009-August/000354.html  This patch has not been accepted by upstream, but this (old) version of Harfbuzz has been abandoned and superceded by Harfbuzz-NG.  Issue #11264
+b1cb3a00bdbfa86fcf3b1748898173e39f549e1c	Merge pull request #11425 from Vitallium/master  Fix typo in the `loadurlwithoutcss` example
+6ba33cbcabf1821592bcad015dc4b690869022ac	Merge pull request #11422 from detro/ghostdriver-dev  WebServer Headers for Request are treated case-insensitive
+c466d8aeef61433fe8afbba8b9b37d69e4b824d8	WebServer Headers for Request are treated case-insensitive  To achieve this, Request Headers are stored in both "original" and "lowercase". In this way we don't mangle with the request object we have received, while still be able to handle headers when NOT in the classic "Camel-Case" format.  Fixes #11421.
+3a15a35137102684f9bf372e0989b19ab3563d66	Merge pull request #192 from jcheng5/flush-callbacks  Add session$onFlush and session$onFlushed
+edf2d90a112547341b6cbcd6164016ab5ac5e7d9	Patch for table page break improvement.  From d78182d3a6451522f239ee1ecbb71863eb053792 Mon Sep 17 00:00:00 2001 From: Artem Baranovskiy <likejavascript@gmail.com> Date: Mon, 6 May 2013 08:01:01 +0400 Subject: [PATCH] Table page-break improvements  See issue #11291 https://github.com/ariya/phantomjs/pull/11291
+aaa4f666710f2dc314b6a9820db3767107426166	Merge pull request #183 from jcheng5/plot-mouse-events  Click and hover on static plots. Also, fix retina compatibility and make hover delay configurable
+01587211cb0d98463d11bf8bc9ff02f5a18ca268	Unit test: secure connection check becomes async.  Issue #10882: https://github.com/ariya/phantomjs/issues/10882
+44c3d6080d4ae3d1c830957aaed28e352303009e	Unit tests: robustify the tests of PDF, GIF, PNG, JPEG rendering.  Issue #10973 https://github.com/ariya/phantomjs/issues/10973
+6b2ca7dc80fd074e859cb0ce49b70d9ae5d3ed1e	Merge pull request #182 from jcheng5/reactive-poll  Implement reactivePoll and reactiveFileReader
+091d62803ee9f11da5d5e7b51340f6b02be5eec0	Merge pull request #191 from trestletech/master  Restrict the number of observations to a valid, positive number.
+9f1f56bc3b28fdff32b11a3362a8f93ad60a66eb	Unit tests: terminate any web servers after finishing the tests.  Issue #11163: https://github.com/ariya/phantomjs/issues/11163 Issue #11243: https://github.com/ariya/phantomjs/issues/11243
+f57fa468ab9d5c222891cf0a145671043741d93b	Unit test: tweak secure connection check.  The main wikipedia page can be slow to load and thus triggers the timeout. Let's use the fast Google site so that we don't get flaky outcome.  Issue #10882: https://github.com/ariya/phantomjs/issues/10882
+fb8edb7c726cc2b4cd336bf528569f673799b552	Fix minor typos in preconfig.sh.  One is a typo, while the other is grammar-related.  fixes #11388  https://github.com/ariya/phantomjs/issues/11388
+639e8c85b2f9c24016f8d69f315f3e7ace7e23d3	Make QNetworkReplyHandler deliver content asynchronously when its load type is set to SynchronousLoad.  Issue #11338: https://github.com/ariya/phantomjs/issues/11338 Upstream bug: https://bugs.webkit.org/show_bug.cgi?id=62808
+fa238856f9e46202b2e204535a0eedf926006846	third-party.txt: Include OpenSSL.  Issue #11269 https://github.com/ariya/phantomjs/issues/11269
+3bd7a3dfa67f9c145b7568748ba5eec22ca0095d	Netsniff.js example should exit with an error when fails to load the adress  Issue #11333 https://github.com/ariya/phantomjs/issues/11333
+2f851086e4181fccb98c5d8e826f062a1b7c293f	Netsniff.coffee example should exit with an error when fails to load the adress  Issue #11333 https://github.com/ariya/phantomjs/issues/11333
+0726a8e2bb421e3f5a23c4d2b6d344bb3a84ce30	Fix crash when calling QObject::disconnect for QNetworkReplyWrapper  Fix it by watching the QNetworkReply's destroyed() signal and avoid the dangling pointer instead. The QNetworkReply doesn't need to be aborted in this case anyway.  Issue #11252: https://github.com/ariya/phantomjs/issues/11252 Upstream bug: https://bugs.webkit.org/show_bug.cgi?id=116035
+f1472b54d1c20eace550e004ece5a01516767c60	Update RPM spec changelog  - Describe %files change - Fix year in timestamp in previous changelog entry  Issue #11262 https://github.com/ariya/phantomjs/issues/11262
+dff8ce252642c64781156a1911b9417e241c1ea5	Update rpm spec file names  - Add missing example files - Alphabetize names  Issue #11262 https://github.com/ariya/phantomjs/issues/11262
+f8310457d8649c5fb7d60d0e47d5613983f63656	Export parse_deps. Fixes #304
+5528d75c9d7655d121ee6fe54ae52395f8eb8dad	Network request header manipulation  Issue: https://github.com/ariya/phantomjs/issues/11299 (#11299)  User should be able  to manipulate HTTP headers per each network request, not only using global setting page.customHeaders.
+f8e79fb8c6007adabfc644c77baa958f49e77391	Limit the maximum request post size to 10 MB (megabytes).  std::numeric_limits<qint64>::max is too big for QByteArray (throws Out of Memory exception). Set up the limit like it was done in Google Chrome Ref: https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/core/inspector/NetworkResourcesData.cpp  Related to issue #10158 https://github.com/ariya/phantomjs/issues/10158
+9da21d83a1f27bf97cc4a32b3e8de575fe81e328	Merge pull request #310 from miraisolutions/master  Specific what types of dependencies to install.
+de31cf8e7d062499627064973ac878bd37824f3f	Merge pull request #175 from trestletech/master  Add workerID to upload, download, and file URLs.
+3ae632e70441125e6830ddb8e6535a3627f9444a	ChangeUrl to accept an encoded string  Issue #11243: https://github.com/ariya/phantomjs/issues/11243.
+f72f2962d1eb92a5f182cb7c2ecdcb58878fa559	Updated rpm spec file to work with 1.9.  Issue #10939: https://github.com/ariya/phantomjs/issues/10939
+cdd5ed65ad771e3f73e0e01b78852ea879bd29d0	Default to reset = TRUE. Closes #284.
+3484f9afb360998e9e4100d39af476303cdf68f5	Merge pull request #179 from wch/faster-tags  Faster tags
+39bec1ce172e7e5dbcdbf84858563a2dd2dd9dfc	Synchronize std{in,out,err} encoding with `Terminal`  See #11234 https://github.com/ariya/phantomjs/pull/11234 Spin off from #11168 https://github.com/ariya/phantomjs/pull/11168
+b159144a48866aec448afdb7004d84d7658daf02	Teach `File` how to change its encoding  If a `File` is in "text" mode, then it has an encoding.  This encoding defaults to UTF-8; however, it can be set only at time of construction (by using `fs.open`).  This modification allows the user to change the encoding on-the-fly for "text" mode `File` instances.  See #11234 https://github.com/ariya/phantomjs/pull/11234 Spin off from #11168 https://github.com/ariya/phantomjs/pull/11168
+3d874d9e0d089780b40c7b5abc35d0b546249b34	Make `Terminal` emit a signal upon encoding change  See #11234 https://github.com/ariya/phantomjs/pull/11234 Spin off from #11168 https://github.com/ariya/phantomjs/pull/11168
+fb892031953a0f5bde3de48f487030e6e751d232	Add install_local. Closes #299
+f8a905c8b0d2a08e0798a6341b2d8dd39eeb2cdb	Link with text codec plugins on mac and linux  Fixes [#10249](https://github.com/ariya/phantomjs/issues/10249)
+1d022c05f8efd55c329f7a12f0a083f0fe40fd3f	Add auth to install_bitbucket. Closes #303
+b5380ab21733acab0240f85336ee11933b31272c	Better git detection on windows. Closes #307
+d925a510d9fb4d1d146705d8ae5ee7901fe87c1d	Improve WebPage CJK support tests.  This is for issue #10249: https://github.com/ariya/phantomjs/issues/10249.
+3edcabef9f36636adcf05926351a3fb09c781e0d	Fix compilation with MSVC 2010  Issue #10158: https://github.com/ariya/phantomjs/issues/10158 This bug introduced by the marco max( ) defined in <windef.h>. It replaces max( ) with another statement but still preceeded by numberic_limits<Type>:: The workaround is to use the parenthesis
+abc77a595fad037196dac178a732006b8c8d5fbd	Bump rtools max dependency. Fixes #298. Fixes #308.
+f4adcb5c2ad804d9346d5aea534a1477eb41bc37	Import digest. Closes #292.
+78242e5d6cf40d81b308bc73834eefde42467f39	Fix command line option typo  Issue #11219: https://github.com/ariya/phantomjs/issues/11219
+36ab7194e4a186fb929e7d555dbb0e4d4ec6ddd3	Use UTF-8 encoding for std{in,out,err}  This fixes issue #11162.  `File` constructor takes a `QTextCodec *`, codec; but, if codec is `NULL`, then it assumes "binary" mode, which causes non-ASCII characters to be converted to NUL (`\0`) in `File::write`.  This change passes the codec for UTF-8 to the `File` constructor for the `std{in,out,err}` instances, thus opening them in *text mode*.
+8042f3b92c2a1a4d871174ae6e6e4dcaffdfaf87	Flush in `File::write` when in unbuffered "text" mode  If the wrapped `QFile` was opened with `QIODevice::Unbuffered`, any writes should be unbuffered.  However, as currently implemented, using `QTextStream` when the `File` is in "text" mode causes all reads/writes to be buffered.  This modification forces a flush in `File::write` if the wrapped `QFile` was opened with `QIODevice::Unbuffered`.  Necessary to fix issue #11162 https://github.com/ariya/phantomjs/issues/11162.
+0bc2eb418e84dd33509d597cbf02cbfaaf537720	Temporarily call this branch as version 1.10.  Issue #10448 https://github.com/ariya/phantomjs/issues/10448#issuecomment-15689386
+fcdd274f2e8ef904e37795bd642a247a2a2e791c	Show postData in onResourceRequested callback.  Issue #10158 https://github.com/ariya/phantomjs/issues/10158
+47dc82681d26dd103ecfaff5cbed144e4b4d7fe4	Fire `onResourceReceived` callback when the resource error occured.  Issue #11163: https://github.com/ariya/phantomjs/issues/11163
+ee256e27a23b7cba2477289d646d488a5a2ebd55	the vignette bug was fixed in R-devel r63908, so docco_classic and docco_linear can use .Rmd now  will have to close #578 after R 3.0.2 is released
+9ca45ed62e53e55018f682ca79e8fa6f4a3a7c3c	Fix loading modules from an absolute path on Windows.  Don't check the module path using Linux-style path checking.  Issue #11165: https://github.com/ariya/phantomjs/issues/11165
+da71c5fbddafbef5c033fd6cd4a916ab3c9fd548	Issue #10939: Mention 1.9 as the new stable.  https://github.com/ariya/phantomjs/issues/10939
+bda3355060c103f0431336b570b339ad4d61380c	Issue #10939: Get ready for version 1.9.0.  https://github.com/ariya/phantomjs/issues/10939
+b5345bc13346224254e77021cae3e144f9577ecd	netsniff example: Exclude Data URI from HAR.  Fixes issue #10740.  https://github.com/ariya/phantomjs/issues/10740
+9f9053ec4482f14aeb1da98a61fb25e084670328	Add support for specifying non-default CA certificate bundles.  This is done via SSL_CERT_DIR and --ssl-certstore.  Fixes issue #10916.  https://github.com/ariya/phantomjs/issues/10916
+52883ced681854f453029822f466b6a4a18c0e3e	WebPage: network timeout setting.  Fixes issue #11129.  https://github.com/ariya/phantomjs/issues/11129
+387dfb5fe3eac08023b214376f2aa2528109f28f	Merge pull request #283 from hadley/default-description  Smooth package creation process
+498fd3f6cc0c2439728fe2dece91fd5f7f8c5c4c	Merge pull request #280 from wch/loadhooks  Call .onAttach and .onLoad with lib path and package name.' Fixes #279
+63dc1e2c8fdf664c40af4390c2299cfb9a46ae2c	Add a patch to disable touch event support.  This is from https://github.com/ariya/phantomjs/pull/408. See also issue #10375 for some related discussion.  https://github.com/ariya/phantomjs/issues/10375
+c10850118d4ef9134770b465200a8a17d68c9102	Merge pull request #170 from hadley/master  Fix typo
+114da2d2b27d7fe3e3492126a5b0494502cd1652	Create description file if missing. Fixes #281. Fixes #282
+9ff8616aa81e982438d40d3a5313920033df8514	Merge pull request #278 from klmr/patch-1  Typo in load_all documentation
+47b4ee07ab35424542c3874d4e933d6a030f3c31	Merge pull request #165 from trestletech/master  Export validateCSSUnit function
+212a0269f8d2797981ab64afa5f2a2007427a0f5	fixes #592: make auto dependency really automatic; you do not even need to call dep_auto() explicitly  when a new chunk is inserted into the document, auto dependency will be rebuilt
+ecc228935730a3df926e1a076a9d217b83a10698	closes #593: new option results='hold'
+847cbeb53beffd52b53615ebd57d8f643438ead8	closes #590: a new function filter_evaluate() to filter out some results from evaluate(), and warning/message can be numeric indices now
+ccd1840a0b2103b36072e784d286c5a0803ae465	more options affecting cache=2 #587
+ec848229025a904271083b966795da389ed656e3	rename cache2.opts to cache1.opts because cache2.opts will be more than that #587
+fac9f47ea6cb88313e415de7f17aa9a5dda0c328	#588 when cache=2, I still need to preserve information about plots; instead of raw info, I save md5 digests
+e5ff209325ae71b5a45d5435fd784c9988668d68	news for SublimeKnitr; closes #449
+52008759ae3ad89fc114218b9119146b70151c79	purge cache when the figure files are missing for some reason #588
+6989188fa0b69f1783a67d5e1241b1b1b74bc6d0	Merge pull request #11146 from detro/ghostdriver-dev  Importing GhostDriver v1.0.3
+86feb1a9580e60044bfcd5f6644449c99762814f	do not save display lists when cache=2; fixes #588
+ebf7c566091303b8a8a2d431408c71f91c1eb5f7	news about #587
+c637e310e9ec00be18d741e384c00208d4ad0cd6	Merge pull request #164 from jcheng5/suspend-bugfix  Fix several bugs relating to suspendWhenHidden
+23470267fe3101364f76411e0510862f968b024f	Merge pull request #163 from jcheng5/app-object  Run apps without creating files on disk
+252e876458fb09d0fdfba37a3a1d6f217b458696	News for #242
+05ab6fb9c9ea96c65c5ba2d44497705ecb7799ac	Run tests and examples in a fresh session. Closes #258
+005db037cfb5ab32c449ef78404ee8ec41c1fa65	Tests for the new "page.loading" property.  This commit provides the unit tests for the new property, as asked by Ariya in #11091.
+c7648864f7fbc152656d3bebbd50c48aedc5cc31	Merge pull request #275 from wch/data-export  Load data even when export_all is FALSE. Fixes #242.
+97409909905233d9a457a4f8cd6e958a5a238359	New "page.loading" and "page.loadingProgress".  Now you can know about the Page Loading Progress using 2 property: - [bool] page.loading - [int: 0-100] page.loadingProgress  Implements #1091: http://code.google.com/p/phantomjs/issues/detail?id=1091
+90154fc19a0c8fe1fde4dc3586ddeaf16be8d8db	Merge pull request #587 from knokknok/master  code changes should invalidate cache (fixes an issue when cache<3)
+a135c82ab5bfbf314a101a96439f38fc3bda81bf	Merge pull request #160 from wch/reactive-timer  reactiveTimer: don't invalidate when session closed
+327f70236fbfb865513468ff0131f2aa254005ad	closes #396: cache = 0, 1, 2, 3 for different levels of cache  I think this also closes #536
+23b060e1f577e2bb2aa36f41dd71823c569afd79	Merge pull request #159 from wch/session-invalidate  invalidateLater: don't invalidate when session closed
+6c0d1ad95a57aeed5877022c4dbbbdc96b588a11	Merge pull request #274 from wch/hash  Add SHA1 check to source_url.  Closes #259
+064090c6f22307d82365504e0dc65488df0ede80	Build vignettes in package. Fixes #231
+0e1139446ec793613741b71ecfe78361defbd6aa	Merge pull request #149 from jcheng5/observer-priorities  Add priority levels to observers
+b34ec2ba878f894012f1bef60bda547f66593224	Set compiler flags by default. Fixes #257
+f433216fae72ffdb876c87fd6f017a7bd0e2d96f	Merge pull request #156 from jcheng5/fix-submit-button  Fix submit button interactions with tabs, plot sizes
+ed680baaace0d0c5c4ed1d68bee5a757baf83ea0	selectInput: correctly handle choices with duplicate names. Fixes #157
+bfa4a46bd500017d6fadf8adac0188544ec47dd4	Merge pull request #154 from wch/tag  Add withTags function
+f134e4e1c540ccce117acfd90e62e4e9c01c7679	Add branch argument to install_git. Fixes #255
+e33f1dff09d8c0c671f86c053edd8fdb155ae0ba	increase evaluate version dependency for #582
+e61f1b64708f86135ddef5ac034fa3c5e43fd754	Include session info in summary of check_cran. Fixes #273
+67e4c9d14eb62298d17af5cb9d02c1d4e4c9a966	closes #495: syntax highlighting for other languages via highr::hi_andre()
+97ce9d6deaa6dc27bbbf8f12ca4a460e14a675dd	Start deprecation process for with_env. Closes #251
+21f6b38819549a5c41fbc6b88fca7d1758612664	Add option to control install args. Closes #267
+4dec091ac2ce63952867ca219268ab8bd2378de1	FIX: Check file exist when attempting upload.  Both "page.uploadFile()" and "onFilePicker = function() {}" check file exists before accepting them. If file don't exists, they are "ignored".  Fixes issue #941: https://code.google.com/p/phantomjs/issues/detail?id=941
+92fa47480af298c107d8782a5893838bdbefb37c	More check env vars. Closes #256
+f59f40c69b330939bb5dd78920ac362f7c39fd4b	Load code in a way that provides useful error messages. Fixes #269
+309f4fecfff7c6385ce196e4bc3c1295e92fc248	Better release email. Closes #252
+2417961490bc95bc46310b928cf8a525cc230afa	Add LinkingTo to revdep defaults. Fixes #237
+10d2432df553a7edc5697c4f97a5033748d3c128	Merge pull request #148 from wch/sendmessage  Add support for sending arbitrary messages to client
+6d93b05f7bf8c5c4576b3837ab57fff846792e9a	Fix broken rtools regexp. Closes #262
+10e272d50f9c9f2172c3d8e8fcf9e5b6b1dfec5f	Set R environment variables for test() and document(). Fixes #246
+28ba3d3846c60a861a8c6500dfd777b78d62a2ce	source_gist: allow new urls with username, and private gists  Fixes #247
+54d170b8dfaff280a3ccf3c61de924e6e29c494b	Fix additional case in find_rtools. Fixes #241
+6715dc2a5dfda2748f902cf5aad4908cab721db3	Merge pull request #139 from wch/set-input  Add ability to set inputs from server
+39f3d7e720bccc18bbd47431e542ee3007c83eb0	closes #571: use the keep_warning and keep_message arguments in evaluate()
+4d7aa45358a7b4bc819dfa23b7c362348b23afb2	closes #526: deprecate stop_on_error; use error=FALSE is you want to stop on error (#571)
+f6c87221a775bb6dc3d5102951b4f333d714af8b	Implement system.std{in,out,err}  See [issue 333][1] and pull request #192.  **Caveat**  `File::read` currently takes no parameters and is equivalent to a "`readAll`".  This will be changed later to match [IO/A Spec's `Stream#read`][2]; but, should still be noted.  [1]: http://code.google.com/p/phantomjs/issues/detail?id=333 [2]: http://wiki.commonjs.org/wiki/IO/A#Instance_Methods
+9b336e75e1a773e9611b6a373fff42f2cbda5677	Merge pull request #219 from wch/doc-no-clean  Add devtools.cleandoc option to control behavior of document()
+f429ca16fb3fce3b74caca9d69aaf543892ee7be	news about #577
+10475255077515d83f138fcfb282c40f5292a0a0	add Weicheng Zhu @mingsnu to contributor list for #577
+f5652e511067f8c6574713287d43883becd1f40b	Fix "--webdriver-selenium-grid-hub" CLI parameter.  I had forgotten to update the option parsing code, and the option was never picked.  Related issue: [GhostDriver #130](https://github.com/detro/ghostdriver/issues/130).
+6ae38ae3add6d3534704e9d1df0937df3db8f28d	Merge pull request #577 from mingsnu/master  Add knit2rocco function
+4d2611f53ef9d48969f227e5334f6c90b15b4aef	Merge pull request #228 from hadley/winpaths  Improved rtools detection on windows. Fixes #214
+ba906e8dd4b4a9a5fa3b873ec05904cdbb4cd25c	Make SID appear undefined until session_start() is called  Generically, this diff treats an uninit_null constant as undefined.  Currently, this only occurs with k_SID.  Closes #190  Reviewed By: @markw65  Differential Revision: D960974
+4a444805dadf02ccbba7d0776753ebc661fb9bcc	Set NOT_CRAN in R. Closes #227
+8cb5436a5855787c0653f4085454c62c65b03b8a	fixes #570: do not evaluate chunk options if eval=FALSE
+efc721acccfbe04bbf7cac709398d4f2d26102f3	Merge pull request #225 from hadley/better-compile  Better compilation (closes #224)
+233c0537a1ae8f31638620862eae5db2d6d67f75	Merge pull request #122 from wch/url  Send URL components in clientData
+9baf7c67f945c152490dee8cb0af359e490b4ef1	Merge pull request #223 from wch/s4-removeclass  Careful removal of S4 class references.
+34c1a36c922aad3648de925822efa38b2c8497ea	Merge pull request #217 from wch/quick-no-vignette  install: don't build vignettes when quick=TRUE. Fixes #167
+b9a6c8e86d6f7eecff1359a7a17bebaab09eea39	install: don't build vignettes when quick=TRUE. Fixes #167
+c16becba564b1685063377989297998615adb967	renderTable: check for empty data frame. Fixes #55
+9cc2eba7b896ab2f1fe7cdd169d79f9b599ffe65	Merge pull request #109 from wch/retina  Add clientdata channel for sending data  This branch includes support for Retina-resolution displays.
+455ce8a0e5f72a195e425dcf1dff4eee1e43ee4c	Remove only refs to s4 classes that don't have backrefs. Fixes #168
+df6e44f806f8a85852e0d81af253cc57fcde262a	unload: remove S4 classes. Fixes #157
+d81978345226bb4467d56e29d34e3f1aed5eeb7f	install_github: switch to new GitHub download URLs. Fixes #218
+98d1ca66f8944dd6cdd3f1d4388da8254b4c96a0	Merge pull request #216 from wch/no-vignette  build: if pdflatex not present, don't build vignettes. Fixes #173
+87b8d7fe8946d0256a82cab3daf50bc19006437c	news about VignetteEngine{knitr::knitr} #568
+1b78c1b34f8935d0d0d09447c6c8a62c6f69ae94	use knitr::knitr instead of knitr; closes #568
+9ba13ba989c5e910a6bc684dbe5460f7a4953bed	Implementing "goBack", "goForward" and "go".  Completing work for [Issue #808](http://code.google.com/p/phantomjs/issues/detail?id=808).
+7e46ac3a2a859dddf1e3d00abc15b7ff5cc94a22	a new function knit_exit(); closes #524
+eadb03a978838ee5af642217b5a1c5de4774cb9d	Adding "page.onFilePicker" callback.  This addresses [Issue #843](http://code.google.com/p/phantomjs/issues/detail?id=843). Important: this doesn't change the ability to use "page.uploadFile", that will keep working as expected.
+1fa9c048457bf4b219eaaeb3c1e22a72185513c8	Reworking code related to Issue #800.  This addresses [Issue #842](http://code.google.com/p/phantomjs/issues/detail?id=842).
+48eb7b96967a9f02b3279ecee6a0c85fec9b1c67	build: if pdflatex not present, don't build vignettes. Fixes #173
+7c7d1f961c0ba4d67d645ddc546faa68f1969937	Adding "date" detection to `detectType`  Addresses [Issue #800](http://code.google.com/p/phantomjs/issues/detail?id=800)
+4c5e96d17fbc309b1232fa4a72f4d0d7b2245cbf	FIX: Multiple "onCallback" handlers registered.  Addresses [Issue #807](http://code.google.com/p/phantomjs/issues/detail?id=807)
+3fe308bf8c8c7fd155dedf383060787bb67186a7	Adding Navigation methods.  Addresses [Issue #808](http://code.google.com/p/phantomjs/issues/detail?id=808)  * back()        [method] * canGoBack     [property - boolean] * forward()     [method] * canGoForward  [property - boolean] * reload()      [method] * stop()        [method]  This is to fill a small gap we ought to deal with. IMPORTANT: this API is asynchronous. Events like "onLoadStarted" and "onLoadFinished" are ideal to monitor the activity of those methods.
+ae95e9bf5bc277f239702f125fbadaf59d600a95	Merge pull request #169 from davidcoallier/install_git  Ability to install directly from a Git repository URL
+22477fa2198f28cb1eddb8659d5fc3d6af6761a1	Merge pull request #215 from wch/with-lib  Add with_lib function. Fixes #183
+f4eaa42b8c0ede3133b41be8e21a099de58b767b	Improve RecursiveIteratorIterator Zend compat  - Added methods and callbacks: beginChildren, beginIteration, callGetChildren, callHasChildren, endChildren, endIteration, getDepth, getMaxDepth, getSubIterator, nextElement, setMaxDepth.  Closes #1006  Reviewed By: @ptarjan  Differential Revision: D953349  Pulled By: @scannell
+d5eb657ecc4a16d37097df8c971a1f41396877fb	More Douglas Crockford remedials.  Addresses [Issue #800](http://code.google.com/p/phantomjs/issues/detail?id=800)
+e31528adfedd817b5fc685cd1062c62d24192e76	"onLoadFinished" works regardless of "page.open"  Addresses [Issue #801](http://code.google.com/p/phantomjs/issues/detail?id=801)
+60ced2ccb6649526dd1e2bb6967b417503e903de	Provide "detectType" inspired by D. Crockford  Addresses [Issue #800](http://code.google.com/p/phantomjs/issues/detail?id=800)
+3f874067f59a682e25dde7e6b694462f1d220f1a	Add properties "page.title" and "page.frameTitle"  Addresses [Issue #799](http://code.google.com/p/phantomjs/issues/detail?id=799)
+be1017c35620c3d7baca84826746adaf414daedb	Merge pull request #213 from wch/shim  Replacement for system.file. Fixes #179
+fa70de671b8a76606c3f52e5ab301eb0de233149	Merge pull request #210 from hadley/depends  Require packages in Depends. Fixes #161, #178, #192.
+1cfcbd3f5c33dd89981384c09f694a81b0c2770f	Require packages in depends. Fixes #161, #178, #192
+308c58325400b49a1e66ce054ae22dcb666e2ed7	setRatePolicy based on effectiveId. Fixes #110  Previously when getType() was defined for a type of object, shiny.js would send updates immediately instead of applying the rate policy.
+97b2f7e5ca6b85ee04774c22652e230f7685ea82	Fix call to manageHiddenOutputs in timer callback. Fixes #112
+3ea88a07d9d5958b6b913ac28908595d2c41fd49	sliderInputBinding inherits from text instead of number. Fixes #110
+2a5e5884eb5ba37e251e15add1223fb35d2e17d2	add a license statement; closes #566
+588f8bb96a1af5226d78684bc2df3791f9efe0ac	Merge pull request #107 from wch/numeric-na  Empty numericInput gets converted to NA
+6f54ac8b53edd6927244f303f74720876e8f7fb6	release(): add package version check. Fixes #209
+3b86d6ca86aedb8d44da08b592a0462bbd7d8fcc	news for #470
+fc59c254fd52ad30695404ea2f2e328d119ea727	Merge pull request #108 from wch/unused-hidden  Treat unused outputs as hidden
+1527d512d3b01954f3b5f993b27de143ab9f921e	Single function for finding Rd files. Fixes #195
+a03db6ea4122e55b2c97e3d8d5378f232f44bc38	closes #327: remove the use.highlight option, and use the highr package when available
+aa1b702e569dc8f4796328bbd2f8e2258d9456b7	fixes #565: add the envir argument to spin()
+6437363ee1af316d8b921609ac672e2a669b39d7	Merge pull request #208 from wch/force-suggests-off  check(): option to turn force-suggested-packages off
+8b87cea7aaa32e7fe8a8105baeb2560836b63db4	Merge pull request #104 from wch/reactive-exp  Change reactive() and observe() to take expressions
+26a2989dd7be38d786b0a1c73374127a4f168047	closes #564: added a option knitr.in.progress
+494172685715cd435b04c75123558433cde10f8b	Update folly/docs/Synchronized.md  Summary: Fixed escaping bug where the `>` in `operator->` was interpreted as starting a code block.  Folly github pull #15.  Test Plan: no  Reviewed By: njormrod@fb.com  FB internal diff: D582873
+a5cfcaea9c637392cc948afc150f1e919775cc9d	Fix crash when registering stream wrappers  Stream wrappers were not being destroyed properly at the end of a request, resulting in strange behavior / crashes if the same wrapper was registered across multiple requests. This affects Drupal. Sample code:  <?php class stream{   public $name; } stream_wrapper_register("public", "stream"); stream_wrapper_register("private", "stream"); stream_wrapper_register("AA", "stream"); var_dump(stream_get_wrappers());  Closes #849 Closes #1032  Differential Revision: D959563
+ecda22423386e7353246577ed58b16d2fe792c8b	Revert "Fix crash on exit (Issues #136, #148 and #149)"  This reverts commit 5acaa6b42d510f529ea77507f678b114bac73d9c.  Conflicts:  	src/phantom.cpp 	src/phantom.h  removed m_page deletion.  http://code.google.com/p/phantomjs/issues/detail?id=719
+8a2bf5544e92e340be621ddc788412e0a6f42c08	Merge pull request #206 from wch/no-check-ver  Make CRAN version check optional
+59ef32a1e7d99ed576a489b79c23da78db854173	check: make CRAN version check optional. Fixes #172  This commit also switches from using --as-cran, to setting environment variables, as described in R Internals.
+f99a04afc1ccebcc51d90fd717c82fad1701cd5f	all syntax highlighting commands have been converted to the shorter ones in A.S. highlight (#470)
+466365416e581c493d9053a40050f5243de96e94	Merge pull request #205 from wch/use-check-function  check_cran(): use check_r_cmd() instead of R()
+9a25f31715e15c9497be35e8213e11ede3e9bc7d	Merge pull request #319 from detro/ghostdriver-dev  GhostDriver Development Branch - Master Push #4
+26583740c8e6e9bea2a475abd1f4f75c2dbf1a13	Made the "Callbacks injection" recursive.  Before this, only the first level of child frames had the possibility to use the Callbacks object. Now is injected recursively in all of them.  This is an extension of coverage for [Issue #683](http://code.google.com/p/phantomjs/issues/detail?id=683).
+e85d9ad52c76c604b7e003f19396cf437fe849b0	try to use the new CSS classes, for compatibility with A.S. highlight (closes #470)
+ef209b96d389da335a9f1e9af7569869253961a6	Improve substr zend compatibility  Fixed issues with negative and out of bounds start position and length  Closes #1031  Differential Revision: D959015
+b1185cd22af96bda11592e311278f40d7f77c4e4	Redesign the Cookies API (part 2)  Addresses [Issue #761](http://code.google.com/p/phantomjs/issues/detail?id=761).  This is a combination of 5 commits.  1. Date in Cookie can be set via "seconds since epoch" as well.  * In addition to the current string format, we can now set cookies via integer of msec since epoch * Expiration date can be set via "expires" or "expiry" option ("expires" has priority) * Returned cookie will contain "expires" as string and "expiry" as msec since epoch  I believe this can simplify code that uses cookies and it doesn't change the functionality.  2. Applying the "--debug" command line options as early as possible.  3. Fixing bug and behaviour in the CookieJar  * It's not possible to set a cookie without a domain: will default to the domain of the page it's set on * "page.clearCookies()" was broken * "cookiejar.deleteCookie("name", url)" reimplemented because deleting via "expiration" doesn't work  4. Improving (and more fixing) in the CookieJar  * Purging Session or Expired Cookies now works * Added boolean return values to inform if the requested cookie operation succeeded * Timestamps for "expiry/expires" in Milliseconds, as JS does by default * Improved detection that a cookie has been accepted or rejected by the cookiejar  NOTE: Unfortunately, the Qt provided QNetworkCookieJar is a very limited and not extremely well designed solution. It doesn't provide any "nice and clean" CRUD API, and you are only left with a SET/GET to deal with. Mechanism to understand when and when not a cookie is added are hidden, and require extra work in the sub-class (our CookieJar) to fill the gap.  5. Methods on the "phantom" object to manipulate the CookieJar.  * phantom.cookies (array of JSON/Cookies) * phantom.cookiesEnabled (boolean) * phantom.addCookie * phantom.deleteCookie * phantom.clearCookies  Those methods operate on the CookieJar directly and have no URL restriction. In other words, if page P1 can see set of cookies C1, and page P2 can see set of cookies C2, "phantom.cookies" can see (i.e. operate upon) both C1 and C2.
+b8f7ee4fef60f8edda1921d331ca42e66528427c	check_cran: don't remove existing libpath. Fixes #199
+32100be5e05e560fdbcc625d78ca73752d7cf5fb	check_cran(): use new tempdir for each run. Fixes #182
+73d8529db3cf60d25b1a1f8ff8ade94aa947c517	I'm not going to need brew; it is straightforward to make using a for loop (#470)
+b22d6ad04cdf9f408f99ee7476d7a78dcff50348	libmemcached support for all 0.4x+ versions  It turns out the Ubuntu 12.04 image I thought was using 1.0.16 was using 0.44 and OSX was using 1.0.17. This should fix compilation on libmemcached 1.0.8 - 1.0.16.  Closes #1022  Differential Revision: D957901
+f2609325b02242974fca11a6eab91ba73151718a	Fix deprecated httr call. Fixes #170
+85cec997251a1fb01e8a129085ae959ec3fce250	vectorize the format argument in pandoc(); closes #547
+61021a4e6579fcf50458866e3e113054c271d570	Correct path for Rtools when no registry entry. Fixes #201
+9f0b204076a859100e42d39da85f0704679ab8cd	write writeLines() only once, which is what I meant in #563
+61be49e7b22870667880e3740476e51f052bf6f8	Merge pull request #97 from wch/suspend-hidden  Suspend hidden outputs. Fixes #24
+e62b9768b02017a1d5004d29114884bd17ff01c3	news for #562
+e33bfedb9adb21c76839175da8ffef28df3eb42d	Merge pull request #317 from Vitallium/fix-missing-ico-plugin-win  Rendering ICO images on Windows.
+1558c07a76b8574bcc841d91ca780c2409993cf9	Merge pull request #314 from JakubOboza/patch-1  Update src/config.cpp
+bd2137373225c21d016c755c190ff042c2ccbf65	Redesign the Cookies API  Addresses [Issue #761](http://code.google.com/p/phantomjs/issues/detail?id=761).  This is a squash of 5 commits.  1. Complete reimplementation of the CookieJar and the Cookie API - Part 1.  The save/load mechanism is inspired by the Qt Demo "browser". More info: http://doc.qt.nokia.com/4.7-snapshot/demos-browser.html  2. Making the CookieJar a singleton.  We need to have multiple NetworkAccessManager to monitor the network activity of the page, but we also need to maintain 1 CookieJar: in this way we now have a shared bucket of Cookies.  3. Exposing the new Cookies API to the JS space.  * Updated the completions. * Ensured backward compatibility of the API. * It's now possible to "phantom.cookieEnabled = false" to disable cookies completely. * New methods: addCookie, deleteCookie, clearCookies  4. Provided some internal Doc for the new Cookies API  5. Ensuring the "page.deleteCookie(name)" method works only if a cookie name is given.
+6217d6b9608b35b5ae9c3bce9bc4fb1f79a6e512	Adding "url" and some frame-related Q_PROPERTIES  * url - current page url * frameUrl - current frame url * frameContent - current frame HTML content * framePlainText - current frame content in Plain Text (no tags)  Fixes [Issue #758](http://code.google.com/p/phantomjs/issues/detail?id=758)
+8301d1471bf6027f9b747aeae166609bace29560	Merge pull request #563 from NickSalkowski/master  My mistake!: Needs if then else, not ifelse -- otherwise only the first line of code is written.
+c22cd52a2eca3b06b49b8f4db5c80ec733f22d44	Merge pull request #562 from NickSalkowski/master  Setting SAS options for compatibility with LaTeX and standard fonts
+c7282d5e873bee7dce61fb05f087658fcea212b6	fix bug #50847  fixed bug #50847 (strip_tags() removes all tags greater than 1023 bytes long)  Differential Revision: D952826
+733d21042bcf0aaea10673c2f67ccefc354aa3a9	Adding property "page.ownsPages".  When set to "true", any page that gets created, is owned by the "page" that control it's lifetime. Also, the pages can be found in the "page.pages[]" array.  Default value is "true".  Addresses [Issue #151](http://code.google.com/p/phantomjs/issues/detail?id=151)
+43c97295fe42ad21941fa94637c2e783733d6d63	Task #906853: Implement ThreadLocalServiceData and reduce lock contentions during channel counter update  Summary: Cache the counter updates on thread local data structures and aggregate/publish the data from a separate thread periodically. The ThreadLocalServiceData is implemented on top of the TLStats data structures.  I am plannig to deploy a private build to production tomorrow to test this change in production, but figured it might be better to send the diff out first and get code review feedbacks at the same time.  Test Plan: Run and pass unit tests. Run end-to-end testings on sandbox. (TBD) Deploy a private build to a production server and make sure the thrift call latency is reduced.  Reviewed By: xin@fb.com  FB internal diff: D540239
+63b672e35a414bcc37fe9aac1e43590a24c15719	fig.align also does alignment for markdown output after a long discussion in #387
+999df6e40fbd93d0919ddca7a0b051f1cccf0ec3	httpResponse: make sure headers is a list. Fixes #102
+27386481978c0a3b87a326838794121bbb017e0b	Merge pull request #101 from jcheng5/chrome-frame  Chrome Frame compatibility
+1958e94f557ed9d1e8085622f5794a4cdfd444be	news for #559
+7086a83ffa356a88f0ae3e1e85ed756182aaec52	Merge pull request #559 from tlamadon/master  added an asymptote engine to knitr to generate nice graphics
+e370c2f40bd8645ac3a8de2703e1d7a53a6354ab	don't try to use mysql connection if connect fails  mysql extension was incompatibly trying to use a connection that was a failed result of mysql_real_connect() for other APIs which is unsupported by mysqlclient. Fixed that.  Closes #1021  Differential Revision: D955216
+be5fe36b9813da5655b7b5bc60e6b5511f013282	Merge pull request #300 from jonleighton/crash_text  Link to the crash reporting guide
+0e47ceb06cf381e059566765c8d038c64f1ad532	Minor typo in comments  Summary: github pull #11  Test Plan: None.  Reviewed By: andrewjcg@fb.com  FB internal diff: D541230
+b2c6d526ab906f8afd7f6574bfe58e34b8381fc9	Merge pull request #92 from wch/fix-download  Use correct default label for contexts. Fixes #91
+fe1e833677b8cd4ae41461b08eb1e18ed48a6550	Use correct default label for contexts. Fixes #91  NULL apparently is not a valid value for a field in a reference class.
+8df1b9e8e58c6f88c2dc79954f1465b4e3fdc815	Merge pull request #85 from jcheng5/flush-all  Flush all shinyapp instances
+38b0f71b017da8f79d48a6c4c5f1fc549f0fd22d	Merge pull request #89 from wch/reactive-invisible  Store visibility state of functions called from Observable
+5c7ac5db43c047e54e14be8ee111af751602cf73	Don't store sweepable Object in SessionRequestData  Data inside Object turns into garbage between requests when the resource is swept.  Closes #990  Differential Revision: D911041
+da0b967a4ff82291919bc6043c6a94dd7147db8a	decrease ring buffer size to 512KB  - decreases ring buffer size to 512KB to better support calling the JVM from an extension (1 MB causes problems with Java's thread stack size assumptions)  Closes #1015  Differential Revision: D953256
+3738a8eebddfb1b946a49726aa4e726d1c04e4da	ctb instead of crb for #555
+ce4ea29555b6ac146d824114fe59af95f1717439	news for #555
+5efab6639d38edffb2b05891049abe61d4d4feaa	question mark for #554
+057f41da16e503c2ffe991809b14021b10939a11	a new function kable(); closes #53 since it's unlikely for me to work on it
+f790672a85e22e79745d5f3574495c609d884bad	Merge pull request #551 from sietse/comment-hook_plot_tex  Copious comments for hook_plot_tex
+3fa863e7c08bab867373bc7c118b4e0ad7a788e8	Merge pull request #552 from sietse/desc-development-in-readme  Add 'Contributing' section to README.md
+b3a7a94586eff5c64d466243108900a7c8ac1aca	Merge pull request #557 from jimhester/render_html_newline  Add trailing newline to render_html output block; fixes #556
+16f538ac13aca0d47b5c36f963664e288c883cc7	Add trailing newline to render_html output block  Fix for issue #556
+7341eed1cf17d447814090ee18fef4d7fdb18810	Merge pull request #80 from wch/run-github  Add functions runGithub and runUrl
+d44718554db4ab2fa79be4c2795dd039a7d601f3	Merge pull request #149 from wch/fix-install-hg  Find path correctly for mercurial zip files
+1e004091abfdeb54b286f2721ccd91bc7b740eda	Merge pull request #555 from noamross/master  Added option to change default chunk name
+ff99fbfbc9c6cf9b9126180550423dd6672854f2	Fix #64: Hitting Enter in textbox causes form submit
+0ce4dcd71932669eeb963e4d8162db33db767479	Provide more "JS-like" API for the current Frame-Switching API.  This addresses issue [#654](http://code.google.com/p/phantomjs/issues/detail?id=654).
+e0c1745b55af2a50545e5416d53520943bf9e771	Find path correctly for mercurial zip files.  Fixes #148
+061b3e98e3cd5c2aa64d2b65c6e4ff3330b87043	Merge pull request #554 from swalberg/patch-2  Add FAQ on submitting doc changes.
+5f0ed88a90b716a6a232c13fef6d5bedc4fee8b1	Handling "window opening" in PhantomJS.  This addresses [Issue #151](http://code.google.com/p/phantomjs/issues/detail?id=151).  Summary of the new API: - page.pages[] - page.pagesWindowName[] - page.getPage(windowName) - page.windowName - page.onPageCreated = function(newPage) { ... }  The page object created by the user holds responsibility of the "child" pages it creates. If a page closes (i.e. window.close()) or a call to "page.pages[i].release()" is done, the array "page.pages[]" will automatically update to contain only the pages still open.
+48e47f705e8f0b632e0b4ec841eba2d0c9b5d3ae	Run has-devel in tests/. Fixes #104
+33af3998629d9c4481b9b51831f7de3c2ce1d188	Okay, I see. Thanks, @NickSalkowski for #549
+8ec79c111b1719f14e62fc140a08ceccf2c1e21d	Merge pull request #549 from NickSalkowski/master  SAS Engine Fix
+87c18cea806a84f403715cdaf4e560e5a4ee21b9	Merge pull request #79 from wch/better-deps  Finer grained dependencies when converting reactiveValues to list
+319ce098fb897003f10686e8895ea65856e8b6d1	Config should default to list(). Fixes #147
+885d90e82042e9f1cc97bf1bed36d1b77915e359	fewer empty lines in messages and warnings (#534)
+54f5ea495e60b16a60599ea25242d50acb121bbb	closes #546: add two package options latex.options.graphicx and latex.options.color to allow customization of LaTeX package options
+eb4b21ce9fb927faf6f63dd4da142338512c2f14	Fix #77: tagWriteChildren error
+cf2f4332c806135907c3c5f3e6c83ef99744d18a	Fixed bug #53319  Fixed bug #53319 (strip_tags() may strip '<br />' incorrectly)  Differential Revision: D951187
+9375e423d3016ddd90ef4aae10a1acc7e52f3703	Use --vanilla. Fixes #145
+c122bd469bfda3906e411bb40a49cca453df3fb3	closes #545: use cat() instead of timestamp() to avoid messing up history
+6d737acdf0339e5c32e2ce50c311512e61642ea1	closes #541: use the listings output from SAS
+ff5349fd90628f903f5533d2541aca263266f06e	Fix #65: tagWrite doesn't expect strings except as direct children of tags
+3afa697a9648d5ad9bafc835afa57961fca7f8f6	Replace tools:::Rd2ex with custom code. Fixes #118.  Closes #144
+20191a60356325e036760b1e99ac5f93b60a3b4a	closes #538: fig.width and fig.height are vectorized now
+16d583612b35544906caa9e222aeaa8fa1f3f87d	fixes #534: merge adjacent warnings and messages
+518f583ceadd6d3f8e5e440c24b7754555332d0b	more doc about the output argument; closes #530
+ed1180d602b2d6c234db0eb4f2942e779df14c4b	fixes #537: make sure the custom device exists before telling the user to specify fig.ext
+eb8cf59b33e0773652f46a7003916d3f01faeb86	Store dev_mode path in options. Fixes #129
+84082642a9c2338addee06e260c818b60535ef96	Merge pull request #133 from hadley/topic-index  Topic indexing.  Fixes #110.
+4fd2dade60715444b741feaab953204a71d89667	reactiveTable: don't return blank if first element is NA. Fixes #71
+c9975fc1847cdd552c01328c2c58b6be39bb4a2a	fix register_shutdown in session_set_save_handler  Do not register automatically session shutdown function when session_set_save_handler called in PHP <5.4 style. PHP Manual: Note we additionally register the shutdown function session_write_close() using register_shutdown_function() under PHP less than 5.4.0. This is generally advised when registering objects as session save handlers under PHP less than 5.4.0.  Closes #1001  Differential Revision: D949388
+940e0089ba1d2db33bb4fdf0e7c0852ae5a6307e	Merge pull request #291 from jonleighton/static_inspector  Fix remote inspector when building statically.
+6e2c2713e2b9c483fc5664b6e6ebc33bf1a6bc8c	news about #542
+9e7ff0775856e1ae49b5fcf35cd7e6d382723f00	Merge pull request #532 from knokknok/master  new 'hide' value for fig.show chunk option
+36a4f6e78740a63a33bc37449d66d4d4722109b5	Fix ArrayIterator constructor zend compatibility  Flatten ArrayIterator/ArrayObject when initializing them with other array wrappers to produce arrays from respective getArrayCopy() methods  Closes #1000  Differential Revision: D949379
+98f574a66ead3a680bd67160ce167c67b7283f18	Merge pull request #542 from jtoloe/master  latex header added to wrong child when compiling a child that uses set_parent() and has children of its own
+9cb8fa23612d9522eda5fc33c5119597a2848a92	Merge pull request #543 from richierocks/master  Fixed message, warning and error hooks for AsciiDoc
+a5c13343efce03c97b1b58d2a348d4dc9a0e1f20	fixes for issues encountered in extension dev  We are now investigating HipHop, but for that we need to port our existing PHP extensions. I had to change two small things in hiphop code, to be able to compile it together with one of our extensions. I think these changes could be useful not only for us.  1) Renamed macro "field_type" to "hphp_field_type", because it was making conflicts with mysqlpp library, which have public method "field_type" in some class. It is pretty generic name, so I believe, it could make also problems with other third party libraries in future.  2) At some moment I started to get error messages "error: 'size' is not a member template function" in hiphop, not our code. Don't know exactly why they started to appear, but after some googling I found (http://stackoverflow.com/questions/10671406/c-confusing-attribute-name-for-member-template) that this is known GCC bug and workaround is very simple - put parenthesis around "old->size" in hphp/runtime/vm/tread-hash-map.h:203.  Closes #996  Differential Revision: D947510
+bc64e974d5923876b0cff8b759c5cc6134597735	Fixed bug #46578  Fixed problem with single quote inside comment  Differential Revision: D947836
+516c70b4fd92f85d930dc5367673140e55c5acfc	Merge pull request #289 from detro/master  Version bump
+df0f70f0b7cbf4d2ff46e6c19138c379dfaf010a	Merge pull request #284 from jonleighton/deploy2  Deploy fixes
+f98d71d6f09ab96d7c07952256879f2bca518a99	instanceof needs to denormalize name  - iopInstanceOf needs to denormalize input  Closes #963  Differential Revision: D945675
+777206b7b935aaacba77853e4d1cc7615e4ca5a7	Add a way to run a single example. Fixes #108
+b47ee5d1b42092cbd9e64e36452ca0ed4873820a	add the `quiet` argument to knit2pdf() for #533, and the default compiler for rst documents is rst2pdf
+ca7e8bb8f3a3da8ea157689e7189afa231bae9fa	Merge pull request #281 from detro/master  Forgot to update completions for renderBase64
+3ab9131ba264f67ea68e0ef4765867632acf127e	can merge two regexp patterns into one (#533)
+13f86ed667249493f74e4450bc057c67fd5cb9c4	add @trevorld to contributors for #533
+4ec4c6c749f412e6790b049ddc5dd43f99731921	fixes #535: for single-lettered pandoc arguments, the values are passed to them after spaces instead of equal signs  also solves the problem at http://stackoverflow.com/q/16569010/559676
+cd14584e869339f7c546533a21e308a653284afa	Merge pull request #533 from trevorld/master  Minimum changes to use knitr as vignette engine for Rrst vignettes
+02539b527143c969a8874cb9049dc716addc2259	closes #519: include=FALSE means do not include code in purl()
+574ea8fe28ff2412f2eee0055e2f6a71ba68755c	need to merge low-level changes in the test; see hadley/evaluate#31
+ded8fbf10b4b58662033441ae53165d4340d90bb	make sure knit_theme$set() really finds the css file (as @richierocks suggested); closes #522
+a62bf121a581fc3c5c455dcac633cb2cf897a6a9	Fix clone of SplPriorityQueue  Clone the underlying _SplPriorityQueueHeap object when someone clones a SplPriorityQueue object  Closes #984  Differential Revision: D942743
+ef3e28dec19fc773dd640ab4d2c69b4465d95c3e	emphasize 'output' is for knit() only; also add a note for knit2pdf() (#500)
+09fce5e4c86c7ac2c3709e8d415e179fe1bbb3de	add a new option -o to bin/knit; closes #525  also need to allow output=NA in knit(), and add an 'output' argument to knit2html()
+ccc6055926906924843425d0bb6b27911ddce7c3	Fix reactivity for empty checkbox groups. Fixes #58
+06e424b6144355e3deb49930c1ac725438333c31	Merge pull request #278 from jonleighton/deploy  fix lib paths for dump-symbols.sh
+2dcf721ceafe3e4b6543c1fb0309801447fd2810	fix namespace bugs in ext_class/ext_reflection  - ext_* functions that call Unit::lookupClass were not correctly handling denormalized names (ex. \FooNS\Bar), this adds a wrapper for this pattern and calling it. - ReflectionClass::subclassOf should be using f_is_subclass_of  Closes #827  Differential Revision: D945363
+959f8ca32330f088facf8cfc29ba7e7cafbab908	Merge pull request #277 from jonleighton/deploy  A couple of packaging script tweaks
+eaba93f75bfae887a6d538b355e321fad31f13f4	adjust ArrayIterator internals for zend parity  HHVM's current implementation promotes internal state to possible subclasses.  This is meant as preparation to support RegexIterator in a separate commit, because the Zend tests rely heavily on the internal var-dump representation of ArrayIterator.  Closes #989  Differential Revision: D943461
+ed5a9dc09f31fea5c8f5e8327439c9e3809ab935	make simplexml xpath return original objects  Currently, xpath just creates new elements. This means that any modification done to the return object will not change its original parent.  xpath can also traverse -up- the hierarchical node tree, so we cannot just recursively go through children to find a matching node. this is why an additional m_root was introduced, to keep track of the root node of the current tree.  Closes #986  Differential Revision: D943404
+23469d6cdebdb7ae93bde3fa291cbf2897032ebe	Merge pull request #276 from jonleighton/breakpad  Breakpad / deploy stuff
+e5f695a0b43bba84641c0d5a9fdeb981396ed639	Merge pull request #275 from jonleighton/stacktraces  Fix segfault when using e.g. console.error
+09fa9a6f187b6a544135e9798dacb43a73ae44cc	Allow installs from private github repos. Fixes #116
+095697e789eee25597479745370f0fe3851c53e9	Use new URL for runGist. Fixes #57
+d6f4be7d07614f749b146b846829e88d4decc2fa	Fix libevent keepalive memery leak  Closes #997
+c3c65df12d45a053cd8f098e371f759b575afc69	Merge pull request #273 from ferama/master  fix wrong pdf margins using custom header/footer
+84e61d1f944395d240981623547cee4fb4c2952f	Merge pull request #994 from staabm/apt_fast  speedup travis ci build using apt-fast and paralleled downloads
+37cfc05a9b0adfc16abaabee3a27dc1be6c27afa	Merge pull request #272 from detro/master  Minor adjustments before 1.6
+9e6e53583cc52c3f0abded52d057fefa006a4003	Merge pull request #49 from wch/png-cairo  For png output, try quartz and CairoPNG before plain png
+92641497cc3a0c559304cd5841b3b69239a64ebb	Fix Zend string_crypt() to report failures properly  strdup(crypt_r()) can result in a segfault if crypt_r() returns null.  Closes #983  Differential Revision: D940753
+60d247d450f2197828918e723accb7f589770aea	HHVM should compile with libmemcached 1.0.9+  libmemcached 1.0.8 broke the memcache/memcached extensions. It is also missing some API support we need, so this should unbreak us as of 1.0.9+. 1.0.8 plain won't work but earlier and later will.  Closes #934 Closes #973  Differential Revision: D939850
+9bdf60c0a95ad71e5e6a65f59359663101e1c9e6	ReflectionProperty(null,null) should throw  ReflectionProperty constructor should reject nulls  Closes #975  Differential Revision: D939337
+d2981f6f81e573d22881751c622c8540cc18c286	fallback to default separators in number_format  When number_format receives 'null' for one of its separator parameters, we must pass it back to t_number_format so it can decide whether or not it should fallback to its default separators.  Currently, when passing NULL to a parameter that is defined as String, it is implicitly converted to an empty string, and subsequently str.isNull() will return false.  Instead, we use a Variant with a default string value.  Closes #982  Differential Revision: D940482
+f9d0c1128a3b558790e5b2771ae8e2133d17bfcf	use trigger_error in PHP for Redis user errors  - trigger_error is intended for reporting user errors, not error_log  Closes #970  Differential Revision: D937921
+7a8c8474ecc2f6e17ff82e880a84d8c64ee40b32	multiple simplexml fixes  - multiple fixes for simplexml required by magento  Closes #790 Closes #819 Closes #955  Differential Revision: D925428
+fe6cfe9fa3bf095a1d04e64daed6f2b2f75da61a	fixed serialize/unserialize for SplObjectStorage  added error handling for bad serialized strings according to zend tests. We cannot move the actual tests from "bad" to "good" because ATM they rely on the internal serialized string format of SplObjectStorage, which is not yet reimplemented.  Closes #969  Differential Revision: D935251
+c877f4b737388ba211eea8f8126286232506096a	Implement ReflectionParameter::IsCallable()  The Facebook SDK unit tests fataled because ReflectionParameter::IsCallable() was not implemented. So, this implements it. Now the unit tests pass. Bad zend test now passes!  closes #931  Differential Revision: D938769
+a272d660a633ff0c92ccc3f83ed3981a520c17cb	Merge pull request #271 from jonleighton/deploy  Provide scripts and workflow for building Linux packages for release.
+d6ca6aba774fe80763af003dd07f4c436ca16862	use a different strategy for R 3.0 to remove empty plots; fixes #502
+d400153b2108cd6d274d68f23e6db8463632e243	move SplObserver tests from bad to good  move basic tests for SplObserver  Closes #968  Differential Revision: D935248
+b5ae1aab3a8162ed051ff977ea962f4d7afb6a3c	Fixing typo in zRevRange function  The zRevRange function argument $withscore was referenced within the function as $withscores. Changed argument name to $withscores so they match.  Closes #941  Differential Revision: D934709
+93e30adfaf55037e1793b7147aa1764676706768	SPL + filter extensions should report implemented  - Report that we implement SPL and filter extensions (needed for Drupal)  Closes #946  Differential Revision: D931374
+efc12df155405e9f80a3d5204fd933bf7eeb1cf5	add SplObserver and SplSubject interfaces  - add SplObserver and SplSubject interfaces  Closes #953 Closes #960  Differential Revision: D931324
+83cf970abf1b47ba219eefe5de96cc89b44b60cb	add asciidoc in the output format (#510)
+4a04f1ccbadfcdf205eeec765bbe0377e68e8306	__get should be allowed for invalid properties  - Consistency with PHP, __get of an invalid property should return an empty string instead of fatal  Closes #951  Differential Revision: D925220
+c89dd6c379187ff52dd84edc2db9dd4995bbee1c	Fix issue #41: reactiveTable should allow print options too
+7455ae3fd81b6d86c91596c79fb647134ba818d8	Merge pull request #140 from wch/github-pull  Install from github pull requests
+068f3e0a436eb27a1b223bb1cf6d56597eba68c2	Merge pull request #32 from edwindj/master  small bug: checkboxInputGroup sets html attribute "selected" in stead of "checked"
+95635a8c47892a2b30f1d8d75ba38e7db807a99d	Issue #37: headerPanel HTML argument shows up in title
+3ec207182075a3fc8fed5ada8b9f00f6f3fcfe48	Address issue #35: Allow modification of untar args
+1696db30443630a1676ee0c917f1c3e065e509ca	Fix issue #36: reactiveUI does not always correctly render sliders  There is a deeper problem here, that reactiveUI output that renders stuff to the <head> will generally not work. We're not in a position to fix that yet and this problem has been reported twice, so we'll just fix this instance by making the slider dependencies built into the framework.
+80f7a70793bbe4ebb271fbc73947d2381e95bbc3	add @richierocks to the list of contributors for #510
+c968eff1d948f06937606cace5631f9e32bcce0f	Merge pull request #510 from richierocks/master  AsciiDoc additions
+fb784ce96297a51c19b8072dd3d45ffc518153f2	Merge pull request #28 from rstudio/list-to-vec  Change lists to vectors in UI elements
+51ab11c6d95178037f1e53013cb50bb3ce4fdfb8	Render page as a base64 string.  Provided API for the Webpage object: - renderBase64PNG() - renderBase64JPG() - renderBase64BMP()  Addresses [Issue #547](http://code.google.com/p/phantomjs/issues/detail?id=547).
+caf13651b73251b7b6fcf92674f8d5ea754dd372	Adding "window.phantomCallback()" within the page context.  The callback is harmless: if the user registers a "page.onCallback = [Function]", that will receive any JS type passed via "phantomCallback()". Also, if the handler for ".onCallback" returns a value, that is passed back as a return value of "phantomCallback()".  Also, added "page.onConfirm" and "page.onPrompt". This solves [Issue #133](http://code.google.com/p/phantomjs/issues/detail?id=133).
+2e41ef09a90afce95ca507020083c0bac152bfd7	forgive ~ as well (#513)
+24635850de7bea6b1007a940e91cc0483c1c4854	permit : in fig.path; fixes #513
+9016abffaf1bead282dd9a4b7cef26d3c264e53d	use setCookie instead of manual header building  Instead of manually constructing a cookie, use the setCookie method provided by Transport. This prevents the following kind of condition:  Imagine:  application runs setcookie with null params to delete a cookie. application runs session_regenerate_id to get a new session id. session_regenerate_id then constructs a new header through m_responseHeaders. Eventually, Transport will generate headers, but will always put m_responseCookies after m_responseHeaders in the full header.  Uh oh! Now we have accidentally deleted a cookie due to incorrect header order.  Closes #950  Differential Revision: D921467
+37003332ac35eefc1fc96480737b77614265512a	Merge pull request #267 from jonleighton/breakpad  Add a few more missing Makefiles.
+fc49abc9fb892db3214a1bb0f5df5c86b5216084	Fix issue #27: Warnings cause reactive functions to stop executing
+cec3fdd8a0c7f8d6891f780fa907e14e94721d0c	Merge pull request #264 from jonleighton/multi_file_input  Handle multiple file inputs.
+8d366f9328ddaa657fdadefb8de183dd1e00f539	Merge pull request #262 from jonleighton/stacktraces  Error.stack returns a string to match V8/Node.js
+cd65c63af1e6befda55018c37e459c1c3a6f97c4	Merge pull request #263 from jonleighton/breakpad  Compile the breakpad client in directly.
+fb7a5191f98eac305c03d7b392c0bc6c349cbcf6	Merge pull request #261 from b-long/patch-1  Switched link for GhostDriver, since GitHub page appears to be missing.
+7dfa7d7426e48dbdda1e301d08e5f34549160a33	Fix issue #26: Shiny.OutputBindings not correctly exported
+1ecc70eeff960050ba3444b1801f2ed5c11a5db2	Fix arguments with __call and call_user_func_array  - Fix call_user_func_array to be Zend compliant, see new test case  Closes #939  Differential Revision: D917994
+d01149620f199b87344dd5587818826c320049eb	Fix issue #19: Checkboxes and radios can't be added dynamically
+ab9401f390796fae905bc54ef4a13424c056e77d	Fix issue #20: DESCRIPTION file should use Imports instead of Depends
+7448af2f691c0260f7f05b18ffb119b999f5baf5	Merge pull request #254 from jonleighton/static_inspector  Fix remote inspector + static build.
+1989184fa1bf21e052e76530888213f98557249e	Merge pull request #248 from neraliu/localstorage  Add --local-storage-quota and --local-storage-path options for issue 300...
+824ad9d9d85c00a920b7b7d46cc28143095b15a6	Merge pull request #253 from jonleighton/stacktraces  Improve error handling
+4c563426d339b9f5dc394377a885345209324aec	now cached chunks are evaluated in the same environment as normal chunks, and users can set cache.vars as the variable names to be saved  this is an ultimate fix to #456 and also solves the problem http://stackoverflow.com/q/15810976/559676
+7aaa589234b3f0cedc702ebfb08d4de4cc315f86	add the publish argument to knit2wp(); closes #512
+328607b4a8648f6d12f0a43307c9a992a7cf04e0	use f_php_uname() to replace hardcoded PHP_OS  - PHP_OS should return the real OS instead of Linux  Closes #933  Differential Revision: D914263
+c36febd64f886a0203aea51b6005d7d8ecbe5b27	Update readme to fix #114
+5507de63f3a513697c6ca582ec21218b596ea5d5	Merge pull request #511 from myqlarson/adjust_faq_wording  Clean up punctuation and wording
+9880c504b870ef78ccea5da86ee5ff7e7e21ffe9	add the text argument to spin() and stitch(); closes #509
+363633b01f8d2018b61d74d8cb4070d5059f904f	Fix issue #10: Plots in tabsets not rendered
+d49e8d172ffa8976a4fa31ce5201c56c125b7dcb	Improvements to reactives and UI  - `input` object now implements names() and as.list() - Simpler dependency tracking impl using Dependencies class - New `singleton` function for making HTML content appear only once - Fix issue #4: head deduplication should not be line-oriented
+aca75010557928136163a51b9852bea1e5711508	partly revert 8aebe2ed: bring back the `output` argument in knit2pdf() but document it more clearly  now fixes #500 and closes #508
+8aebe2ed80056970713c5ea5d270c21c168642b4	remove the 'output' argument from knit2pdf(); closes #500
+57ab3fadf3a8d0f6c66bcfdefcda99a0b211f9ec	change the progress bar symbol to be . instead of > (less intrusive) #395
+93844bc0bf30f6595f6ba9052b3f3ddc5d6289bd	Merge pull request #504 from jtoloe/master  knit() should no longer output to a file in child_mode(); also closes #503
+f27622b4e1ea4629fd23ae1020fff3a79db5d3dd	Merge pull request #932 from danslo/libevent  register_libevent_server has to be prefixed on OSX.
+5e6d28e7653246d95b5dd5a88297e0025fc083c2	Merge pull request #95 from jiho/feature/options  Use package-wide options to set some preferences.   Fixes #94.
+2451001d817df18e0182cbed64f7c0957e142498	Create an import script for LineNoise.  This addresses [Issue #409](http://code.google.com/p/phantomjs/issues/detail?id=409).  The script: * Get the latest code. Since LineNoise is pretty small, grabbing the tarball straight from the repo should be just fine. * Extract and place the files in the right directory (src/linenoise). * Remove unnecessary stuff (project files etc). * Update the src/linenoise/README.md to refer to the revision being imported.
+ae3add1459f51ac9a5efc72fe4ef5c2c7bf2111e	Better collate handling.  Fixes #14
+29b3d666be390ed2a3b7505eaa88360653108d96	fixes #494: use the chunk label as the unique identifier for webgl objects
+5588e89b193f9fd82734baef96f327a4114e1ad7	If package not specified, default to current dir. Fixes #87
+b947636a57ed8332fce4010bf50033160d8a645f	Fix isset($string[$k]) and empty($string[$k]) to match PHP 5.5  The behavior of isset($x[$k]) and empty($x[$k]) where $x is a string has changed in a recent version of PHP. This diff updates HHVM to match PHP 5.5's behavior. Note that HHVM still does not match Zend PHP 5.5 perfectly in terms of warnings for these expressions; I've decided to put that off into a separate diff.  This also brings HHVM up-to-date with respect to some edge cases for automagically converting integer-like string keys to integer keys when indexing into PHP arrays.  Closes #844  https://github.com/facebook/hiphop-php/issues/844  Differential Revision: D905081
+01f9071dc959d23fec62ba48ea633684ee277da6	Add with_debug function. Contributed mostly by Andrew Redd.  Closes #91
+53ba22df8cbedbe7290e78f81b0de9c73f4ed151	Use registry to find Rtools. Contributed by Andrew Redd.  Fixes #92
+95ad0d3d6bb3f38ed8bb18cd653f1a05897e00e7	Merge pull request #98 from wch/check-args  Add args for check(), and option for cran
+ad41f51eea54c437429328986eec553ca1865e6f	a pandoc wrapper; closes #206
+9ac925663d826c90ce2b9bd29cb108bc6a0b798b	Install package from bitbucket. Fixes #96
+49c2900767566ff0db8d2ea941d1f72fca02f36f	Adding short version of "--help" and "--version" command-line arguments.  This covers [Issue #408](http://code.google.com/p/phantomjs/issues/detail?id=408).
+9e9ed365378d5d4f15361537ebb2ed678af9ef19	cosmetic (the envir argument has been added in #490, so close #491)
+e3a97ae1a0852e6bcfc17f756c4ecc3b7d05c23e	Keep source when installing. Closes #90
+7a48673138f80a6fd60747d3a5f305327019edc7	add Jeremy Stephens to contributors for #490
+3bbb2d22e71b04238063725f6f51d9443c793f5b	fix compile_string memory leak  Fix memory leak in compile_string  Closes #879 Closes #917  Differential Revision: D908222
+fcaef7b1a417b56bf49bd64a776f6d4c3c2e6533	Merge pull request #66 from kohske/feature/gist  Bug fix in source_gist
+7a5b1960a90b0ab3d9aef5fd6bf3f439176665c7	add @BrianDiggs for #489
+8f0f18f56ed2cd7b1e4a1960b6396ebe8e2739c2	With suite. Fixes #89
+ba05c1d0d6be4ed8953965c0fea82560c2148f46	stats URL/response code filters did the opposite  - Per Github, URL/code filters, if specified, actually filtered out only the code/URL as opposed to restricting it to the URL/code of interest  Closes #912  Differential Revision: D906156
+64b1ffe6248edf405c5c0778c74ad78c1b062b6c	gcc 4.8 compilation fixes  gcc 4.8 fixes from Github  Closes #889  Differential Revision: D900456
+233f878ecc9fd2caa7eb84d16180520358fe1558	Use httr for web requests and stop on http error. Fixes #82
+907c180d8aecf6ff45e2ae1c5c05e893bd80b178	Merge pull request #490 from viking/knit2pdf-envir  Add envir as parameter to knit2pdf
+e9fb0f49ee441a8d109b398022fe917f4842db7e	Merge pull request #489 from BrianDiggs/knitr-rd-envir  Promote envir to named argument in kint2html
+1e1654d7ffa184127ec7bf12989850ec43e70a07	Accept command line args in install. Fixes #69
+8c40aa70dfb58ef516cf95d3379927af964e4314	Add subdir param to install_url family. Fixes #64
+422669192b9c91be265178c98716cbfbd0a21561	fixes #487: should not set out.width='.6\\linewidth' for Rhtml and Rmd; only applies to Rnw
+a5c3721d402df79e0161116fdcfed45def66c764	More release questions. Fixes #79
+096a723a3eac96f831038f01fa1633ed3c9c1470	Better revdev tools. Fixes #78
+2ddb2189fdf12c101be88f3163ad13593a172b98	Set EnableXHP=0 by default, improve how the lexer works when EnableXHP=0  A couple of developers on github have reported that they've hit errors at parse time with certain expressions that work under Zend PHP, or that they have gotten output unexpected tokens from token_get_all(). A lot of this is related to the lexer/grammar rules for XHP, so an easy solution to fix a lot of these issues is to set EnableXHP=0 by default and to make some changes to the lexer to make it more Zend PHP compatible when EnableXHP=0.  Closes #740 Closes #846  https://github.com/facebook/hiphop-php/issues/740 https://github.com/facebook/hiphop-php/issues/846  Differential Revision: D905986
+8b29b4db507ff51104203d058831cbfa7558b2ed	New quick option for install. Fixes #77
+dbbce1ce5527dda38ca1bd8aafd2f90af28c0184	Load .RData files. Fixes #81
+3d982b442960f8f436af49bb43775729c21e10d5	Quote path in install(). Fixes #76
+7b31b7f9dbf3efc4bfcb179cfef51d9f26fcd200	closes #483: chunk hooks are run even when engine is not R
+0ba63997a8773e9c1efb9c629b51e074c708412c	Merge pull request #84 from mnel/patch-1  expand into the target directory instead of a second call to tempdir()
+e652debb77e755f26686ecf9652e84e8ff402fda	Update News with note regarding #84
+a409f4cf057e17253e18072e3f216adb88502665	Use --as-cran. Fixes #68
+a414a1834b379928b0eff545272ba9b340b21fd4	Quote libPaths. Fixes #73
+723fea526a1f5d94d89f8c91f0abf1fe68afe706	Doc improvements from kenahoo. Closes #67
+f714b79fd542b9ead4af97d9a0b0fa3065d5b2f4	See if rtools is already installed. Fixes #65
+d604814168b10d7b2a67e674e256ffe237689d7a	add Heewon Jeon to the contributor list for #480
+c63bb0ad59c40a4001925c4732a3cb90d1abef1c	Merge pull request #480 from haven-jeon/master  Unknown encoding on title parameter.
+176859ea7cce0b2293e806032e93a072f558e9de	Source R files in data directory. Fixes #45
+753a3dcd009d5ba420e3f999a569d248688ccc27	Merge pull request #41 from edwindj/load_suggests  load_deps also loads "suggests" packages
+df9accc93f85a01cd222185e6c7f19bb6746b0fa	Merge pull request #49 from kohske/feature/gist  new feature: source_gist and source_https
+56a24bcc1a61a8f7ec726e652d73f583cd93a2b0	Merge pull request #37 from kohske/feature/dev_mode_prompt  show dev_mode status on prompt (optional)
+a168863d5e1876cce72805e37becc77e91d8ad24	remove dead option from docs  remove MaxStackDepth from docs, not used/implemented remove unimplemented memcache-related statistics/settings  Closes #911  Differential Revision: D904848
+9e36d6a2ae38bbd05bf9f59a5f6e63ce10f6fe49	parallelize test runner on non-Linux platforms  parallelize test runner on non-Linux platforms  Closes #903  Differential Revision: D904203
+3d196973ffcf91ff64af7708cb529f32e618dbb9	Better strict mode for examples. (Fixes #51)
+f05b722ba6d1946f6265962e33e6e5e200b3e29a	Pass ... onto install.packages. (#54)
+2b5c2864f885e6f49b2f91f0d8b44c7e05d8254e	changed mind on #395: use the global option instead of environment variable R_KNITR_PROGRESS for package option `progress`
+4301b7e11b19047801fee3220f522a8d03be8513	Clear cache on load_code error. Fixes #55
+49c8421773db448cc3d40fade9f0ed2396461880	Use system2 and set R_LIBS. Fixes #50.  Fixes #24.
+d5bd8d98b4699ee68635bf4ab3d57baaf816b138	closes #439: use Imgur API v3
+477152e179f096a53c888f7d86283930b89ec15b	closes #467: I do not need to do anything now; Duncan has done almost everything in R devel
+e9e127b555e596bcd5376a44784e423f769258b0	ajaxorg/ace#1131 has been fixed, so revert commit 546712995c01dcab0754a7aef0e578065c76ad9a.
+53a869d1d66903e4eb393745c151ee07943eb403	Fix how "$obj -> class" is lexed  At present, "$obj -> class" (with spaces) causes a parse error under HHVM but it parses okay on Zend. The problem is that HHVM's lexer treats "class" as a keyword when there are spaces after the "->". This diff fixes HHVM's lexer appropriately.  Closes #833  This fixes https://github.com/facebook/hiphop-php/issues/833 .
+f211288d4ff588a4651d10711d6121f7d3873b43	Make sure dev library is a library. Fixes #25
+10d0330ad6764813d4ecb2e7c7d134b7adf5fc3f	Esnure configure is executable when installing remotely. Fixes #32
+734c3e853ba8b49ae060cf6c7f90e5d4bee376e6	Vectorise install and improve docs. Fixes #26
+230f82548f370e845c2e27c3e712502933c47896	install_gitorious function (closes #33)
+651fd25ab493b542448585f046b5320517817177	closes #395: use the environment variable R_KNITR_PROGRESS to suppress the progress bar
+095e163a1d9fe66932f434d5603e979ba1fca8fb	Use m_conn rather than PDOStatement::dbh within PDOMySqlStatement  It's possible for PDOMySqlStatement to try to access dbh before it's initialized, but m_conn will be set by the ctor.  Closes #851
+e70567994c13ae9555596217e4f2843f2eed27d2	fix shutdown crash when using PDO  - fix shutdown crash when using PDO  Closes #710
+8747ed1f8ca144408958cfcdc68a5215988cbbd0	Better paths on Win64 (Fixes #35)
+d40fb8e6371b4e80128fc1418432fac6391f3c62	Merge pull request #199 from execjosh/fix-issue-367  Charset option for `fs.{open,read,write}`
+86e28b0bf14e378a646cfc2f30040d948d5b9ac3	Merge pull request #200 from execjosh/fix-issue-365  Assume local file if URL scheme is empty (Issue 365)
+2ed8acb63056a566bc8f88977d47c2651b8d1b7f	Merge pull request #189 from detro/master  Minor fixes found during my catchup process
+4e5319771ca326e1aedc1f2fa8d3902ebab4062c	Merge pull request #187 from jonleighton/qt_48_fixes  Qt 4.8 fixes
+ba7289e4b063a4da2f79c1586948f5b4e75930b2	fixed #465: when eval=FALSE and echo is numeric, should use `echo` on `code` instead of the list `res`
+47c183cc778e3bbd346a322c705c3196678b3127	Merge pull request #28 from WilDoane/master  Added guard check for the setting of document.  Fixes #27
+d618b30ed7a6340e01cf307422b5e5595698e4fb	no POSIX timers on OSX  - unbreak OSX build  Closes #891
+4c5969b367d2b8582abc3b0018e18456a7377497	Merge pull request #2830 from petertodd/p2sh-rpc  P2SH related RPC improvements
+4e8b57f02c2fd6be7b9984f8a10f99546444728a	Be explicit about install.packages. Fixes #22
+11a79680b174ec39d462925ea565a23aa8c147ad	Merge pull request #2979 from luke-jr/autoconf  Autoconf fixes
+85311c1ef8b438a93ecf04c100e877fb49634a90	Merge pull request #2982 from gmaxwell/20130908_ccoins_corrupt  Longer term workaround for chainstate corruption from negative versions.
+b34e08c796aaf733ea39c10aeb7638be2a143a40	Merge pull request #17 from BrianDiggs/patch-1  Changes for dev_mode for windows and in its documentation.
+2bc004c658ab14f1708a40e1e15536d00553d50d	Merge pull request #2961 from Diapolo/cosmetic  fix some cosmetic glitches in the codebase
+2bc3d1aac48dd9817aaf72502181106cf07434a6	Default should be fallback.  Fixes #20
+c3782ab6fe80177dda2269c9079ceb6446f1b90a	Merge pull request #463 from nachocab/coffee_engine_rc1  store coffeescript input in a temp file before calling system(); closes #460
+a7bb065194661daa999874d01b40f7bbbd35dcb5	coffeescript input is stored in a temp file before calling system()  #460
+4c723841e25650f045ed55b1e6a619d6d43398d5	Merge pull request #2968 from TheBlueMatt/master  Don't warn about forks while fIsInitialDownload
+8394f4a2dc77401529f441ea77246390bae1262c	Merge pull request #2977 from laanwj/2013_09_release_process_protobuf  Add protobuf 2.5.0 download to gitian release process
+93dd47837025cad3f079312abb6aa96155df37b3	Merge pull request #185 from Roejames12/master  Last changes
+15fd245b9a4754485d1a272acce53bcf3290839f	Merge pull request #2943 from theuni/autotools-final  Autotools buildsystem
+495242c1adff8832d7d30b920aa71f31dd63a2a6	Merge pull request #2976 from laanwj/2013_09_txid_details  qt: add vout index to transaction id in transactions details dialog
+9d6b60cf50ffcf2cd35659afa1a7f5dd5bfa06e3	Merge pull request #2973 from Diapolo/qDebug  Bitcoin-Qt: Use qDebug() for printing to debug.log
+a2e9931408b4d00290ab4502eb7afbce7770f882	add the contributor Nacho Caballero @nachocab for #459
+d22d9753cc7175a7cf0ce440b96d83277747ecb9	Merge pull request #2978 from gmaxwell/rpc_settxfee_doc  Make settxfee clear that units are btc/kb.
+2fee100f036626866e5dca3f27b7562da25e43f3	Merge pull request #2944 from gavinandresen/acceptheader  Set Accept: application/bitcoin-paymentrequest header
+dd30937ce3d6c09bd6e435fab94286e0bea92a11	Merge pull request #2948 from jgarzik/changeaddr  RPC: add getrawchangeaddress, for raw transaction change destinations
+f4f048ee58b4ad8ecd0472f375e6d9bfdb629873	Merge pull request #2958 from laanwj/2013_08_txfee2  [Qt] Display txfee in first sendCoinsDialog message box
+2c27bbca81a55ffe0687466446ba1f92040ab551	Merge pull request #2967 from tstranex/master  Fix typo in a comment: it's base58, not base48.
+1537d174d7fc8ac0a2a35637882b46d4cda57607	Merge pull request #2951 from laanwj/2013_08_addressbook_purpose  [Qt] Handle address purpose in incremental updates
+2534d05c63b414e1175b5f1a6ec2e429059f9464	Merge pull request #2963 from Diapolo/log-qt  Bitcoin-Qt: allow to differentiate Qt log entries from core
+fdd1d9c5bee0efc0392b46eb25bdfe0219191849	Merge pull request #459 from nachocab/coffeescript_engine  added coffeescript engine
+f19eda1d5735c90ad76faa13186791f3033e67b3	Merge pull request #2959 from jmcorgan/fix-typo  fix the typo fix in linearize.py
+1b63ea872e86a4ae55c77c003357be5672438e60	Merge pull request #2957 from Rav3nPL/patch-1  fix help prompt
+329de9bb64755fa6fd798a02df0fa6a494864c43	Merge pull request #2955 from laanwj/2013_08_htmlescape  qt: Use GUIUtil::HtmlEscape to escape HTML
+fa4d4f668c7a7674a48b45a39ada59be7655fa5e	Build improvements thanks to Jeff Laake.  Fixes #19
+04081ec2d3393cbcaa89e8cc68f9534a177bad1e	Integrate UI builder into Shiny  Replace example #1 HTML with builder
+1a12b3e09079c26deb48a547cdfcc7ffdd176dee	Merge pull request #2930 from Diapolo/displayUnit  Bitcoin-Qt: fixes for using display unit from options
+5226903e29ee50e7b9e167a1dd4a120ef7a8956b	closes #438: links in manuals and examples have been updated
+6f096e1ed7a833884182a69cc4c83d263f596462	Merge pull request #184 from wangyang0123/fix-url-for-onResourceRequested  fixed TypeError when call e.url in page.onResourceRequested handler
+ae6eac667baf93b39e1f06726ff5efa98b2505df	Merge pull request #2940 from Diapolo/checkpoint  move Checkpoints:fEnabled from step 2 to step 3 in init
+ff33a3470dd1d1446549d02609c991c0490e0fdf	Merge pull request #2931 from Diapolo/intro  Bitcoin-Qt: add testnet check and icon to intro dialog
+1ef0067eab27b9101641b28acc177038e3dae11d	Merge pull request #2904 from gmaxwell/newaddr-no-passphrase  [QT] Don't ask for a passphrase to getnewaddress.
+bb7d0fc12fcfbb2a91e39cb49f2a0873344dbae0	Merge pull request #2928 from jgarzik/cnb-txout  CreateNewBlock / getblocktemplate cleaning
+b62dc051aa44ee73e24b49dd9337de2434b89710	Merge pull request #2938 from petertodd/op-reserved-weirdness  Document and test OP_RESERVED weirdness
+84a339b10a18f321bd31597266e7be7c13ea7837	Merge pull request #180 from Roejames12/master  Updates
+042df135067b9f18d4ffe0e54ff54f31ee45dd10	DB/Update: Warm Up - credit update  Fixes #10804
+f0cd684cd1f944622baac2164aa05e015e6d8060	Merge pull request #10800 from jackpoz/log_race_condition  Core/Logs: Fix race condition in Log
+8a9e538227b077b05c93bfec8e5ce1cca0bb366a	Merge pull request #2935 from sipa/obounds  Fix out-of-bounds check
+ddd7774f8778f34b924b9d5ebca171c1417ac942	Merge pull request #179 from v1o/master  Passed test results failed count as exit code
+b460ad3f574b21edccd6865bd6f0a9a5c9999bb7	Merge pull request #182 from jonleighton/fix_qurl_segfault  Workaround Qt 4.8 segfault  http://code.google.com/p/phantomjs/issues/detail?id=304
+2e15f78305cd8be65bf43236482d1446d0b0d970	Merge pull request #10801 from jackpoz/account_password_crashfix  Core/Commands: Fix NULL dereference crash in .account password
+6581d7db85987970ff3bec57fa81aa76ce39c038	Core/Commands: Fix NULL dereference crash in .account password  Fix NULL dereference crash in .account password added in bd8d0cfbce9a38e0f2fc8b6903434c3553faf143 Fixes #10791
+1b3575ba772124d2e7a8173a5d35dc9d2d271a8a	Core/Logs: Fix race condition in Log  Fix race condition in Log by using atomic operators.  Helgrind log:  Possible data race during read of size 8 at 0x7379D98 by thread #1  Locks held: none   at 0x15AE9C7: AppenderFile::_write(LogMessage const&) (AppenderFile.cpp:59)   by 0x15ADFF8: Appender::write(LogMessage&) (Appender.cpp:106)   by 0x159F14E: Logger::write(LogMessage&) (Logger.cpp:83)   by 0x15A215B: Log::write(LogMessage*) (Log.cpp:290)   by 0x15A200F: Log::vlog(LogFilterType, LogLevel, char const*, __va_list_tag*) (Log.cpp:272)   by 0x15A2682: Log::outInfo(LogFilterType, char const*, ...) (Log.cpp:364)   by 0xF7DA28: Master::Run() (Master.cpp:296)   by 0xF835E8: main (Main.cpp:142)   This conflicts with a previous write of size 8 by thread #10  Locks held: none   at 0x15AE9D7: AppenderFile::_write(LogMessage const&) (AppenderFile.cpp:59)   by 0x15ADFF8: Appender::write(LogMessage&) (Appender.cpp:106)   by 0x159F14E: Logger::write(LogMessage&) (Logger.cpp:83)   by 0x15A215B: Log::write(LogMessage*) (Log.cpp:290)   by 0x15A200F: Log::vlog(LogFilterType, LogLevel, char const*, __va_list_tag*) (Log.cpp:272)   by 0x15A2682: Log::outInfo(LogFilterType, char const*, ...) (Log.cpp:364)   by 0xF7EC1F: FreezeDetectorRunnable::run() (Master.cpp:98)   by 0x15A5B3E: ACE_Based::Thread::ThreadTask(void*) (Threading.cpp:186)   Address 0x7379D98 is 88 bytes inside a block of size 96 alloc'd   at 0x4C2C857: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_helgrind-amd64-linux.so)   by 0x15A0FE3: Log::CreateAppenderFromConfig(char const*) (Log.cpp:150)   by 0x15A1AED: Log::ReadAppendersFromConfig() (Log.cpp:244)   by 0x15A31B4: Log::LoadFromConfig() (Log.cpp:469)   by 0x15A053B: Log::Log() (Log.cpp:35)   by 0xF75CD1: ACE_Singleton<Log, ACE_Thread_Mutex>::ACE_Singleton() (Singleton.inl:13)   by 0xF754A4: ACE_Singleton<Log, ACE_Thread_Mutex>::instance() (Singleton.cpp:91)   by 0xF8351A: main (Main.cpp:135)
+3d86e7cd48f8a25a8f1b63a2e8220b56eb1f7b11	Merge pull request #2618 from fcicq/solaris-support  Partial solaris support
+1a5cc943e5caa751009d813ed3b7e95331cff8e9	fix HHVM compilation on FreeBSD  - fix HHVM compilation on FreeBSD  Closes #874
+750ae29664d0e1fd50df464790d8e6aaa666946a	Merge pull request #2852 from petertodd/getblock-chainwork  Add 'chainwork' to getblock
+cb4bf1fd97029d7bc163759b185505944f3947a3	Scripts/Ruby Sanctum: (Possibly) fixed Twilight Mending.  I don't have the computer to even compile a core, please report back. My logics shouldn't be wrong here from what I can read on the wiki.  Ref #10016.
+e9e2ef5fbd610fbaa3801440254c39ac4ba8f91d	Merge pull request #2926 from Diapolo/model_checks  Bitcoin-Qt: extend some checks for valid model pointers
+778df730ed6a10d211d16dab0b0194d0bb9c950c	hide knit_env() because it is rarely useful, and export knit_global() instead; fixes #456
+159c001f24517a75083137dea30de3f8eab091a7	support current_executable_path on FreeBSD  - add support for current_executable_path on FreeBSD  Closes #878
+4df862dd4cc6408fb95392f5fa9faeb1511d12cf	Merge pull request #10792 from Ascathor/master  Core/Command: Fixing .account password to no longer crash
+ca4d53a8443d91dc3b5e593008a3a72451f68c0e	DB/SAI: War is Hell  Fixes #3915, By Vincent_Michael
+0e2129289226b317f7c3dd01409adc81f934af01	DB/SAI: Strengthen the Ancients addition  Fixes #10778
+e4ed64a6b758d6e2d11f3e070e23d0ec50b40489	Merge pull request #10782 from Ascathor/master  Core/Commands: Fixing some problems with .account email
+72d15086b2092bd224489f1c57547885665e1a53	Merge pull request #10776 from xjose93/ArenaTeamLogs  Core/ArenaTeam: Add teamnames to logs.
+deb2fb7939e6d3dc3857ec9719bf876c37b594d3	Merge pull request #10781 from jackpoz/create_pet_creaturetemplate  Scripts/Commands: Retrieve Creature template in HandlePetCreateCommand f...
+9ca34c2e02ee9870a49f59a210b0dff483816bff	Merge pull request #10779 from jackpoz/murmur_unused_field  Scripts/Murmur: Remove unused field
+38391cd7746a720719ae1ee4a4b1335a6c2dda35	Merge pull request #10737 from jackpoz/clock_fix  Core/Timer: Better handle system clock changes
+baa159dbd4472a3cff2e4256fec60431878ae1f8	Merge pull request #10736 from jackpoz/localtime_race_condition  Core/Thread: Fix race condition converting time values to local time
+b60012f2b6770105557db2af40dc34947e884330	Merge pull request #2872 from Diapolo/GUI_wallet  Bitcoin-Qt: tweak Qt walletXXX.cpp/h code
+3420c70a470d1dc5193e3a755098aaff121c7fab	Scripts/PitOfSaron: some changes  Closes #10740
+e62f8d72f349aec0865268c089ae99fedd314af1	Merge pull request #2539 from gavinandresen/paymentrequest  Payment Protocol Work
+937981325101dae35ed07b214de4c32c53304ef1	DB/Update: Few updates  Fixes #10758
+356ba1e0ce29c12815d927e3c87193f3f877071f	DB/SAI: The Zephyrium Capacitorium(part 1), The Singing Ridge(part 2), Razaan's Landing, Ruuan Weald  Fixes #6322 Fixes #6323 Fixes #6324
+ddca805378340cc18870649c38bdb4ee3fd562d9	DB/SAI: Blowing Hodir's Horn (12977)  Fixes #10749
+be5cf42ec392e8526d3180e51ffaacb84e883fae	Core/SmartAI: Fixed creatures using SAI not attacking its charmer after it breaks  Closes #7601
+688a35e25dc70b000d87f128a631262768ed7cc9	DB/SAI: Trapping the Light Fantastic (10674) & Gather the Orbs (10859)  Fixes #7202 Adds support for the Alliance quest also, and makes the orbs go in tandem with the horde version script.
+fcf9552934aa671840e76293764cbfe60e7732a7	Core/SmartScripts: Fixed heap corruption in SMART_ACTION_EQUIP  Closes #10739
+00f3e423a523ab306ca183f6500c56c19518ea7c	DB/Updates: AI fixups  By @Aokromes, fixes #10733 #10728
+e4348d2179b5083769582b3036f40902b0122bbf	Merge pull request #2922 from Diapolo/translations  translations update for 0.8.4
+9578b5f87a4aa96e120b78f410ea90e141903dd7	Core/Thread: Fix race condition converting time values to local time  Replace thread-unsafe localtime() http://www.cplusplus.com/reference/ctime/localtime/ with thread-safe portable ACE_OS::localtime_r() .  Helgrind log:  Possible data race during read of size 4 at 0x6F183C0 by thread #1  Locks held: none   at 0x14E72E3: World::InitDailyQuestResetTime() (World.cpp:2772)   by 0x14E3A01: World::SetInitialWorldSettings() (World.cpp:1790)   by 0x101122A: Master::Run() (Master.cpp:164)   by 0x101740C: main (Main.cpp:142)   This conflicts with a previous write of size 4 by thread #2  Locks held: none   at 0x6C2D3BA: __tzfile_compute (tzfile.c:797)   by 0x6C2D036: __tz_convert (tzset.c:627)   by 0x164146C: LogMessage::getTimeStr(long) (Appender.cpp:23)   by 0x1641550: LogMessage::getTimeStr() (Appender.cpp:31)   by 0x1641722: Appender::write(LogMessage&) (Appender.cpp:80)   by 0x1633FCE: Logger::write(LogMessage&) (Logger.cpp:83)   by 0x16433D8: LogOperation::call() (LogOperation.cpp:29)   by 0x16428A4: LogWorker::svc() (LogWorker.cpp:45)
+287dc307bc28cb2c759e7fa4d92b55c030408aae	Merge pull request #10724 from jackpoz/guild_disband_leak  Core/Guild: Fix memory leak on Guild disband
+c3c5327fbddc0a742325337bd667bcc81fd8f8ae	Merge pull request #10716 from Discover-/SAI_Owner_Or_Summoner  Core/SAI: Make SMART_TARGET_OWNER_OR_SUMMONER also work for creatures su...
+8c70f8cb08d2fc3b38abcac25d421cdd92e25615	Merge pull request #10730 from jackpoz/scoreboard_fix  Core/Battleground: Fix scoreboard
+46ffea86e3f4d7ccf9c402d1b3253e6981fe3f9c	Merge pull request #10729 from xjose93/DebugSendOpcodeFreeze  Core/Commands: Fix .debug send opcode freeze if file dont exists.
+a65c0ac5769d390f5e039d272189ef0b0eee0482	Merge pull request #10722 from jackpoz/guild_startup_crashfix  Core/Guild: Fix Guild validation crash on start up
+ac954794244b147d018e4fa309cbc041e5c100df	Merge pull request #166 from jgornick/add-socks5-proxy  Added ability to specify SOCKS5 proxy type.  http://code.google.com/p/phantomjs/issues/detail?id=266
+6c0f723aa9cdf84a27af408645c8fb6d70b638f0	Merge pull request #175 from jonleighton/fix_mongoose  Explicitly link to libdl  http://code.google.com/p/phantomjs/issues/detail?id=115
+b056bc976c15364f81f80cdfb4f545a1e727612a	Core/Guild: Fix Guild validation crash on start up  Partially revert 58ec4e531914121144b6f852e3abf27cbb2f6fc4 and increment GuildStore iterator before validating Guilds. This is required because Guild::Validate() removes the Guild from GuildStore if invalid. Closes #8363
+7ef1f0738be5a063602ec75162626da34e4ecbcf	Core/Battlegrounds/IoC: fix fortress teleport pads (and replace a hack with an other hack)  Closes #5846 Closes #7993 Ref #8984
+d5d0802262637d5b32555ec453b2034b6be247b8	Merge pull request #10718 from jackpoz/console_fix  Core/Command Line: Fix memory leak
+61f44342471a4ac49ab8280ab61b92e17a74e76c	Merge pull request #174 from KDAB/inspector-for-upstream   http://code.google.com/p/phantomjs/issues/detail?id=6
+3ec941bacf99d94e43e9dc948b34d4591aff7af2	Merge pull request #10697 from Chaplain/authserver  Auth/Misc: Code cleanup.
+b3d5784d1f724cf0c5134a3d3e925e3da045115f	Merge pull request #10713 from jackpoz/movement_fix  Core/Movement: Fix uninitialized MovementInfo fields
+f77046ea1653746a5dc63470488f71cffc8156f0	Merge pull request #173 from KDAB/git-build  Add Qt 4.8 support to deploy script, along with some patches to Qt.  http://code.google.com/p/phantomjs/issues/detail?id=197 http://code.google.com/p/phantomjs/issues/detail?id=6 http://code.google.com/p/phantomjs/issues/detail?id=163
+085602a5e052f38d38e0e8c25bd600b5ff044400	DB/SAI: Guided by Honor 11289  Fixes #2263 Requires spell to give quest credit, hence the issue of being unable to turn it in.
+26373ee76633f6d3015b34fa68d3f50d4cd6819e	DB/SAI: Disclosure (12710)  Fixes #7192  The credit timing is very strange, it is given right at the start of the script, but that's how it is from Blizzard, so we'll stick to that.  As for the areatriggers, I know I could've just simplified it and made it into an areatrigger_teleport. But the sniffs state that it is the trigger that just makes the bunnies cast the teleport spell, so we'll keep that one complicated. This is the penultimate quest of the chain, the final quest is a WIP. Any additional info would be very helpful.  Regards, Kirk.
+6581ecee505b8cadb9e60f7171dd8f4a87261615	DB/SAI: Mystery of the Infinite (12470)  Fixes #10510
+5e03230f3d665b5ef7fa0804137ac711804b1cb1	Scripts/HallsOfStone: Sjonnir, some improvements - rewritten to BossAI - added spawn ordered by percent, according to official data  Closes #10702  Signed-off-by: joschiwald <joschiwald@online.de>
+69a0800cb7a6edfbffd3b007e4945dc8db5a5832	Merge pull request #10696 from jackpoz/socket_race_condition  Core/Socket: Fix race condition in WorldSocket
+68b447b24c659cc13a5c49bdea641808d3884ad4	Merge pull request #10563 from Ascathor/master  Core/Account: Make account password change security variable and various changes
+b986663ccdd3dfd8a93aad660839a315ca5c5bdd	Merge pull request #2919 from gmaxwell/bloom_faster  Update the bloom state on the real object, not the temporary one.
+449fb40aa93f4a7ad17e144548526e19247903c8	Merge pull request #2915 from petertodd/murmurhash-tests  Add MurmurHash3() unit test
+5250fdcc6cb32775f62e452d0c22ecc98cf3974c	Merge pull request #2914 from gmaxwell/bloom_faster  Performance optimization for bloom filters.
+3337481a4be33e74d97a35a9d3794f55c06c0e8c	Merge pull request #2916 from sipa/leveldb-osxfsync  Import OSX fsync change from LevelDB subtree
+9ce7792d8de2eff79b6928ebe8238a6bd63f748b	implement RecursiveArrayIterator  I went through all the tests that mentioned this and looked at them. All of them don't pass because of other missing SPL problems not related to this class (and this class is simple so I wouldn't assume them to blame to it).  Closes #766
+f388ceb8bd662bce372b7af0a5eebd95f1f68ac9	Merge pull request #10687 from jackpoz/farsight_fix  Core/Spell: Fix farsight log error "Player requests non-existing seer"
+f23b5fb96d46cc2eac3aa069a4d1a2aa0df16117	Core/Socket: Fix race condition in WorldSocket  ReactorRunnable::svc() checks the status of WorldSockets while WorldRunnable::run() updates them, causing a race condition.  Helgrind log: Possible data race during write of size 8 at 0x49961810 by thread #9 Locks held: 1, at address 0x4367A620    at 0x51781F7: ACE_Message_Block::copy(char const*, unsigned long) (Message_Block.inl:372)    by 0x15D048F: WorldSocket::SendPacket(WorldPacket const&) (WorldSocket.cpp:180)    by 0x141C45E: WorldSession::SendPacket(WorldPacket const*) (WorldSession.cpp:223)    by 0x15C49C4: WorldSession::SendAuthResponse(unsigned char, bool, unsigned int) (AuthHandler.cpp:37)    by 0x14DA71C: World::AddSession_(WorldSession*) (World.cpp:278)    by 0x14E601E: World::UpdateSessions(unsigned int) (World.cpp:2617)    by 0x14E3E67: World::Update(unsigned int) (World.cpp:1986)    by 0x100EAFA: WorldRunnable::run() (WorldRunnable.cpp:60)    by 0x163A626: ACE_Based::Thread::ThreadTask(void*) (Threading.cpp:186)    by 0x518F555: ACE_OS_Thread_Adapter::invoke() (OS_Thread_Adapter.cpp:103)    by 0x4C2B5AD: mythread_wrapper (hg_intercepts.c:219)    by 0x61DAB4F: start_thread (pthread_create.c:304)  This conflicts with a previous read of size 8 by thread #14 Locks held: none    at 0x1008414: ACE_Message_Block::length() const (Message_Block.inl:131)    by 0x15D1207: WorldSocket::Update() (WorldSocket.cpp:448)    by 0x1427CA3: ReactorRunnable::svc() (WorldSocketMgr.cpp:177)    by 0x51CBB16: ACE_Task_Base::svc_run(void*) (Task.cpp:271)    by 0x51CD3BC: ACE_Thread_Adapter::invoke_i() (Thread_Adapter.cpp:161)    by 0x51CD4D4: ACE_Thread_Adapter::invoke() (Thread_Adapter.cpp:96)    by 0x4C2B5AD: mythread_wrapper (hg_intercepts.c:219)    by 0x61DAB4F: start_thread (pthread_create.c:304)  Address 0x49961810 is 16 bytes inside a block of size 80 alloc'd    at 0x4C286BB: operator new(unsigned long, std::nothrow_t const&) (vg_replace_malloc.c:316)    by 0x15D0818: WorldSocket::open(void*) (WorldSocket.cpp:237)    by 0x1429560: ACE_Acceptor<WorldSocket, ACE_SOCK_Acceptor>::activate_svc_handler(WorldSocket*) (Acceptor.cpp:347)    by 0x142916D: ACE_Acceptor<WorldSocket, ACE_SOCK_Acceptor>::handle_input(int) (Acceptor.cpp:429)    by 0x515F48D: ACE_Dev_Poll_Reactor::dispatch_io_event(ACE_Dev_Poll_Reactor::Token_Guard&) (Dev_Poll_Reactor.inl:86)    by 0x5161653: ACE_Dev_Poll_Reactor::handle_events(ACE_Time_Value*) (Dev_Poll_Reactor.cpp:1015)    by 0x51ACCFC: ACE_Reactor::run_reactor_event_loop(ACE_Time_Value&, int (*)(ACE_Reactor*)) (Reactor.cpp:267)    by 0x1427C57: ReactorRunnable::svc() (WorldSocketMgr.cpp:170)    by 0x51CBB16: ACE_Task_Base::svc_run(void*) (Task.cpp:271)    by 0x51CD3BC: ACE_Thread_Adapter::invoke_i() (Thread_Adapter.cpp:161)    by 0x51CD4D4: ACE_Thread_Adapter::invoke() (Thread_Adapter.cpp:96)    by 0x4C2B5AD: mythread_wrapper (hg_intercepts.c:219)
+ed38441271cce53f88f7bff51677d5b1f942be3a	DB/Loot: Rework skinning_loot_template definitions, removing the horrible definitions ripped from wowhead and replacing them with a proper defined set of loot  Closes #10610
+af6a02a99bd767035f0096dc7c339a7b502319c3	Merge pull request #2913 from gavinandresen/checkpoint_250k  Checkpoint at block 250,000
+722a6c143ae9adbab020df4bae4495e612a677ee	Core/Account: Make account password change security variable and various changes  Settings within worldserver.conf:  Three settings for secruity level: 0 - None - No change to current system 1 - Email - Always requires the email entered on registration for confirming. 2 - RBAC - Groups applied with the RBAC role always require the email entered on registration for confirming.  RBAC default to every group. Changed some logs to make it more clear what is going on at all.  Emails may now no longer exceed 64 chars. Current email is used as regmail.  On account creation, two emails are saved. Registration email and normal email. Normal email is relevant afterwards. Registration email can be changed by console ONLY.  Includes new commands and changes to existing ones: .account fulfills several new functions: * Still prints GM Level. * If account has permission, it displays the current email. This is not defaulted to any group. * Security level is displayed. Also displays if user has RBAC perm if RBAC security mode is selected .account email allows user to change email with sufficient confirmation .account set sec email allows higher sec with higher sec than account to change the normal email. Registrationemail remains untouched here. .account set sec regmail allows console to change registration email. .pinfo now displays the registration and normal mail.  Also fixes .learn all crafts. Closes #10558
+ffa5683da32a0adc29cf75df56d4373956d68c45	Merge pull request #2911 from phelixbtc/patch-4  makefile.mingw: Fix Win32 RPC Crashes.
+450e38ce82450ed597d4f4d64c2bf7b3c15cecd8	if chunk option include=FALSE, use stop_on_error=2L; fixes #453
+fa4391d514ee5abb375d9726449122ef4ee334b3	Merge pull request #172 from KDAB/webserver-cleaned   This is the basic web server functionality.  http://code.google.com/p/phantomjs/issues/detail?id=115
+cd113666902b5b0b0f09eba005a25da01946bdc9	Merge pull request #10694 from jackpoz/loopcounter_race_condition  Core/Thread: Fix race condition in FreezeDetectorRunnable
+582686090d4c5f5b0d9a59648e63ca01b2888e0f	Merge pull request #10685 from Discover-/SmartAI-Target-Casting  Core/SmartAI: Add a spellid to SMART_EVENT_TARGET_CASTING. If left on 0,...
+c4bd91ceb9d46d4811e5f0d20a7b8eb625be7848	Merge pull request #10690 from Discover-/SmartAI-Set-Home-Pos  Core/SAI: Allow using SMART_ACTION_SET_HOME_POS with multiple target typ...
+b324646005482402a4fab8f2094ee3c1ec8a61cf	Merge pull request #10689 from Discover-/SmartAI-Killed-Monster-Credit  Core/SAI: Also use loot recipient for SMART_ACTION_CALL_KILLEDMONSTER wh...
+a762df0aba97a75c6061de41f8076f9f02b25dc5	Core/SAI: Fix processing linked events when return is used in ProcessAction  Thanks Discover-  Closes #10688
+e1e1067d172f9b1a6ba770ca6ae53a07dbc9d56f	Core/Thread: Fix race condition in FreezeDetectorRunnable  Fix race condition by replacing a static volatile uint32 with proper atomic thread-safe ACE_Atomic_Op<ACE_Thread_Mutex, uint32>, incremented in WorldRunnable::run() at each world loop and read in FreezeDetectorRunnable::run().  Helgrind log:  Possible data race during read of size 4 at 0x2400D54 by thread #12  Locks held: none     at 0x100FEA6: FreezeDetectorRunnable::run() (Master.cpp:106)     by 0x1637892: ACE_Based::Thread::ThreadTask(void*) (Threading.cpp:186)     by 0x518F555: ACE_OS_Thread_Adapter::invoke() (OS_Thread_Adapter.cpp:103)     by 0x4C2B5AD: mythread_wrapper (hg_intercepts.c:219)     by 0x61DAB4F: start_thread (pthread_create.c:304)     by 0x6C69A7C: clone (clone.S:112)   This conflicts with a previous write of size 4 by thread #9  Locks held: none     at 0x100C23E: WorldRunnable::run() (WorldRunnable.cpp:55)     by 0x1637892: ACE_Based::Thread::ThreadTask(void*) (Threading.cpp:186)     by 0x518F555: ACE_OS_Thread_Adapter::invoke() (OS_Thread_Adapter.cpp:103)     by 0x4C2B5AD: mythread_wrapper (hg_intercepts.c:219)     by 0x61DAB4F: start_thread (pthread_create.c:304)     by 0x6C69A7C: clone (clone.S:112)
+6f9099c0fb21b562173433b4af44198051c40941	Merge pull request #10693 from Chaplain/g3d-typos  Dep/G3D: Fix a typo in Vector3int32 += operator

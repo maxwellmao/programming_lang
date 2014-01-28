@@ -14,6 +14,7 @@ changing_file_dict={}
 file_changes_per_commit=[]
 commit_stat_dict={}
 (_pdf, _ccdf)=range(2)
+result_prefix=''
 
 def hist_data(data_list, data_range=None, N=1000, type=_pdf):
     if data_range is None:
@@ -80,6 +81,8 @@ def change_file_stat(sha, sufix=''):
                 if ext.find('/')>0:
                     ext=ext.split('/')[-1]
                 changing_file_ext_dict[ext]=changing_file_ext_dict.get(ext, 0)+1
+            if len(result['files'])>100:
+                sys.stderr.write('%s\n' % sha)
             file_changes_per_commit.append(len(result['files']))
             if len(result['files'])==0:
                 print sha
@@ -125,11 +128,11 @@ def query_commits_of_project(sufix=''):
         print index
 #    print '\n'.join(['%s\t%s' % (k,v) for k,v in ext_dict.items()])
     if len(sufix)==0:
-        fp=codecs.open('ChangingFile', 'w', 'utf-8')
+        fp=codecs.open(result_prefix+'ChangingFile', 'w', 'utf-8')
         changing_file_list=sorted(changing_file_dict.items(), key=lambda x:x[1], reverse=True)
         fp.write('\n'.join(['%s\t%s' % (item[0], item[1]) for item in changing_file_list]))
         fp.close()
-        fp=codecs.open('ChangingFileExt', 'w', 'utf-8')
+        fp=codecs.open(result_prefix+'ChangingFileExt', 'w', 'utf-8')
         changing_file_ext_list=sorted(changing_file_ext_dict.items(), key=lambda x:x[1], reverse=True)
         fp.write('\n'.join(['%s\t%s' % (item[0], item[1]) for item in changing_file_ext_list]))
         fp.close()
@@ -142,9 +145,9 @@ def query_commits_of_project(sufix=''):
         plt.xlabel('Number of times a file changed')
         plt.ylabel('Probability')
         plt.legend(['CCDF', 'PDF'])
-        plt.savefig('FileChangingTimeDist.png', dpi=500)
+        plt.savefig(result_prefix+'FileChangingTimeDist.png', dpi=500)
     else:
-        fp=open('CommitStats%s' % sufix, 'w')
+        fp=open(result_prefix+'CommitStats%s' % sufix, 'w')
         fp.write('\n'.join(['%s\t%s' % (str(k), v) for k, v in commit_stat_dict.items()]))
         fp.close()
 
@@ -153,11 +156,11 @@ def parse_pull_request_commits(commit_type=''):
     for line in sys.stdin:
         item=line.strip().split()
         change_file_stat(item[-1])
-    fp=codecs.open('ChangingFile%s' % commit_type, 'w', 'utf-8')
+    fp=codecs.open(result_prefix+'ChangingFile%s' % commit_type, 'w', 'utf-8')
     changing_file_list=sorted(changing_file_dict.items(), key=lambda x:x[1], reverse=True)
     fp.write('\n'.join(['%s\t%s' % (item[0], item[1]) for item in changing_file_list]))
     fp.close()
-    fp=codecs.open('ChangingFileExt%s' % commit_type, 'w', 'utf-8')
+    fp=codecs.open(result_prefix+'ChangingFileExt%s' % commit_type, 'w', 'utf-8')
     changing_file_ext_list=sorted(changing_file_ext_dict.items(), key=lambda x:x[1], reverse=True)
     fp.write('\n'.join(['%s\t%s' % (item[0], item[1]) for item in changing_file_ext_list]))
     fp.close()
@@ -170,7 +173,7 @@ def parse_pull_request_commits(commit_type=''):
     plt.xlabel('Number of times a file changed')
     plt.ylabel('Probability')
     plt.legend(['CCDF', 'PDF'])
-    plt.savefig('FileChangingTimeDist%s.png' % commit_type, dpi=500)
+    plt.savefig(result_prefix+'FileChangingTimeDist%s.png' % commit_type, dpi=500)
 
     plt.clf()
     hist, bin_edges=hist_data(file_changes_per_commit, N=max(file_changes_per_commit)-min(file_changes_per_commit)+1, type=_ccdf)
@@ -180,38 +183,71 @@ def parse_pull_request_commits(commit_type=''):
     plt.xlabel('Number of changed files per commits')
     plt.ylabel('Probability')
     plt.legend(['CCDF', 'PDF'])
-    plt.savefig('FileChangesPerCommitDist%s.png' % commit_type, dpi=500)
+    plt.savefig(result_prefix+'FileChangesPerCommitDist%s.png' % commit_type, dpi=500)
     
 
-    fp=open('CommitStats%s' % commit_type, 'w')
+    fp=open(result_prefix+'CommitStats%s' % commit_type, 'w')
     fp.write('\n'.join(['%s\t%s' % (str(k), v) for k, v in commit_stat_dict.items()]))
     fp.close()
 
 def match_fixing_information(comment):
-     if len(re.findall('\#\d+', comment))>0:
+     if len(re.findall('\#\d+', comment))>0 and (comment.find('close')>-1 or comment.find('resolve')>-1 or comment.find('fix')>-1):
         return True
      else:
         return False
 
 def identifying_bug_fixing_commits():
-    fp=codecs.open('BugFixingCommitComments', 'w', 'utf-8')
+    fp=codecs.open(result_prefix+'BugFixingCommitComments', 'w', 'utf-8')
     for result in db.commits.find():
         if result.has_key('commit') and result['commit'].has_key('message'):
             comment=result['commit']['message']
             if match_fixing_information(comment.lower()):
                 print result['sha']
+                change_file_stat(result['sha'])
                 try:
-                    fp.write('%s\n' % comment.encode('utf-8').replace('\n', ' '))
+                    fp.write('%s\t%s\n' % (result['sha'], comment.encode('utf-8').replace('\n', ' ')))
                 except:
                     sys.stderr.write('%s\n' % sys.exc_info()[0])
     fp.close()
+
+def save_changing_file_dict(commit_type=''):
+    fp=codecs.open(result_prefix+'ChangingFile%s' % commit_type, 'w', 'utf-8')
+    changing_file_list=sorted(changing_file_dict.items(), key=lambda x:x[1], reverse=True)
+    fp.write('\n'.join(['%s\t%s' % (item[0], item[1]) for item in changing_file_list]))
+    fp.close()
+    fp=codecs.open(result_prefix+'ChangingFileExt%s' % commit_type, 'w', 'utf-8')
+    changing_file_ext_list=sorted(changing_file_ext_dict.items(), key=lambda x:x[1], reverse=True)
+    fp.write('\n'.join(['%s\t%s' % (item[0], item[1]) for item in changing_file_ext_list]))
+    fp.close()
+    
+    changing_num=changing_file_dict.values()
+    hist, bin_edges=hist_data(changing_num, N=max(changing_num)-min(changing_num)+1, type=_ccdf)
+    plt.loglog(bin_edges[:-1], hist, '.', color='b')
+    hist, bin_edges=hist_data(changing_num, N=max(changing_num)-min(changing_num)+1, type=_pdf)
+    plt.loglog(bin_edges[:-1], hist, '.', color='r')
+    plt.xlabel('Number of times a file changed')
+    plt.ylabel('Probability')
+    plt.legend(['CCDF', 'PDF'])
+    plt.savefig(result_prefix+'FileChangingTimeDist%s.png' % commit_type, dpi=500)
+
+    plt.clf()
+    hist, bin_edges=hist_data(file_changes_per_commit, N=max(file_changes_per_commit)-min(file_changes_per_commit)+1, type=_ccdf)
+    plt.loglog(bin_edges[:-1], hist, '.', color='b')
+    hist, bin_edges=hist_data(file_changes_per_commit, N=max(file_changes_per_commit)-min(file_changes_per_commit)+1, type=_pdf)
+    plt.loglog(bin_edges[:-1], hist, '.', color='r')
+    plt.xlabel('Number of changed files per commits')
+    plt.ylabel('Probability')
+    plt.legend(['CCDF', 'PDF'])
+    plt.savefig(result_prefix+'FileChangesPerCommitDist%s.png' % commit_type, dpi=500)
 
 
 if __name__=='__main__':
     con=Connection()
     db=con.msr14
     db.authenticate('msr14', 'msr14')
+    result_prefix='results/BugFixingCommits_'
     identifying_bug_fixing_commits()
+    save_changing_file_dict()
 #    if len(sys.argv)>1:
 #        parse_pull_request_commits(sys.argv[1])
 #    else:
