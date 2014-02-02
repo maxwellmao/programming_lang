@@ -3,11 +3,13 @@ from __future__ import division
 import sys, os
 import datetime
 import pymongo
+import MySQLdb
 from pymongo import Connection
 import codecs
 import numpy as np
 import matplotlib.pyplot as plt
 import re
+from bug_locating import identifying_user_name
 
 changing_file_ext_dict={}
 changing_file_dict={}
@@ -197,18 +199,30 @@ def match_fixing_information(comment):
         return False
 
 def identifying_bug_fixing_commits():
-    fp=codecs.open(result_prefix+'BugFixingCommitComments', 'w', 'utf-8')
+    fp=codecs.open(result_prefix+'BugFixingCommitInfo', 'w', 'utf-8')
+    bug_fixer={}
     for result in db.commits.find():
-        if result.has_key('commit') and result['commit'].has_key('message'):
+        if result.has_key('commit') and result['commit'].has_key('message') and result.has_key('parents') and len(result['parents'])==1:
             comment=result['commit']['message']
             if match_fixing_information(comment.lower()):
-                print result['sha']
                 change_file_stat(result['sha'])
+                fixer=identifying_user_name(result).replace(' ', '-')
+                bug_fixer[fixer]=bug_fixer.get(fixer, 0)+1
                 try:
-                    fp.write('%s\t%s\n' % (result['sha'], comment.encode('utf-8').replace('\n', ' ')))
+                    fp.write('%s\t%s\t%s\n' % (result['sha'], fixer, comment.encode('utf-8').replace('\n', ' ')))
                 except:
                     sys.stderr.write('%s\n' % sys.exc_info()[0])
     fp.close()
+    plt.clf()
+    hist, bin_edges=hist_data(bug_fixer.values(), N=max(bug_fixer.values())-min(bug_fixer.values())+1, type=_ccdf)
+    plt.loglog(bin_edges[:-1], hist, '.', color='b')
+    hist, bin_edges=hist_data(bug_fixer.values(), N=max(bug_fixer.values())-min(bug_fixer.values())+1, type=_pdf)
+    plt.loglog(bin_edges[:-1], hist, '.', color='r')
+    plt.xlabel('Number of bugs that developer fixing')
+    plt.ylabel('Probability')
+    plt.legend(['CCDF', 'PDF'])
+    plt.savefig(result_prefix+'BugFixer.png', dpi=500)
+
 
 def save_changing_file_dict(commit_type=''):
     fp=codecs.open(result_prefix+'ChangingFile%s' % commit_type, 'w', 'utf-8')
@@ -240,14 +254,107 @@ def save_changing_file_dict(commit_type=''):
     plt.legend(['CCDF', 'PDF'])
     plt.savefig(result_prefix+'FileChangesPerCommitDist%s.png' % commit_type, dpi=500)
 
+def commit_comment_num_dist():
+    comment_num=[]
+    for result in db.commits.find():
+        if result.has_key('commit') and result['commit'].has_key('comment_count'):
+            comment_num.append(result['commit']['comment_count']+1)
+    print len(comment_num), max(comment_num), min(comment_num)
+    hist, bin_edges=hist_data(comment_num, N=max(comment_num)-min(comment_num)+1, type=_ccdf)
+    print len(hist)
+    plt.clf()
+    plt.loglog(bin_edges[:-1], hist, '.', color='b')
+    plt.xlabel('# of comments in each commit')
+    plt.ylabel('Probability')
+    plt.savefig('results/CommitCommentsNum.png', dpi=500)
+
+def commit_comment_num_dist_mysql():
+    mysqlDB = MySQLdb.connect('localhost', 'msr14', 'msr14', 'msr14')
+    cursor = mysqlDB.cursor()
+    sql='select count(*), commit_id from commit_comments group by commit_id'
+    cursor.execute(sql)
+    results=cursor.fetchall()
+    comment_num=[]
+    for r in results:
+        comment_num.append(r[0])
+        if r[0]>100:
+            print r[1]
+    print len(comment_num), max(comment_num), min(comment_num)
+    hist, bin_edges=hist_data(comment_num, N=max(comment_num)-min(comment_num)+1, type=_ccdf)
+    print len(hist)
+    plt.clf()
+    plt.loglog(bin_edges[:-1], hist, '.', color='b')
+    plt.xlabel('# of comments in each commit')
+    plt.ylabel('Probability')
+    plt.savefig('results/CommitCommentsNum.png', dpi=500)
+
+    cursor.close()
+    mysqlDB.close()
+
+def is_source_code_file(filename):
+    low_filename=filename
+    if low_filename.endswith('.c') or low_filename.endswith('php') or low_filename.endswith('rb') or low_filename.endswith('py') or low_filename.endswith('java') or low_filename.endswith('cpp') or low_filename.endswith('scala') or low_filename.endswith('js') or low_filename.endswith('h') or low_filename.endswith('cc') or low_filename.endswith('pl') or low_filename.endswith('hpp'):
+        return True
+    else:
+        return False
+
+def finding_buggy_in_commit(commit_result):
+    buggy_line=0
+    buggy_file=0
+    for file in commit_result['files']:
+        if is_source_code_file(file['filename']) and file.has_key('patch'):
+            patch_list=file['patch'].split('\n')
+            fp=codecs.open(result_prefix+'BuggyCodeSnippet', 'a', 'utf-8')
+            del_line_no=0
+            buggy=False
+            for line in patch_list:
+                if line.startswith('-'):
+                    buggy=True
+                    buggy_line+=1
+                    try:
+                        fp.write('%s\n' % line)
+                    except:
+                        sys.stderr.write('%s\n' % sys.exc_info()[0])
+                elif line.startswith('+'):
+                    try:
+                        fp.write('%s\n' % line)
+                    except:
+                        sys.stderr.write('%s\n' % sys.exc_info()[0])
+            if buggy:
+                fp.write('-------------------------------------------------------------------\n')
+                buggy_file+=1
+            fp.close()
+    return buggy_line, buggy_file
+
+def identifying_buggy_code_snippet():
+    fp=codecs.open(result_prefix+'BuggyCodeSnippet', 'w', 'utf-8')
+    fp.close()
+    buggy_line_dist={}
+    buggy_file_dist={}
+    for result in db.commits.find():
+        if result.has_key('commit') and result['commit'].has_key('message'):
+#        and result.has_key('parents') and len(result['parents'])==1:
+            comment=result['commit']['message']
+            if match_fixing_information(comment.lower()):
+                buggy_line, buggy_file=finding_buggy_in_commit(result)
+                buggy_line_dist[buggy_line]=buggy_line_dist.get(buggy_line, 0)+1
+                buggy_file_dist[buggy_file]=buggy_file_dist.get(buggy_file, 0)+1
+#                change_file_stat(result['sha'])
+#                fixer=identifying_user_name(result).replace(' ', '-')
+    print 'Buggy line:'
+    print '\n'.join(['%s %s' % (k, v) for k, v in buggy_line_dist.items()])
+    print 'Buggy file:'
+    print '\n'.join(['%s %s' % (k, v) for k, v in buggy_file_dist.items()])
 
 if __name__=='__main__':
     con=Connection()
     db=con.msr14
     db.authenticate('msr14', 'msr14')
     result_prefix='results/BugFixingCommits_'
-    identifying_bug_fixing_commits()
-    save_changing_file_dict()
+#    commit_comment_num_dist_mysql()
+#    identifying_bug_fixing_commits()
+    identifying_buggy_code_snippet()
+#    save_changing_file_dict()
 #    if len(sys.argv)>1:
 #        parse_pull_request_commits(sys.argv[1])
 #    else:

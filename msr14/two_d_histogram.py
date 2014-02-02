@@ -61,15 +61,30 @@ def parse_commit_stats():
 #    histogram_2d(data)
     plot_two(data)
 
-def scatter_two(data, commit_type=''):
+(_loglog, _normal)=range(2)
+
+def scatter_two(data, commit_type='', xlabel='Add', ylabel='Del', save_file='CommitStats', scale=_loglog):
     x=[]
     y=[]
     z=[]
+    smallest=0.1
     for item in data:
-        if item[0]>0 and item[1]>0:
-            x.append(math.log10(item[0]))
-            y.append(math.log10(item[1]))
-            z.append(math.log10(item[2]))
+        if item[0]>0 or item[1]>0:
+            if scale==_loglog:
+                if item[0]==0:
+                    x.append(math.log10(smallest))
+                else:
+                   x.append(math.log10(item[0]))
+                if item[1]==0:
+                    y.append(math.log10(smallest))
+                else:
+                    y.append(math.log10(item[1]))
+                z.append(math.log10(item[2]))
+            else:
+                x.append(item[0])
+                y.append(item[1])
+                z.append(item[2])
+
 #    x=[math.log(item[0]) for item in data]
 #    y=[math.log(item[1]) for item in data]
     k,b, x_min, y_min, x_max, y_max=linear_fitting(x, y)
@@ -77,14 +92,15 @@ def scatter_two(data, commit_type=''):
     print 'Correlation coefficient:'
     print np.corrcoef(x, y)
     total=sum(x)
+    plt.clf()
     plt.scatter(x, y, c=z, s=10, vmin=int(min(z)), vmax=int(max(z)+1), lw = 0)
     plt.colorbar()
 #, cmap=plt.cm.coolwarm)
-    plt.xlabel('Add')
-    plt.ylabel('Del')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     #'PullRequestCommit'
-    print 'Saveing: CommitStats%s.png' % commit_type
-    plt.savefig('CommitStats%s.png' % commit_type, dpi=500)
+    print 'Saveing: %s%s.png' % (save_file, commit_type)
+    plt.savefig('%s%s.png' % (save_file, commit_type), dpi=500)
     #_pullrequestcommit  _PullRequestCommit
 
 def parse_commit_stats_scatter(commit_type=''):

@@ -273,26 +273,26 @@ def commit_info():
 #        commit_comments[]
 
 
-def construct_net():
-    github_net=GitHub_CollaborationNet()
-#    net_type='Comembership'
-    net_type='Cocommit'
-#    file_name='Proj_Membership'
-    file_name='Proj_Committer'
-    github_net.parse_msr(file_name)
-    github_net.bipartite_net_degree_dist(net_type)
-    github_net.bipartite_net_degree_dist(net_type, _ccdf)
-    print 'Bipartite_Net nodes: %s edge: %s' % (len(github_net.bipartite_net.nodes()), len(github_net.bipartite_net.edges()))
-    github_net.kl_divergence(net_type)
-    github_net.connected_components(net_type)
-#    github_net.construct_collabrative_net('Repos', 'Collabrative')
-    github_net.construct_collabrative_net('Repos', 'CoCommit')
-    github_net.collabrative_net_degree_dist(net_type)
-    github_net.collabrative_net_degree_dist(net_type, _ccdf)
-    fp=open('%s_net' % net_type, 'w')
-    for e in github_net.collabrative_net.edges(data=True):
-        fp.write('%s\t%s\t%s\n' % (github_net.id_user_map[e[0]].user, github_net.id_user_map[e[1]].user, e[2]['weight']))
-    fp.close()
+#def construct_net():
+#    github_net=GitHub_CollaborationNet()
+##    net_type='Comembership'
+#    net_type='Cocommit'
+##    file_name='Proj_Membership'
+#    file_name='Proj_Committer'
+#    github_net.parse_msr(file_name)
+#    github_net.bipartite_net_degree_dist(net_type)
+#    github_net.bipartite_net_degree_dist(net_type, _ccdf)
+#    print 'Bipartite_Net nodes: %s edge: %s' % (len(github_net.bipartite_net.nodes()), len(github_net.bipartite_net.edges()))
+#    github_net.kl_divergence(net_type)
+#    github_net.connected_components(net_type)
+##    github_net.construct_collabrative_net('Repos', 'Collabrative')
+#    github_net.construct_collabrative_net('Repos', 'CoCommit')
+#    github_net.collabrative_net_degree_dist(net_type)
+#    github_net.collabrative_net_degree_dist(net_type, _ccdf)
+#    fp=open('%s_net' % net_type, 'w')
+#    for e in github_net.collabrative_net.edges(data=True):
+#        fp.write('%s\t%s\t%s\n' % (github_net.id_user_map[e[0]].user, github_net.id_user_map[e[1]].user, e[2]['weight']))
+#    fp.close()
 
 
 if __name__=='__main__':
@@ -301,7 +301,7 @@ if __name__=='__main__':
 #    print '\n'.join(['%s\t%s' % (k,len(v)) for k,v in user_contribution.items()]
 #    user_involvement_analysis(user_contribution)
     project_committer()
-    construct_net()
+#    construct_net()
 #    organization_analysis()
 #    repos_watcher=watchers_analysis()
 #    contributor_watcher_analysis(repos_mem, repos_watcher)

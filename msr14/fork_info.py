@@ -26,7 +26,7 @@ def assign_fork_to_repos(fork_tree):
             for neighbor in fork_tree[node].keys():
                 explore_Q.put([neighbor, item[1]+1])
 #        print repo, item[1]
-    print '\n'.join(['%s\t%s' % (k, v) for k, v in fork_repo_map.items()])
+#    print '\n'.join(['%s\t%s' % (k, v) for k, v in fork_repo_map.items()])
     return repo_forks_map, fork_repo_map
 
 def construct_fork_tree():
